@@ -1,0 +1,2522 @@
+{
+  "auditedOn": "2026-10-26",
+  "driverVersion": "23.4.55.39317",
+  "extensionVersion": "23.10.1",
+  "sourceFile": "${UIPATH_EXTENSION_DIR}/EmbeddedDriversContainer.js",
+  "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+  "scope": "Static routing audit with explicitly scoped live evidence for OpenTab and tab metadata. Entry presence is not availability; observed fields are not full schemas. No live DOM primitive claim.",
+  "namedEntries": [
+    {
+      "name": "AnyWebRequestsInFlight",
+      "entryPresent": true,
+      "handler": "onAnyWebRequestsInFlight",
+      "sourceOffset": 3025941,
+      "sourceEnd": 3026328,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "AppendBigString",
+      "entryPresent": true,
+      "handler": "onAppendBigString",
+      "sourceOffset": 2972547,
+      "sourceEnd": 2972663,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "name",
+        "value"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "AttachDebugger",
+      "entryPresent": true,
+      "handler": "onAttachDebugger",
+      "sourceOffset": 3012433,
+      "sourceEnd": 3012588,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "BringElementIntoView",
+      "entryPresent": true,
+      "handler": "onBringElementIntoView",
+      "sourceOffset": 2977405,
+      "sourceEnd": 2977726,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "CheckHtmlElem",
+      "entryPresent": true,
+      "handler": "onCheckHtmlElem",
+      "sourceOffset": 2988673,
+      "sourceEnd": 2989054,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "doCheck",
+        "tabId",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [
+        1
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 1,
+          "handlerBindings": [
+            "n.CheckElement"
+          ],
+          "sourceOffset": 3190204
+        }
+      ]
+    },
+    {
+      "name": "ClickHtmlElem",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "CloseBrowser",
+      "entryPresent": true,
+      "handler": "onCloseBrowser",
+      "sourceOffset": 3004641,
+      "sourceEnd": 3004740,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "CloseMarkerTabs",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "DeleteBigString",
+      "entryPresent": true,
+      "handler": "onDeleteBigString",
+      "sourceOffset": 2973087,
+      "sourceEnd": 2973180,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "name"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "DetachDebugger",
+      "entryPresent": true,
+      "handler": "onDetachDebugger",
+      "sourceOffset": 3012588,
+      "sourceEnd": 3012743,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "EnableTracing",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "ExtractData",
+      "entryPresent": true,
+      "handler": "onExtractData",
+      "sourceOffset": 3006695,
+      "sourceEnd": 3007284,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "metadata",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        5
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 5,
+          "handlerBindings": [
+            "n.ExtractData"
+          ],
+          "sourceOffset": 3190325
+        }
+      ]
+    },
+    {
+      "name": "ExtractMetadata",
+      "entryPresent": true,
+      "handler": "onExtractMetadata",
+      "sourceOffset": 3005849,
+      "sourceEnd": 3006695,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "columnDescriptors",
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        6
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 6,
+          "handlerBindings": [
+            "n.ExtractMetadata"
+          ],
+          "sourceOffset": 3190347
+        }
+      ]
+    },
+    {
+      "name": "FindBrowserTabs",
+      "entryPresent": true,
+      "handler": "onFindBrowserTabs",
+      "sourceOffset": 2982506,
+      "sourceEnd": 2983885,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "attrMap",
+        "maxElems"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "FindContainer",
+      "entryPresent": true,
+      "handler": "onFindContainer",
+      "sourceOffset": 3008153,
+      "sourceEnd": 3008521,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "containerType",
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        7
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 7,
+          "handlerBindings": [
+            "n.FindContainer"
+          ],
+          "sourceOffset": 3190373
+        }
+      ]
+    },
+    {
+      "name": "FindSelectors",
+      "entryPresent": true,
+      "handler": "onFindSelectors",
+      "sourceOffset": 2996946,
+      "sourceEnd": 2998542,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "parentCustomId",
+        "partialRequests",
+        "startWithId",
+        "tabId",
+        "timeoutMs",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [
+        8
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 8,
+          "handlerBindings": [
+            "n.FindSelectors_OriginalRequest",
+            "n.FindSelectors_CrossOriginRequest"
+          ],
+          "sourceOffset": 3190397
+        }
+      ],
+      "note": "Routes content command 8 to FindSelectors_OriginalRequest/CrossOriginRequest; partialRequests schema and customId cache lifecycle need live verification."
+    },
+    {
+      "name": "FindWebCtrlElements",
+      "entryPresent": true,
+      "handler": "onFindWebCtrlElements",
+      "sourceOffset": 2984384,
+      "sourceEnd": 2984893,
+      "status": "stub-no-response",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "attrMap",
+        "getAllDescendants",
+        "isLeafSearch",
+        "maxElems",
+        "parentCustomId",
+        "repeatRequest",
+        "searchInvisibleChildren",
+        "tagName"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": [],
+      "note": "Only local declarations; no callback or content dispatch."
+    },
+    {
+      "name": "GenericRequest",
+      "entryPresent": true,
+      "handler": "onGenericRequest",
+      "sourceOffset": 2981315,
+      "sourceEnd": 2981901,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "messageId",
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetActiveTabId",
+      "entryPresent": true,
+      "handler": "onGetActiveTabId",
+      "sourceOffset": 3001781,
+      "sourceEnd": 3002205,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "windowId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetAttributeForElements",
+      "entryPresent": true,
+      "handler": "onGetAttributeForElements",
+      "sourceOffset": 2984893,
+      "sourceEnd": 2985808,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "attributeName",
+        "customIdList"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetBigString",
+      "entryPresent": true,
+      "handler": "onGetBigString",
+      "sourceOffset": 2972663,
+      "sourceEnd": 2973087,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "count",
+        "index",
+        "name"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetBrowserData",
+      "entryPresent": true,
+      "handler": "onGetBrowserData",
+      "sourceOffset": 2994338,
+      "sourceEnd": 2995001,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "browserData_varname"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetBrowserTabZoom",
+      "entryPresent": true,
+      "handler": "onGetBrowserTabZoom",
+      "sourceOffset": 3001602,
+      "sourceEnd": 3001781,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetBrowserWindows",
+      "entryPresent": true,
+      "handler": "onGetBrowserWindows",
+      "sourceOffset": 2973580,
+      "sourceEnd": 2973747,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetFocusedHtmlElement",
+      "entryPresent": true,
+      "handler": "onGetFocusedHtmlElement",
+      "sourceOffset": 2998990,
+      "sourceEnd": 2999330,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [
+        9
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 9,
+          "handlerBindings": [
+            "n.GetFocusedElement_OriginalRequest",
+            "n.GetFocusedElement_CrossOriginHandler"
+          ],
+          "sourceOffset": 3190472
+        }
+      ]
+    },
+    {
+      "name": "GetHtmlAncestryInfo",
+      "entryPresent": true,
+      "handler": "onGetHtmlAncestryInfo",
+      "sourceOffset": 3000620,
+      "sourceEnd": 3001408,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "getFlags",
+        "relativeAncestorCustomId",
+        "tabId",
+        "webctrlPolicyString"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetHtmlAttrValuesList",
+      "entryPresent": true,
+      "handler": "onGetHtmlAttrValuesList",
+      "sourceOffset": 2992044,
+      "sourceEnd": 2992356,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        13
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 13,
+          "handlerBindings": [
+            "n.GetAttrValueList_Document",
+            "n.GetAttrValueList_Element"
+          ],
+          "sourceOffset": 3190738
+        }
+      ]
+    },
+    {
+      "name": "GetHtmlAttribute",
+      "entryPresent": true,
+      "handler": "onGetHtmlAttribute",
+      "sourceOffset": 2987268,
+      "sourceEnd": 2988159,
+      "status": "source-path-unverified",
+      "liveVerified": true,
+      "observedDirectRequestFields": [
+        "attrName",
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        11
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 11,
+          "handlerBindings": [
+            "n.GetAttribute_OriginalRequest",
+            "n.GetAttribute_CrossOriginRequest"
+          ],
+          "sourceOffset": 3190635
+        }
+      ],
+      "liveVerifiedScope": "Tab metadata only: empty customId with url/title/readystate",
+      "liveEvidence": "EXTENSION-LIVE-VERIFICATION.json"
+    },
+    {
+      "name": "GetHtmlAttributesList",
+      "entryPresent": true,
+      "handler": "onGetHtmlAttributesList",
+      "sourceOffset": 2992356,
+      "sourceEnd": 2992668,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        12
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 12,
+          "handlerBindings": [
+            "n.GetAttributesList"
+          ],
+          "sourceOffset": 3190709
+        }
+      ]
+    },
+    {
+      "name": "GetHtmlCollectionById",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "GetHtmlDevicePixelRatio",
+      "entryPresent": true,
+      "handler": "onGetHtmlDevicePixelRatio",
+      "sourceOffset": 3001408,
+      "sourceEnd": 3001602,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [
+        14
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 14,
+          "handlerBindings": [
+            "n.GetDevicePixelRatio"
+          ],
+          "sourceOffset": 3190802
+        }
+      ]
+    },
+    {
+      "name": "GetHtmlElemById",
+      "entryPresent": true,
+      "handler": "onGetHtmlElemById",
+      "sourceOffset": 2975646,
+      "sourceEnd": 2976600,
+      "status": "partial-tab-only",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "attrMap",
+        "index",
+        "parentCustomId",
+        "tabId",
+        "tagName"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": [],
+      "note": "Valid index with tabId=-1 resolves a browser tab. No DOM reply for ordinary tabId."
+    },
+    {
+      "name": "GetHtmlFromPoint",
+      "entryPresent": true,
+      "handler": "onGetHtmlFromPoint",
+      "sourceOffset": 2990008,
+      "sourceEnd": 2990947,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "tabId",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [
+        15
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 15,
+          "handlerBindings": [
+            "n.GetElementFromPoint_OriginalRequest",
+            "n.GetElementFromPoint_CrossOriginRequest"
+          ],
+          "sourceOffset": 3190833
+        }
+      ]
+    },
+    {
+      "name": "GetHtmlIdInfo",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "GetHtmlIndex",
+      "entryPresent": true,
+      "handler": "onGetHtmlIndex",
+      "sourceOffset": 2974206,
+      "sourceEnd": 2975646,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "attrMap",
+        "customId",
+        "parentCustomId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        16
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 16,
+          "handlerBindings": [
+            "n.GetElementSelectorIndex"
+          ],
+          "sourceOffset": 3190921
+        }
+      ]
+    },
+    {
+      "name": "GetHtmlRectangle",
+      "entryPresent": true,
+      "handler": "onGetHtmlRectangle",
+      "sourceOffset": 2976600,
+      "sourceEnd": 2977405,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "getRectangleForDebugger",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "tabId",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [
+        17
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 17,
+          "handlerBindings": [
+            "n.GetRectangle_OriginalRequest",
+            "n.GetRectangle_CrossFrameRequest"
+          ],
+          "sourceOffset": 3190956
+        }
+      ]
+    },
+    {
+      "name": "GetHtmlValue",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "GetHtmlValueForElements",
+      "entryPresent": true,
+      "handler": "onGetHtmlValueForElements",
+      "sourceOffset": 2986481,
+      "sourceEnd": 2987268,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customIdList",
+        "getFullText"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetRectFromText",
+      "entryPresent": true,
+      "handler": "onGetRectFromText",
+      "sourceOffset": 3000027,
+      "sourceEnd": 3000620,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "height",
+        "left",
+        "occurence",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "text",
+        "top",
+        "width",
+        "windowId",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [
+        19
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 19,
+          "handlerBindings": [
+            "n.GetRectFromText_OriginalRequest",
+            "n.GetRectFromText_CrossFrameRequest"
+          ],
+          "sourceOffset": 3191075
+        }
+      ]
+    },
+    {
+      "name": "GetSapFioriAllColLabels",
+      "entryPresent": true,
+      "handler": "onGetSapFioriAllColLabels",
+      "sourceOffset": 3007853,
+      "sourceEnd": 3008153,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        20
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 20,
+          "handlerBindings": [
+            "n.GetSapFioriAllColLabels"
+          ],
+          "sourceOffset": 3191154
+        }
+      ]
+    },
+    {
+      "name": "GetSelectedRange",
+      "entryPresent": true,
+      "handler": "onGetSelectedRange",
+      "sourceOffset": 3009860,
+      "sourceEnd": 3010194,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        24
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 24,
+          "handlerBindings": [
+            "n.GetSelectedRange"
+          ],
+          "sourceOffset": 3191287
+        }
+      ]
+    },
+    {
+      "name": "GetSelectorAttributeNames",
+      "entryPresent": true,
+      "handler": "onGetSelectorAttributeNames",
+      "sourceOffset": 2992668,
+      "sourceEnd": 2992975,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        21
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 21,
+          "handlerBindings": [
+            "n.GetSelectorAttributeNames"
+          ],
+          "sourceOffset": 3191189
+        }
+      ]
+    },
+    {
+      "name": "GetTabCount",
+      "entryPresent": true,
+      "handler": "onGetTabCount",
+      "sourceOffset": 3004740,
+      "sourceEnd": 3004849,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetTaskMiningInfoFromFocus",
+      "entryPresent": true,
+      "handler": "onGetTaskMiningInfoFromFocus",
+      "sourceOffset": 3020778,
+      "sourceEnd": 3022092,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "flags",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "tabId",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetTaskMiningInfoFromPoint",
+      "entryPresent": true,
+      "handler": "onGetTaskMiningInfoFromPoint",
+      "sourceOffset": 3019659,
+      "sourceEnd": 3020778,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "flags",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "screenX",
+        "screenY",
+        "tabId",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "GetTextFromScreenRect",
+      "entryPresent": true,
+      "handler": "onGetTextFromScreenRect",
+      "sourceOffset": 2999624,
+      "sourceEnd": 3000027,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "height",
+        "left",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "tabId",
+        "top",
+        "width",
+        "windowLeft",
+        "windowTop"
+      ],
+      "contentCommandIds": [
+        22
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 22,
+          "handlerBindings": [
+            "n.GetTextFromScreenRect"
+          ],
+          "sourceOffset": 3191226
+        }
+      ]
+    },
+    {
+      "name": "GetWindowIdForTabId",
+      "entryPresent": true,
+      "handler": "onGetWindowIdForTabId",
+      "sourceOffset": 2973180,
+      "sourceEnd": 2973580,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "Handshake",
+      "entryPresent": true,
+      "handler": "onHandshake",
+      "sourceOffset": 3010194,
+      "sourceEnd": 3010255,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "HtmlGetSelectedItems",
+      "entryPresent": true,
+      "handler": "onHtmlGetSelectedItems",
+      "sourceOffset": 2989054,
+      "sourceEnd": 2989497,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "getAllItems",
+        "nativeSelectionOnly",
+        "selectState",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        23
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 23,
+          "handlerBindings": [
+            "n.GetSelectedItems"
+          ],
+          "sourceOffset": 3191259
+        }
+      ]
+    },
+    {
+      "name": "HtmlSetSelectedItems",
+      "entryPresent": true,
+      "handler": "onHtmlSetSelectedItems",
+      "sourceOffset": 2989497,
+      "sourceEnd": 2990008,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "nativeSelectionOnly",
+        "reset",
+        "selectIfDisabled",
+        "selectState",
+        "selectedItems",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        25
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 25,
+          "handlerBindings": [
+            "n.SetSelectedItems"
+          ],
+          "sourceOffset": 3191315
+        }
+      ]
+    },
+    {
+      "name": "IgnoreNextKeystrokeEvent",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "InjectAndRunJs",
+      "entryPresent": true,
+      "handler": "onInjectAndRunJs",
+      "sourceOffset": 2978266,
+      "sourceEnd": 2978963,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "executionWorld",
+        "input",
+        "jsCode",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        27
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 27,
+          "handlerBindings": [
+            "n.InjectAndRunJs"
+          ],
+          "sourceOffset": 3191371
+        }
+      ],
+      "note": "Accepts jsCode/input/executionWorld; may inject through debugger. Runtime unverified."
+    },
+    {
+      "name": "IsBrowserTabActive",
+      "entryPresent": true,
+      "handler": "onIsBrowserTabActive",
+      "sourceOffset": 2991468,
+      "sourceEnd": 2991636,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "IsHtmlElemDisabled",
+      "entryPresent": true,
+      "handler": "onIsHtmlElemDisabled",
+      "sourceOffset": 2991636,
+      "sourceEnd": 2992044,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "checkIfDisabled",
+        "checkIfReadonly",
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        28
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 28,
+          "handlerBindings": [
+            "n.IsDocumentDisabled",
+            "n.IsElementDisabled"
+          ],
+          "sourceOffset": 3191397
+        }
+      ]
+    },
+    {
+      "name": "IsHtmlElemValid",
+      "entryPresent": true,
+      "handler": "onIsHtmlElemValid",
+      "sourceOffset": 2990947,
+      "sourceEnd": 2991468,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "bringIntoViewVirtualId",
+        "checkVirtualId",
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        29
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 29,
+          "handlerBindings": [
+            "n.IsDocumentValid",
+            "n.IsElementValid"
+          ],
+          "sourceOffset": 3191447
+        }
+      ]
+    },
+    {
+      "name": "IsHtmlElemVisible",
+      "entryPresent": true,
+      "handler": "onIsHtmlElemVisible",
+      "sourceOffset": 3013184,
+      "sourceEnd": 3013500,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        30
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 30,
+          "handlerBindings": [
+            "n.IsElementVisible_OriginalRequest",
+            "n.IsElementVisible_CrossOriginRequest"
+          ],
+          "sourceOffset": 3191491
+        }
+      ]
+    },
+    {
+      "name": "IsHtmlPointVisible",
+      "entryPresent": true,
+      "handler": "onIsHtmlPointVisible",
+      "sourceOffset": 3012855,
+      "sourceEnd": 3013184,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId",
+        "x",
+        "y"
+      ],
+      "contentCommandIds": [
+        31
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 31,
+          "handlerBindings": [
+            "n.IsPointVisible_OriginalRequest",
+            "n.IsPointVisible_CrossOriginRequest"
+          ],
+          "sourceOffset": 3191573
+        }
+      ]
+    },
+    {
+      "name": "IsHtmlVisible",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "IsInstanceOfHtmlElement",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "IsSamplePartOfANewColumn",
+      "entryPresent": true,
+      "handler": "onIsSamplePartOfANewColumn",
+      "sourceOffset": 3007284,
+      "sourceEnd": 3007853,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "columnDescriptor",
+        "containerCustomId",
+        "sampleCustomId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        32
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 32,
+          "handlerBindings": [
+            "n.IsSamplePartOfANewColumn"
+          ],
+          "sourceOffset": 3191651
+        }
+      ]
+    },
+    {
+      "name": "IsTabContentAccessible",
+      "entryPresent": true,
+      "handler": "onIsTabContentAccessible",
+      "sourceOffset": 2973850,
+      "sourceEnd": 2974206,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [
+        33
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 33,
+          "handlerBindings": [
+            "n.IsTabContentAccessible"
+          ],
+          "sourceOffset": 3191687
+        }
+      ]
+    },
+    {
+      "name": "MatchesTag",
+      "entryPresent": true,
+      "handler": "onMatchesTag",
+      "sourceOffset": 3022092,
+      "sourceEnd": 3022511,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "attrMap",
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        3
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 3,
+          "handlerBindings": [
+            "n.ElementMatchesTag_Document",
+            "n.ElementMatchesTag_Element"
+          ],
+          "sourceOffset": 3190250
+        }
+      ]
+    },
+    {
+      "name": "MaximizeWindow",
+      "entryPresent": true,
+      "handler": "onMaximizeWindow",
+      "sourceOffset": 3002205,
+      "sourceEnd": 3002786,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "windowId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "MonitorNativeEvents",
+      "entryPresent": true,
+      "handler": "onMonitorNativeEvents",
+      "sourceOffset": 3011369,
+      "sourceEnd": 3011555,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "MouseWheelDebugger",
+      "entryPresent": true,
+      "handler": "onMouseWheelDebugger",
+      "sourceOffset": 3022511,
+      "sourceEnd": 3023475,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "direction",
+        "distance",
+        "dx",
+        "dy",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "Navigate",
+      "entryPresent": true,
+      "handler": "onNavigate",
+      "sourceOffset": 3002786,
+      "sourceEnd": 3003838,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId",
+        "url"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "NavigationCommand",
+      "entryPresent": true,
+      "handler": "onNavigationCommand",
+      "sourceOffset": 3004849,
+      "sourceEnd": 3005849,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "activateWindow",
+        "command",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        34
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 34,
+          "handlerBindings": [
+            "n.NavigationCommand"
+          ],
+          "sourceOffset": 3191721
+        }
+      ],
+      "note": "activate can focus window via activateWindow; home hardcodes http://www.google.com. Only activate/home/reload routing audited, not runtime."
+    },
+    {
+      "name": "OpenMarkerTabs",
+      "entryPresent": false,
+      "status": "absent-direct-entry",
+      "liveVerified": false
+    },
+    {
+      "name": "OpenTab",
+      "entryPresent": true,
+      "handler": "onOpenTab",
+      "sourceOffset": 3010255,
+      "sourceEnd": 3011369,
+      "status": "source-path-unverified",
+      "liveVerified": true,
+      "observedDirectRequestFields": [
+        "tabId",
+        "url"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": [],
+      "liveVerifiedScope": "HTTP local fixture new tab only",
+      "liveEvidence": "EXTENSION-LIVE-VERIFICATION.json"
+    },
+    {
+      "name": "ReplaceTabAndNavigate",
+      "entryPresent": true,
+      "handler": "onReplaceTabAndNavigate",
+      "sourceOffset": 3003838,
+      "sourceEnd": 3004454,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId",
+        "url"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "RunJS",
+      "entryPresent": true,
+      "handler": "onRunJS",
+      "sourceOffset": 2978963,
+      "sourceEnd": 2979351,
+      "status": "source-path-registered-scripts",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "inputArgs",
+        "scriptName",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        35
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 35,
+          "handlerBindings": [
+            "n.RunJs"
+          ],
+          "sourceOffset": 3191750
+        }
+      ],
+      "note": "scriptName resolves g_globalContext.CallableScripts; does not accept arbitrary jsCode."
+    },
+    {
+      "name": "ScrollIntoView",
+      "entryPresent": true,
+      "handler": "onScrollIntoView",
+      "sourceOffset": 2977726,
+      "sourceEnd": 2978013,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        36
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 36,
+          "handlerBindings": [
+            "n.ScrollIntoView_Document",
+            "n.ScrollIntoView_Element"
+          ],
+          "sourceOffset": 3191767
+        }
+      ]
+    },
+    {
+      "name": "SetBigString",
+      "entryPresent": true,
+      "handler": "onSetBigString",
+      "sourceOffset": 2972471,
+      "sourceEnd": 2972547,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "name",
+        "value"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "SetBrowserData",
+      "entryPresent": true,
+      "handler": "onSetBrowserData",
+      "sourceOffset": 2995591,
+      "sourceEnd": 2996946,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "browserData_varname"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "SetFocusedHtmlElement",
+      "entryPresent": true,
+      "handler": "onSetFocusedHtmlElement",
+      "sourceOffset": 2999330,
+      "sourceEnd": 2999624,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        37
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 37,
+          "handlerBindings": [
+            "n.SetFocusedElement"
+          ],
+          "sourceOffset": 3191827
+        }
+      ]
+    },
+    {
+      "name": "SetHtmlAttribute",
+      "entryPresent": true,
+      "handler": "onSetHtmlAttribute",
+      "sourceOffset": 2998542,
+      "sourceEnd": 2998990,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "attrName",
+        "attrValue",
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        38
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 38,
+          "handlerBindings": [
+            "n.SetAttribute_Document",
+            "n.SetAttribute_Element"
+          ],
+          "sourceOffset": 3191856
+        }
+      ]
+    },
+    {
+      "name": "SetSelectedRange",
+      "entryPresent": true,
+      "handler": "onSetSelectedRange",
+      "sourceOffset": 3009513,
+      "sourceEnd": 3009860,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "selectedRange",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        26
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 26,
+          "handlerBindings": [
+            "n.SetSelectedRange"
+          ],
+          "sourceOffset": 3191343
+        }
+      ]
+    },
+    {
+      "name": "SimulateEvent",
+      "entryPresent": true,
+      "handler": "onSimulateEvent",
+      "sourceOffset": 2992975,
+      "sourceEnd": 2993322,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "eventArgs",
+        "eventName",
+        "eventType",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        39
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 39,
+          "handlerBindings": [
+            "n.SimulateEvent"
+          ],
+          "sourceOffset": 3191912
+        }
+      ]
+    },
+    {
+      "name": "StartHighlight",
+      "entryPresent": true,
+      "handler": "onStartHighlight",
+      "sourceOffset": 3023475,
+      "sourceEnd": 3023940,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "clippingHeight",
+        "clippingWidth",
+        "clippingX",
+        "clippingY",
+        "color",
+        "customId",
+        "displayMode",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        40
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 40,
+          "handlerBindings": [
+            "n.StartHighlight_Document",
+            "n.StartHighlight_Element"
+          ],
+          "sourceOffset": 3191937
+        }
+      ]
+    },
+    {
+      "name": "StartWebRequestMonitoring",
+      "entryPresent": true,
+      "handler": "onStartWebRequestMonitoring",
+      "sourceOffset": 3024361,
+      "sourceEnd": 3025383,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "StopHighlight",
+      "entryPresent": true,
+      "handler": "onStopHighlight",
+      "sourceOffset": 3023940,
+      "sourceEnd": 3024249,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "clippingHighlightCustomId",
+        "customId",
+        "elementHighlightCustomId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        41
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 41,
+          "handlerBindings": [
+            "n.StopHighlight"
+          ],
+          "sourceOffset": 3191997
+        }
+      ]
+    },
+    {
+      "name": "StopWebRequestMonitoring",
+      "entryPresent": true,
+      "handler": "onStopWebRequestMonitoring",
+      "sourceOffset": 3025383,
+      "sourceEnd": 3025941,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "tabId"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "SupportsDebugger",
+      "entryPresent": true,
+      "handler": "onSupportsDebugger",
+      "sourceOffset": 3012743,
+      "sourceEnd": 3012855,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [],
+      "contentCommandIds": [],
+      "contentBindings": []
+    },
+    {
+      "name": "TakeScreenshot",
+      "entryPresent": true,
+      "handler": "onTakeScreenshot",
+      "sourceOffset": 3013500,
+      "sourceEnd": 3019659,
+      "status": "source-path-active-tab-constrained",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "bounds",
+        "customId",
+        "format",
+        "mode",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "tabId",
+        "waitForPageDelay"
+      ],
+      "contentCommandIds": [],
+      "contentBindings": [],
+      "note": "VIEWPORT/ELEMENT/BOUNDS use captureVisibleTab(windowId). FULLPAGE uses debugger. Requires active-tab identity checks and transport design."
+    },
+    {
+      "name": "TreeExpandPath",
+      "entryPresent": true,
+      "handler": "onTreeExpandPath",
+      "sourceOffset": 3009186,
+      "sourceEnd": 3009513,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "path",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        42
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 42,
+          "handlerBindings": [
+            "n.TreeExpandPath"
+          ],
+          "sourceOffset": 3192022
+        }
+      ]
+    },
+    {
+      "name": "TreeGetAllPaths",
+      "entryPresent": true,
+      "handler": "onTreeGetAllPaths",
+      "sourceOffset": 3008855,
+      "sourceEnd": 3009186,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        43
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 43,
+          "handlerBindings": [
+            "n.TreeGetAllPaths"
+          ],
+          "sourceOffset": 3192048
+        }
+      ]
+    },
+    {
+      "name": "TreeGetNodePath",
+      "entryPresent": true,
+      "handler": "onTreeGetNodePath",
+      "sourceOffset": 3008521,
+      "sourceEnd": 3008855,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "tabId"
+      ],
+      "contentCommandIds": [
+        44
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 44,
+          "handlerBindings": [
+            "n.TreeGetNodePath"
+          ],
+          "sourceOffset": 3192075
+        }
+      ]
+    },
+    {
+      "name": "WriteTextHtmlElem",
+      "entryPresent": true,
+      "handler": "onWriteTextHtmlElem",
+      "sourceOffset": 2981901,
+      "sourceEnd": 2982506,
+      "status": "source-path-unverified",
+      "liveVerified": false,
+      "observedDirectRequestFields": [
+        "customId",
+        "inputOptions",
+        "tabId",
+        "tokens"
+      ],
+      "contentCommandIds": [
+        45
+      ],
+      "contentBindings": [
+        {
+          "contentCommandId": 45,
+          "handlerBindings": [
+            "n.WriteText"
+          ],
+          "sourceOffset": 3192102
+        }
+      ],
+      "note": "Non-debugger path reaches Content.WriteText; debugger path is separate and uses key tokens/options. No live DOM typing claim."
+    }
+  ],
+  "genericRoutes": [
+    {
+      "messageId": 5,
+      "contentCommandId": 18,
+      "contentBindings": [
+        "n.GetDocumentValue",
+        "n.GetElementValue"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 6,
+      "contentCommandId": 2,
+      "contentBindings": [
+        "n.ClickElement"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 10,
+      "contentCommandId": 11,
+      "contentBindings": [
+        "n.GetAttribute_OriginalRequest",
+        "n.GetAttribute_CrossOriginRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 15,
+      "contentCommandId": 29,
+      "contentBindings": [
+        "n.IsDocumentValid",
+        "n.IsElementValid"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 40,
+      "contentCommandId": 36,
+      "contentBindings": [
+        "n.ScrollIntoView_Document",
+        "n.ScrollIntoView_Element"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 4,
+      "contentCommandId": 17,
+      "contentBindings": [
+        "n.GetRectangle_OriginalRequest",
+        "n.GetRectangle_CrossFrameRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 34,
+      "contentCommandId": 10,
+      "contentBindings": [
+        "n.GetAncestryInfo_OriginalRequest",
+        "n.GetAncestryInfo_CrossOriginRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 24,
+      "contentCommandId": 13,
+      "contentBindings": [
+        "n.GetAttrValueList_Document",
+        "n.GetAttrValueList_Element"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 12,
+      "contentCommandId": 23,
+      "contentBindings": [
+        "n.GetSelectedItems"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 23,
+      "contentCommandId": 27,
+      "contentBindings": [
+        "n.InjectAndRunJs"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 60,
+      "contentCommandId": 35,
+      "contentBindings": [
+        "n.RunJs"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 25,
+      "contentCommandId": 14,
+      "contentBindings": [
+        "n.GetDevicePixelRatio"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 20,
+      "contentCommandId": 37,
+      "contentBindings": [
+        "n.SetFocusedElement"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 36,
+      "contentCommandId": 28,
+      "contentBindings": [
+        "n.IsDocumentDisabled",
+        "n.IsElementDisabled"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 13,
+      "contentCommandId": 25,
+      "contentBindings": [
+        "n.SetSelectedItems"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 11,
+      "contentCommandId": 1,
+      "contentBindings": [
+        "n.CheckElement"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 7,
+      "contentCommandId": 45,
+      "contentBindings": [
+        "n.WriteText"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 18,
+      "contentCommandId": 38,
+      "contentBindings": [
+        "n.SetAttribute_Document",
+        "n.SetAttribute_Element"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 16,
+      "contentCommandId": 12,
+      "contentBindings": [
+        "n.GetAttributesList"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 21,
+      "contentCommandId": 22,
+      "contentBindings": [
+        "n.GetTextFromScreenRect"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 22,
+      "contentCommandId": 19,
+      "contentBindings": [
+        "n.GetRectFromText_OriginalRequest",
+        "n.GetRectFromText_CrossFrameRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 17,
+      "contentCommandId": 21,
+      "contentBindings": [
+        "n.GetSelectorAttributeNames"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 46,
+      "contentCommandId": 39,
+      "contentBindings": [
+        "n.SimulateEvent"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 19,
+      "contentCommandId": 9,
+      "contentBindings": [
+        "n.GetFocusedElement_OriginalRequest",
+        "n.GetFocusedElement_CrossOriginHandler"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 2,
+      "contentCommandId": 16,
+      "contentBindings": [
+        "n.GetElementSelectorIndex"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 47,
+      "contentCommandId": 20,
+      "contentBindings": [
+        "n.GetSapFioriAllColLabels"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 63,
+      "contentCommandId": 7,
+      "contentBindings": [
+        "n.FindContainer"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 64,
+      "contentCommandId": 44,
+      "contentBindings": [
+        "n.TreeGetNodePath"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 65,
+      "contentCommandId": 43,
+      "contentBindings": [
+        "n.TreeGetAllPaths"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 66,
+      "contentCommandId": 42,
+      "contentBindings": [
+        "n.TreeExpandPath"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 55,
+      "contentCommandId": 31,
+      "contentBindings": [
+        "n.IsPointVisible_OriginalRequest",
+        "n.IsPointVisible_CrossOriginRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 54,
+      "contentCommandId": 30,
+      "contentBindings": [
+        "n.IsElementVisible_OriginalRequest",
+        "n.IsElementVisible_CrossOriginRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 41,
+      "contentCommandId": 0,
+      "contentBindings": [
+        "n.BrowserMatchesWithAttributes"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 42,
+      "contentCommandId": 0,
+      "contentBindings": [
+        "n.BrowserMatchesWithAttributes"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 14,
+      "contentCommandId": 15,
+      "contentBindings": [
+        "n.GetElementFromPoint_OriginalRequest",
+        "n.GetElementFromPoint_CrossOriginRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 52,
+      "contentCommandId": 8,
+      "contentBindings": [
+        "n.FindSelectors_OriginalRequest",
+        "n.FindSelectors_CrossOriginRequest"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 44,
+      "contentCommandId": 6,
+      "contentBindings": [
+        "n.ExtractMetadata"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 43,
+      "contentCommandId": 5,
+      "contentBindings": [
+        "n.ExtractData"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    },
+    {
+      "messageId": 45,
+      "contentCommandId": 32,
+      "contentBindings": [
+        "n.IsSamplePartOfANewColumn"
+      ],
+      "status": "source-route-unverified",
+      "liveVerified": false
+    }
+  ],
+  "specialRoutes": [
+    {
+      "messageId": 6,
+      "handler": "onClickHtmlElem",
+      "requestFields": [
+        "customId",
+        "doClickInPageWorld",
+        "flags",
+        "pageRenderOfsX",
+        "pageRenderOfsY",
+        "tabId",
+        "windowLeft",
+        "windowTop",
+        "x",
+        "y"
+      ]
+    },
+    {
+      "messageId": 75,
+      "handler": "onGetBrowserExtensionId",
+      "requestFields": []
+    }
+  ],
+  "contentDispatch": [
+    {
+      "contentCommandId": 0,
+      "handlerBindings": [
+        "n.BrowserMatchesWithAttributes"
+      ],
+      "sourceOffset": 3190165
+    },
+    {
+      "contentCommandId": 1,
+      "handlerBindings": [
+        "n.CheckElement"
+      ],
+      "sourceOffset": 3190204
+    },
+    {
+      "contentCommandId": 2,
+      "handlerBindings": [
+        "n.ClickElement"
+      ],
+      "sourceOffset": 3190227
+    },
+    {
+      "contentCommandId": 3,
+      "handlerBindings": [
+        "n.ElementMatchesTag_Document",
+        "n.ElementMatchesTag_Element"
+      ],
+      "sourceOffset": 3190250
+    },
+    {
+      "contentCommandId": 4,
+      "handlerBindings": [
+        "y"
+      ],
+      "sourceOffset": 3190315
+    },
+    {
+      "contentCommandId": 5,
+      "handlerBindings": [
+        "n.ExtractData"
+      ],
+      "sourceOffset": 3190325
+    },
+    {
+      "contentCommandId": 6,
+      "handlerBindings": [
+        "n.ExtractMetadata"
+      ],
+      "sourceOffset": 3190347
+    },
+    {
+      "contentCommandId": 7,
+      "handlerBindings": [
+        "n.FindContainer"
+      ],
+      "sourceOffset": 3190373
+    },
+    {
+      "contentCommandId": 8,
+      "handlerBindings": [
+        "n.FindSelectors_OriginalRequest",
+        "n.FindSelectors_CrossOriginRequest"
+      ],
+      "sourceOffset": 3190397
+    },
+    {
+      "contentCommandId": 9,
+      "handlerBindings": [
+        "n.GetFocusedElement_OriginalRequest",
+        "n.GetFocusedElement_CrossOriginHandler"
+      ],
+      "sourceOffset": 3190472
+    },
+    {
+      "contentCommandId": 10,
+      "handlerBindings": [
+        "n.GetAncestryInfo_OriginalRequest",
+        "n.GetAncestryInfo_CrossOriginRequest"
+      ],
+      "sourceOffset": 3190555
+    },
+    {
+      "contentCommandId": 11,
+      "handlerBindings": [
+        "n.GetAttribute_OriginalRequest",
+        "n.GetAttribute_CrossOriginRequest"
+      ],
+      "sourceOffset": 3190635
+    },
+    {
+      "contentCommandId": 12,
+      "handlerBindings": [
+        "n.GetAttributesList"
+      ],
+      "sourceOffset": 3190709
+    },
+    {
+      "contentCommandId": 13,
+      "handlerBindings": [
+        "n.GetAttrValueList_Document",
+        "n.GetAttrValueList_Element"
+      ],
+      "sourceOffset": 3190738
+    },
+    {
+      "contentCommandId": 14,
+      "handlerBindings": [
+        "n.GetDevicePixelRatio"
+      ],
+      "sourceOffset": 3190802
+    },
+    {
+      "contentCommandId": 15,
+      "handlerBindings": [
+        "n.GetElementFromPoint_OriginalRequest",
+        "n.GetElementFromPoint_CrossOriginRequest"
+      ],
+      "sourceOffset": 3190833
+    },
+    {
+      "contentCommandId": 16,
+      "handlerBindings": [
+        "n.GetElementSelectorIndex"
+      ],
+      "sourceOffset": 3190921
+    },
+    {
+      "contentCommandId": 17,
+      "handlerBindings": [
+        "n.GetRectangle_OriginalRequest",
+        "n.GetRectangle_CrossFrameRequest"
+      ],
+      "sourceOffset": 3190956
+    },
+    {
+      "contentCommandId": 18,
+      "handlerBindings": [
+        "n.GetDocumentValue",
+        "n.GetElementValue"
+      ],
+      "sourceOffset": 3191029
+    },
+    {
+      "contentCommandId": 19,
+      "handlerBindings": [
+        "n.GetRectFromText_OriginalRequest",
+        "n.GetRectFromText_CrossFrameRequest"
+      ],
+      "sourceOffset": 3191075
+    },
+    {
+      "contentCommandId": 20,
+      "handlerBindings": [
+        "n.GetSapFioriAllColLabels"
+      ],
+      "sourceOffset": 3191154
+    },
+    {
+      "contentCommandId": 21,
+      "handlerBindings": [
+        "n.GetSelectorAttributeNames"
+      ],
+      "sourceOffset": 3191189
+    },
+    {
+      "contentCommandId": 22,
+      "handlerBindings": [
+        "n.GetTextFromScreenRect"
+      ],
+      "sourceOffset": 3191226
+    },
+    {
+      "contentCommandId": 23,
+      "handlerBindings": [
+        "n.GetSelectedItems"
+      ],
+      "sourceOffset": 3191259
+    },
+    {
+      "contentCommandId": 24,
+      "handlerBindings": [
+        "n.GetSelectedRange"
+      ],
+      "sourceOffset": 3191287
+    },
+    {
+      "contentCommandId": 25,
+      "handlerBindings": [
+        "n.SetSelectedItems"
+      ],
+      "sourceOffset": 3191315
+    },
+    {
+      "contentCommandId": 26,
+      "handlerBindings": [
+        "n.SetSelectedRange"
+      ],
+      "sourceOffset": 3191343
+    },
+    {
+      "contentCommandId": 27,
+      "handlerBindings": [
+        "n.InjectAndRunJs"
+      ],
+      "sourceOffset": 3191371
+    },
+    {
+      "contentCommandId": 28,
+      "handlerBindings": [
+        "n.IsDocumentDisabled",
+        "n.IsElementDisabled"
+      ],
+      "sourceOffset": 3191397
+    },
+    {
+      "contentCommandId": 29,
+      "handlerBindings": [
+        "n.IsDocumentValid",
+        "n.IsElementValid"
+      ],
+      "sourceOffset": 3191447
+    },
+    {
+      "contentCommandId": 30,
+      "handlerBindings": [
+        "n.IsElementVisible_OriginalRequest",
+        "n.IsElementVisible_CrossOriginRequest"
+      ],
+      "sourceOffset": 3191491
+    },
+    {
+      "contentCommandId": 31,
+      "handlerBindings": [
+        "n.IsPointVisible_OriginalRequest",
+        "n.IsPointVisible_CrossOriginRequest"
+      ],
+      "sourceOffset": 3191573
+    },
+    {
+      "contentCommandId": 32,
+      "handlerBindings": [
+        "n.IsSamplePartOfANewColumn"
+      ],
+      "sourceOffset": 3191651
+    },
+    {
+      "contentCommandId": 33,
+      "handlerBindings": [
+        "n.IsTabContentAccessible"
+      ],
+      "sourceOffset": 3191687
+    },
+    {
+      "contentCommandId": 34,
+      "handlerBindings": [
+        "n.NavigationCommand"
+      ],
+      "sourceOffset": 3191721
+    },
+    {
+      "contentCommandId": 35,
+      "handlerBindings": [
+        "n.RunJs"
+      ],
+      "sourceOffset": 3191750
+    },
+    {
+      "contentCommandId": 36,
+      "handlerBindings": [
+        "n.ScrollIntoView_Document",
+        "n.ScrollIntoView_Element"
+      ],
+      "sourceOffset": 3191767
+    },
+    {
+      "contentCommandId": 37,
+      "handlerBindings": [
+        "n.SetFocusedElement"
+      ],
+      "sourceOffset": 3191827
+    },
+    {
+      "contentCommandId": 38,
+      "handlerBindings": [
+        "n.SetAttribute_Document",
+        "n.SetAttribute_Element"
+      ],
+      "sourceOffset": 3191856
+    },
+    {
+      "contentCommandId": 39,
+      "handlerBindings": [
+        "n.SimulateEvent"
+      ],
+      "sourceOffset": 3191912
+    },
+    {
+      "contentCommandId": 40,
+      "handlerBindings": [
+        "n.StartHighlight_Document",
+        "n.StartHighlight_Element"
+      ],
+      "sourceOffset": 3191937
+    },
+    {
+      "contentCommandId": 41,
+      "handlerBindings": [
+        "n.StopHighlight"
+      ],
+      "sourceOffset": 3191997
+    },
+    {
+      "contentCommandId": 42,
+      "handlerBindings": [
+        "n.TreeExpandPath"
+      ],
+      "sourceOffset": 3192022
+    },
+    {
+      "contentCommandId": 43,
+      "handlerBindings": [
+        "n.TreeGetAllPaths"
+      ],
+      "sourceOffset": 3192048
+    },
+    {
+      "contentCommandId": 44,
+      "handlerBindings": [
+        "n.TreeGetNodePath"
+      ],
+      "sourceOffset": 3192075
+    },
+    {
+      "contentCommandId": 45,
+      "handlerBindings": [
+        "n.WriteText"
+      ],
+      "sourceOffset": 3192102
+    },
+    {
+      "contentCommandId": 46,
+      "handlerBindings": [
+        "p"
+      ],
+      "sourceOffset": 3192123
+    },
+    {
+      "contentCommandId": 47,
+      "handlerBindings": [
+        "w"
+      ],
+      "sourceOffset": 3192134
+    },
+    {
+      "contentCommandId": 48,
+      "handlerBindings": [
+        "n.MonitorEvents"
+      ],
+      "sourceOffset": 3192145
+    },
+    {
+      "contentCommandId": 49,
+      "handlerBindings": [
+        "n.Matching"
+      ],
+      "sourceOffset": 3192170
+    }
+  ],
+  "publicationNote": "Historical evidence; absolute machine paths sanitized for publication. Not a fresh verification on the reader machine."
+}

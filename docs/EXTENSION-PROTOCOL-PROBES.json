@@ -1,0 +1,62 @@
+{
+  "checkedOn": "2026-10-26",
+  "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+  "scope": "Offline probes with mocked helpers. No new browser DOM capability is runtime-verified.",
+  "results": [
+    {
+      "id": "write-one-token",
+      "passed": true,
+      "scope": "isolated Content.WriteText with mocked DOM/event/input helpers",
+      "observed": {
+        "retCode": 1,
+        "forwardedText": "Xin chào",
+        "forwardedOptions": 4
+      },
+      "claim": "Non-debugger dispatch accepts one token and forwards token.text. Does not verify actual typing/events."
+    },
+    {
+      "id": "write-two-tokens-rejected",
+      "passed": true,
+      "observed": {
+        "retCode": 0
+      }
+    },
+    {
+      "id": "runjs-registry-only",
+      "passed": true,
+      "scope": "isolated Content.RunJs with mocked registered script table",
+      "observed": {
+        "known": {
+          "result": "ok",
+          "retCode": 1,
+          "isScriptErr": 0
+        },
+        "unknown": {
+          "result": "Unknown script: Missing",
+          "retCode": 1,
+          "isScriptErr": 1
+        }
+      },
+      "claim": "RunJS looks up scriptName; arbitrary jsCode is not executed. retCode=1 alone does not mean script success."
+    },
+    {
+      "id": "find-direct-stub",
+      "passed": true,
+      "observed": {
+        "callbackCalled": false,
+        "bodyOnlyDeclaresLocals": true
+      },
+      "scope": "isolated handler from pinned source"
+    },
+    {
+      "id": "get-element-direct-dom-no-response",
+      "passed": true,
+      "observed": {
+        "tabId": 123,
+        "index": 1,
+        "callbackCalled": false
+      },
+      "scope": "isolated handler from pinned source"
+    }
+  ]
+}

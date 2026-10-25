@@ -1,0 +1,11 @@
+node_modules/
+work/
+__pycache__/
+*.pyc
+*.log
+.env
+.env.*
+!.env.example
+/native-host.cmd
+/native-host.json
+/registration-before.json

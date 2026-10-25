@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-25T16:24:02.899Z",
+  "success": true,
+  "extensionVersion": "23.10.1",
+  "uniqueNamedDriverEntries": 88,
+  "loaderEntries": 4,
+  "versionChecks": [
+    {
+      "driverVersion": "20.10.7992.24819",
+      "namedEntries": 40,
+      "independentTextMapMatchesAst": true,
+      "everyHandlerLocated": true
+    },
+    {
+      "driverVersion": "21.10.34.30369",
+      "namedEntries": 55,
+      "independentTextMapMatchesAst": true,
+      "everyHandlerLocated": true
+    },
+    {
+      "driverVersion": "22.4.38.42025",
+      "namedEntries": 65,
+      "independentTextMapMatchesAst": true,
+      "everyHandlerLocated": true
+    },
+    {
+      "driverVersion": "22.10.44.61278",
+      "namedEntries": 73,
+      "independentTextMapMatchesAst": true,
+      "everyHandlerLocated": true
+    },
+    {
+      "driverVersion": "23.4.55.39317",
+      "namedEntries": 78,
+      "independentTextMapMatchesAst": true,
+      "everyHandlerLocated": true
+    },
+    {
+      "driverVersion": "23.10.66.54596",
+      "namedEntries": 70,
+      "independentTextMapMatchesAst": true,
+      "everyHandlerLocated": true
+    }
+  ],
+  "completeDescriptionCoverage": true,
+  "localLinksValidated": 9,
+  "scope": "Static catalog and documentation completeness only. No browser action or new runtime function probe was executed."
+}

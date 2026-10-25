@@ -1,0 +1,4 @@
+# Replace the absolute repository path below after cloning.
+[mcp_servers.uipath_bridge]
+command = 'node'
+args = ['C:/path/to/rpa-agent-mcp/src/bridge.mjs', 'mcp']

@@ -1,0 +1,108 @@
+{
+  "reviewDate": "2026-10-26",
+  "scope": "Offline static review and isolated stub execution; no browser or extension action.",
+  "sourceFile": "${UIPATH_EXTENSION_DIR}/EmbeddedDriversContainer.js",
+  "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+  "driver": "23.4.55.39317",
+  "handlers": [
+    {
+      "name": "onFindWebCtrlElements",
+      "start": 2984384,
+      "end": 2984893,
+      "bodyStatementTypes": [
+        "VariableDeclaration"
+      ],
+      "sourceSha256": "59c2e4fd938fef48e69d672db4d0bc08f9fdd1aa53b76c28beeff9c94339320c"
+    },
+    {
+      "name": "onGetHtmlElemById",
+      "start": 2975646,
+      "end": 2976600,
+      "bodyStatementTypes": [
+        "VariableDeclaration",
+        "IfStatement",
+        "IfStatement"
+      ],
+      "sourceSha256": "53bc6affd3464b10c8e0e86acc58ab2ed912ceb1ab48a278f09e41b115c992ce"
+    },
+    {
+      "name": "onGenericRequest",
+      "start": 2981315,
+      "end": 2981901,
+      "bodyStatementTypes": [
+        "VariableDeclaration",
+        "ExpressionStatement",
+        "VariableDeclaration",
+        "IfStatement",
+        "VariableDeclaration",
+        "IfStatement",
+        "VariableDeclaration",
+        "IfStatement",
+        "VariableDeclaration",
+        "ExpressionStatement",
+        "ExpressionStatement"
+      ],
+      "sourceSha256": "24033e7af3fec616e4ddbff804b744a235042122259bf33dfaf0b608e9332d35"
+    },
+    {
+      "name": "onGetHtmlIndex",
+      "start": 2974206,
+      "end": 2975646,
+      "bodyStatementTypes": [
+        "VariableDeclaration",
+        "IfStatement",
+        "IfStatement"
+      ],
+      "sourceSha256": "b68a496416dcce37ea64b62166c8e796e5f038fdcf663e368c3ae2f78296a592"
+    },
+    {
+      "name": "onMonitorNativeEvents",
+      "start": 3011369,
+      "end": 3011555,
+      "bodyStatementTypes": [
+        "ExpressionStatement",
+        "ExpressionStatement",
+        "ExpressionStatement"
+      ],
+      "sourceSha256": "d49d036c2aa5f7358b8471ccf93fb7b4d217cc42a650d372858d504978a36371"
+    },
+    {
+      "name": "onTakeScreenshot",
+      "start": 3013500,
+      "end": 3019659,
+      "bodyStatementTypes": [
+        "VariableDeclaration",
+        "IfStatement",
+        "IfStatement",
+        "IfStatement",
+        "VariableDeclaration",
+        "SwitchStatement",
+        "ExpressionStatement"
+      ],
+      "sourceSha256": "2de4b8fb6253d9ec8b801b4d1a501f21696575df67e6487c719b3e03704e9426"
+    }
+  ],
+  "findWebCtrlElementsProbe": {
+    "callbackCalled": false,
+    "bodyOnlyDeclaresLocals": true
+  },
+  "getHtmlElemByIdProbe": {
+    "tabId": 123,
+    "index": 1,
+    "callbackCalled": false
+  },
+  "screenshotStaticFacts": {
+    "usesCaptureVisibleTabWithWindowId": true,
+    "callsTabsUpdateInHandler": false,
+    "viewportRoutesToVisibleCapture": true,
+    "fullPageUsesSeparateDebuggerPath": true
+  },
+  "documentConsistency": {
+    "activityNames": 168,
+    "uniqueActivityNames": 168,
+    "featureGroups": 47,
+    "proposedTools": 53,
+    "p0Tools": 21
+  },
+  "publicationNote": "Historical evidence; absolute machine paths sanitized for publication. Not a fresh verification on the reader machine."
+}

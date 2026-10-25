@@ -1,0 +1,67 @@
+{
+  "verificationDate": "2026-10-26",
+  "checkedAt": "2026-10-25T17:17:53.640Z",
+  "scope": "Fresh existing MCP primitives on a local HTTP fixture; no DOM action probe.",
+  "fixture": {
+    "url": "http://127.0.0.1:62859/60afb7f5-4ec6-4a9d-988a-11b6354d253e",
+    "title": "UiPath MCP verification 60afb7f5",
+    "contentSha256": "1c4e83cb13ee5746f3d188452a6ac24ccd9d744a3fe2da18c91273a1ece129f6",
+    "httpRequestsServed": 1,
+    "serverStopped": true
+  },
+  "results": [
+    {
+      "tool": "uipath_bridge_status",
+      "passed": true
+    },
+    {
+      "tool": "uipath_driver_versions",
+      "passed": true,
+      "versions": [
+        "20.10.7992.24819",
+        "21.10.34.30369",
+        "22.4.38.42025",
+        "22.10.44.61278",
+        "23.4.55.39317",
+        "23.10.66.54596"
+      ]
+    },
+    {
+      "tool": "uipath_open_url",
+      "passed": true,
+      "tabId": 561209538
+    },
+    {
+      "tool": "uipath_tab_info",
+      "passed": true,
+      "observed": {
+        "tabId": 561209538,
+        "url": "http://127.0.0.1:62859/60afb7f5-4ec6-4a9d-988a-11b6354d253e",
+        "title": "UiPath MCP verification 60afb7f5",
+        "status": "complete",
+        "driverVersion": "23.4.55.39317",
+        "source": "live-uipath-extension"
+      }
+    }
+  ],
+  "domAutomationLiveVerified": false,
+  "tools": [
+    "uipath_bridge_status",
+    "uipath_driver_versions",
+    "uipath_open_url",
+    "uipath_tab_info"
+  ],
+  "connection": {
+    "connected": true,
+    "driverVersion": "23.4.55.39317",
+    "nativePid": 19852
+  },
+  "openedTabId": 561209538,
+  "passed": true,
+  "stderrEmpty": true,
+  "sourceHashes": {
+    "BackgroundMain.js": "144341da022e66fd8817c837ef7bf6f5d2c923d59e97fbe33ccb92d6221287d4",
+    "EmbeddedDriversContainer.js": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308"
+  },
+  "publicationNote": "Historical evidence; absolute machine paths sanitized for publication. Not a fresh verification on the reader machine."
+}

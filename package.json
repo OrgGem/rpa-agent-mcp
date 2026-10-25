@@ -1,0 +1,21 @@
+{
+  "name": "rpa-agent-mcp",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "description": "Local MCP bridge for the installed UiPath Chrome extension, with audited capability plans.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OrgGem/rpa-agent-mcp.git"
+  },
+  "devDependencies": {
+    "acorn": "8.15.0"
+  }
+}

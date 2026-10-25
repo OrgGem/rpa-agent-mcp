@@ -1,0 +1,71 @@
+{
+  "verifiedAt": "2026-10-25T16:05:41.39Z",
+  "extension": {
+    "id": "jfcmnbofjlffnejneillkgbniiidiigd",
+    "version": "23.10.1",
+    "backgroundMainSha256": "144341DA022E66FD8817C837EF7BF6F5D2C923D59E97FBE33CCB92D6221287D4",
+    "backgroundMainUnchangedSinceRegistration": true
+  },
+  "nativeConnectionVerified": true,
+  "mcpStdioRoundTripVerified": true,
+  "mcpTools": [
+    "uipath_bridge_status",
+    "uipath_driver_versions",
+    "uipath_open_url",
+    "uipath_tab_info"
+  ],
+  "connection": {
+    "connected": true,
+    "startedAt": "2026-10-25T16:05:37.407Z",
+    "nativePid": 19852,
+    "extensionId": "jfcmnbofjlffnejneillkgbniiidiigd",
+    "receivedMessages": 23,
+    "registeredWindowCount": 3,
+    "supportedOperations": [
+      "status",
+      "versions",
+      "activate_driver",
+      "open_url",
+      "tab_info"
+    ],
+    "driverLoaded": true,
+    "driverVersion": "23.4.55.39317",
+    "lastOpenedTabId": 561209531,
+    "unsupportedHostCalls": [],
+    "driverAutomationReady": false,
+    "scope": "Embedded driver activation, navigation and tab metadata. Click and typing are not implemented."
+  },
+  "embeddedDriverVersions": [
+    "20.10.7992.24819",
+    "21.10.34.30369",
+    "22.4.38.42025",
+    "22.10.44.61278",
+    "23.4.55.39317",
+    "23.10.66.54596"
+  ],
+  "chatgptToolDiscoveryVerified": false,
+  "fullUiPathHandshakeVerified": false,
+  "driverHandshakeVerified": true,
+  "navigation": {
+    "requestedUrl": "https://www.google.com",
+    "observedTab": {
+      "tabId": 561209531,
+      "url": "https://www.google.com/",
+      "title": "Google",
+      "status": "complete",
+      "driverVersion": "23.4.55.39317",
+      "source": "live-uipath-extension"
+    },
+    "verified": true
+  },
+  "pageAutomationVerified": false,
+  "scope": "A local MCP client opened the requested URL via UiPath OpenTab and independently read back the tab URL, title and complete load status through the extension. Click and typing were not attempted.",
+  "stderrWasEmpty": true,
+  "mcpRegistration": {
+    "name": "uipath_bridge",
+    "enabled": true,
+    "scope": "global Codex configuration",
+    "verifiedAt": "2026-10-25T16:07:18.1927267Z"
+  },
+  "publicationNote": "Historical evidence; absolute machine paths sanitized for publication. Not a fresh verification on the reader machine."
+}
