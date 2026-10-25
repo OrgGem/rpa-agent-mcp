@@ -1,0 +1,496 @@
+{
+  "checkedAt": "2026-10-25T20:54:25.567Z",
+  "task": "G0.4",
+  "status": "completed-scoped-live-fixture",
+  "extensionVersion": "23.10.1",
+  "driverVersion": "23.4.55.39317",
+  "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+  "sourceHashes": {
+    "src/g0-probe.mjs": "67a07ee3174c6ae5b913cbbfbbc335f60c49ca7841e30575e5d483309b7d18a7",
+    "scripts/run-g04.mjs": "feb825e68aeb8fe3427ea6f5e0f57eb45bf7b75e6414ae732ee16de37ead2907",
+    "scripts/g04-fixture.mjs": "54d072c11112a50c5eb5e703c20997d682dbf07c45996071dd64f09a919c0f51",
+    "scripts/fixtures/g04-app.jsx": "2d797468f4665eed63f5f16701e4af910e5430f58fb73115f3f882f6e68c8b8e",
+    "package-lock.json": "c44eea366b8755bb57add8e17ade0997b3b8d87a246c2a95aaf30bc6bfc62868"
+  },
+  "fixture": {
+    "framework": "React",
+    "version": "19.3.1",
+    "reactDomVersion": "19.3.1",
+    "esbuildVersion": "0.28.2",
+    "origins": "Two ephemeral 127.0.0.1 ports",
+    "bundleSha256": "2d4ac786b3ff8149d712243d9d65582f458dde81120d0a6b09d913a692efd1c8"
+  },
+  "offline": {
+    "testsPassed": 32,
+    "testsFailed": 0,
+    "matrixCheckPassed": true,
+    "plannedMatrixScenarios": 423
+  },
+  "reviews": {
+    "designCompleted": true,
+    "designMajorFindingsResolved": 4,
+    "protocolAuditCompleted": true,
+    "codeCompleted": true,
+    "codeP2FindingsResolved": 2,
+    "focusedReReviewCompleted": true,
+    "notFoundTranslationReReviewCompleted": true,
+    "releaseReviewCompleted": true,
+    "releaseP2FindingsResolved": 3,
+    "sourceFingerprintReviewFix": true,
+    "releaseReReviewCompleted": true,
+    "releaseRemainingMaterialFindings": 0
+  },
+  "fixtureSuitePassed": true,
+  "liveCasesPassed": 11,
+  "latestLiveAttempt": {
+    "attempt": 4,
+    "checkedAt": "2026-10-25T20:52:10.696Z",
+    "driverVersion": "23.4.55.39317",
+    "mode": "live",
+    "passed": true,
+    "publicG0GateEnabled": false,
+    "scope": "Owned two-origin fixture, native reference lifetime and React controlled inputs only",
+    "steps": [
+      {
+        "name": "remove-ref-read-and-write-stale",
+        "passed": true,
+        "readRejected": true,
+        "writeRejected": true,
+        "matchCount": 0
+      },
+      {
+        "name": "cloned-node-ref-stays-stale",
+        "passed": true,
+        "refReplacementRequired": true
+      },
+      {
+        "name": "same-url-reload-ref-stale",
+        "passed": true,
+        "sameUrl": true,
+        "refReplacementRequired": true,
+        "backendHandleReused": false
+      },
+      {
+        "name": "owned-navigation-ref-stale",
+        "passed": true,
+        "refReplacementRequired": true,
+        "backendHandleReused": true
+      },
+      {
+        "name": "same-origin-frame-read-write",
+        "passed": true,
+        "nonzeroFrame": true,
+        "readbackMatched": true,
+        "inputEvents": 10
+      },
+      {
+        "name": "cross-origin-frame-read-write",
+        "passed": true,
+        "nonzeroFrame": true,
+        "readbackMatched": true,
+        "inputEvents": 10
+      },
+      {
+        "name": "same-frame-reload-stale-and-sibling-valid",
+        "passed": true,
+        "oldReadWriteRejected": true,
+        "siblingValid": true,
+        "mainValid": true,
+        "backendHandleReused": true
+      },
+      {
+        "name": "cross-frame-reload-stale-and-sibling-valid",
+        "passed": true,
+        "oldReadWriteRejected": true,
+        "siblingValid": true,
+        "mainValid": true,
+        "backendHandleReused": true
+      },
+      {
+        "name": "react-controlled-replace-append-persists-rerender",
+        "passed": true,
+        "domAndModelMatched": true,
+        "persistedRerender": true,
+        "reactChanges": 2
+      },
+      {
+        "name": "react-rejection-detected-no-retry",
+        "passed": true,
+        "outcome": "postcondition-mismatch-detected",
+        "writeCalls": 1,
+        "retries": 0
+      },
+      {
+        "name": "real-native-reconnect-old-session-stale",
+        "passed": true,
+        "nativePidAndStartedAtChanged": true,
+        "oldReadWriteRejected": true
+      }
+    ],
+    "cleanup": {
+      "serversStopped": true,
+      "tabLeftOpen": null,
+      "tabCloseAcknowledged": true,
+      "tabClosureVerified": false,
+      "privateProbeDisabledInProcess": true,
+      "launcherDisableVerified": false,
+      "postRunRequirement": "Independently verify fixture tab absence; run plain Setup Install; verify launcher opt-in cleared and preflight disabled.",
+      "abandonedSession": false,
+      "resourceCleanupAcknowledged": true,
+      "passed": false
+    },
+    "preflightPassed": true,
+    "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+    "probeSourceSha256": "67a07ee3174c6ae5b913cbbfbbc335f60c49ca7841e30575e5d483309b7d18a7",
+    "runnerSourceSha256": "feb825e68aeb8fe3427ea6f5e0f57eb45bf7b75e6414ae732ee16de37ead2907",
+    "fixtureBundleSha256": "2d4ac786b3ff8149d712243d9d65582f458dde81120d0a6b09d913a692efd1c8",
+    "reactVersion": "19.3.1"
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "checkedAt": "2026-10-25T20:18:17.722Z",
+      "driverVersion": "23.4.55.39317",
+      "mode": "live",
+      "passed": false,
+      "publicG0GateEnabled": false,
+      "scope": "Owned two-origin fixture, native reference lifetime and React controlled inputs only",
+      "steps": [
+        {
+          "name": "remove-ref-read-and-write-stale",
+          "passed": false,
+          "error": "PROBE_UNSUPPORTED_RESPONSE"
+        }
+      ],
+      "cleanup": {
+        "serversStopped": true,
+        "tabLeftOpen": true,
+        "privateProbeDisabledInProcess": true,
+        "launcherDisableVerified": false,
+        "postRunRequirement": "Run plain Setup Install; verify launcher opt-in cleared and preflight disabled.",
+        "abandonedSession": false,
+        "passed": false
+      },
+      "preflightPassed": true,
+      "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+      "probeSourceSha256": "6779262c5d504105cb17fb942a657d1cd1757b90017544e72a5d8ebdee23a662",
+      "fixtureBundleSha256": "4429b791f72c1911e98f50a9cc333c6abdd1c8be36dc9aee2b58d1081606aaa1",
+      "reactVersion": "19.3.1",
+      "error": {
+        "code": "PROBE_UNSUPPORTED_RESPONSE",
+        "diagnostic": {
+          "stage": "find",
+          "target": "native",
+          "reason": "RESULT_SHAPE_OR_ALLOCATION"
+        }
+      },
+      "cleanupLater": {
+        "closedThroughComputerUse": true,
+        "beforeAttempt": 2
+      }
+    },
+    {
+      "attempt": 2,
+      "checkedAt": "2026-10-25T20:39:32.210Z",
+      "driverVersion": "23.4.55.39317",
+      "mode": "live",
+      "passed": false,
+      "publicG0GateEnabled": false,
+      "scope": "Owned two-origin fixture, native reference lifetime and React controlled inputs only",
+      "steps": [
+        {
+          "name": "remove-ref-read-and-write-stale",
+          "passed": false,
+          "error": "PROBE_UNSUPPORTED_RESPONSE"
+        }
+      ],
+      "cleanup": {
+        "serversStopped": true,
+        "tabLeftOpen": true,
+        "privateProbeDisabledInProcess": true,
+        "launcherDisableVerified": false,
+        "postRunRequirement": "Run plain Setup Install; verify launcher opt-in cleared and preflight disabled.",
+        "abandonedSession": false,
+        "passed": false
+      },
+      "preflightPassed": true,
+      "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+      "probeSourceSha256": "00536b28d010719292037ee06e4c7cdfbd821226e788b7d6869463e305d56ecc",
+      "fixtureBundleSha256": "2d4ac786b3ff8149d712243d9d65582f458dde81120d0a6b09d913a692efd1c8",
+      "reactVersion": "19.3.1",
+      "error": {
+        "code": "PROBE_UNSUPPORTED_RESPONSE",
+        "diagnostic": {
+          "stage": "find",
+          "target": "native",
+          "reason": "SELECTOR_ERROR",
+          "documentReady": true,
+          "resultCount": 1,
+          "selectorErrorPresent": true,
+          "matchCount": 0,
+          "endedWithId": 107,
+          "startWithId": 55
+        }
+      },
+      "cleanupLater": {
+        "closedThroughComputerUse": true,
+        "beforeAttempt": 3
+      }
+    },
+    {
+      "attempt": 3,
+      "checkedAt": "2026-10-25T20:42:09.912Z",
+      "driverVersion": "23.4.55.39317",
+      "mode": "live",
+      "passed": true,
+      "publicG0GateEnabled": false,
+      "scope": "Owned two-origin fixture, native reference lifetime and React controlled inputs only",
+      "steps": [
+        {
+          "name": "remove-ref-read-and-write-stale",
+          "passed": true,
+          "readRejected": true,
+          "writeRejected": true,
+          "matchCount": 0
+        },
+        {
+          "name": "cloned-node-ref-stays-stale",
+          "passed": true,
+          "refReplacementRequired": true
+        },
+        {
+          "name": "same-url-reload-ref-stale",
+          "passed": true,
+          "sameUrl": true,
+          "refReplacementRequired": true,
+          "backendHandleReused": false
+        },
+        {
+          "name": "owned-navigation-ref-stale",
+          "passed": true,
+          "refReplacementRequired": true,
+          "backendHandleReused": true
+        },
+        {
+          "name": "same-origin-frame-read-write",
+          "passed": true,
+          "nonzeroFrame": true,
+          "readbackMatched": true,
+          "inputEvents": 10
+        },
+        {
+          "name": "cross-origin-frame-read-write",
+          "passed": true,
+          "nonzeroFrame": true,
+          "readbackMatched": true,
+          "inputEvents": 10
+        },
+        {
+          "name": "same-frame-reload-stale-and-sibling-valid",
+          "passed": true,
+          "oldReadWriteRejected": true,
+          "siblingValid": true,
+          "mainValid": true,
+          "backendHandleReused": true
+        },
+        {
+          "name": "cross-frame-reload-stale-and-sibling-valid",
+          "passed": true,
+          "oldReadWriteRejected": true,
+          "siblingValid": true,
+          "mainValid": true,
+          "backendHandleReused": true
+        },
+        {
+          "name": "react-controlled-replace-append-persists-rerender",
+          "passed": true,
+          "domAndModelMatched": true,
+          "persistedRerender": true,
+          "reactChanges": 2
+        },
+        {
+          "name": "react-rejection-detected-no-retry",
+          "passed": true,
+          "outcome": "postcondition-mismatch-detected",
+          "writeCalls": 1,
+          "retries": 0
+        },
+        {
+          "name": "real-native-reconnect-old-session-stale",
+          "passed": true,
+          "nativePidAndStartedAtChanged": true,
+          "oldReadWriteRejected": true
+        }
+      ],
+      "cleanup": {
+        "serversStopped": true,
+        "tabLeftOpen": false,
+        "privateProbeDisabledInProcess": true,
+        "launcherDisableVerified": false,
+        "postRunRequirement": "Run plain Setup Install; verify launcher opt-in cleared and preflight disabled.",
+        "abandonedSession": false,
+        "passed": true
+      },
+      "preflightPassed": true,
+      "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+      "probeSourceSha256": "67a07ee3174c6ae5b913cbbfbbc335f60c49ca7841e30575e5d483309b7d18a7",
+      "fixtureBundleSha256": "2d4ac786b3ff8149d712243d9d65582f458dde81120d0a6b09d913a692efd1c8",
+      "reactVersion": "19.3.1"
+    },
+    {
+      "attempt": 4,
+      "checkedAt": "2026-10-25T20:52:10.696Z",
+      "driverVersion": "23.4.55.39317",
+      "mode": "live",
+      "passed": true,
+      "publicG0GateEnabled": false,
+      "scope": "Owned two-origin fixture, native reference lifetime and React controlled inputs only",
+      "steps": [
+        {
+          "name": "remove-ref-read-and-write-stale",
+          "passed": true,
+          "readRejected": true,
+          "writeRejected": true,
+          "matchCount": 0
+        },
+        {
+          "name": "cloned-node-ref-stays-stale",
+          "passed": true,
+          "refReplacementRequired": true
+        },
+        {
+          "name": "same-url-reload-ref-stale",
+          "passed": true,
+          "sameUrl": true,
+          "refReplacementRequired": true,
+          "backendHandleReused": false
+        },
+        {
+          "name": "owned-navigation-ref-stale",
+          "passed": true,
+          "refReplacementRequired": true,
+          "backendHandleReused": true
+        },
+        {
+          "name": "same-origin-frame-read-write",
+          "passed": true,
+          "nonzeroFrame": true,
+          "readbackMatched": true,
+          "inputEvents": 10
+        },
+        {
+          "name": "cross-origin-frame-read-write",
+          "passed": true,
+          "nonzeroFrame": true,
+          "readbackMatched": true,
+          "inputEvents": 10
+        },
+        {
+          "name": "same-frame-reload-stale-and-sibling-valid",
+          "passed": true,
+          "oldReadWriteRejected": true,
+          "siblingValid": true,
+          "mainValid": true,
+          "backendHandleReused": true
+        },
+        {
+          "name": "cross-frame-reload-stale-and-sibling-valid",
+          "passed": true,
+          "oldReadWriteRejected": true,
+          "siblingValid": true,
+          "mainValid": true,
+          "backendHandleReused": true
+        },
+        {
+          "name": "react-controlled-replace-append-persists-rerender",
+          "passed": true,
+          "domAndModelMatched": true,
+          "persistedRerender": true,
+          "reactChanges": 2
+        },
+        {
+          "name": "react-rejection-detected-no-retry",
+          "passed": true,
+          "outcome": "postcondition-mismatch-detected",
+          "writeCalls": 1,
+          "retries": 0
+        },
+        {
+          "name": "real-native-reconnect-old-session-stale",
+          "passed": true,
+          "nativePidAndStartedAtChanged": true,
+          "oldReadWriteRejected": true
+        }
+      ],
+      "cleanup": {
+        "serversStopped": true,
+        "tabLeftOpen": null,
+        "tabCloseAcknowledged": true,
+        "tabClosureVerified": false,
+        "privateProbeDisabledInProcess": true,
+        "launcherDisableVerified": false,
+        "postRunRequirement": "Independently verify fixture tab absence; run plain Setup Install; verify launcher opt-in cleared and preflight disabled.",
+        "abandonedSession": false,
+        "resourceCleanupAcknowledged": true,
+        "passed": false
+      },
+      "preflightPassed": true,
+      "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+      "probeSourceSha256": "67a07ee3174c6ae5b913cbbfbbc335f60c49ca7841e30575e5d483309b7d18a7",
+      "runnerSourceSha256": "feb825e68aeb8fe3427ea6f5e0f57eb45bf7b75e6414ae732ee16de37ead2907",
+      "fixtureBundleSha256": "2d4ac786b3ff8149d712243d9d65582f458dde81120d0a6b09d913a692efd1c8",
+      "reactVersion": "19.3.1"
+    }
+  ],
+  "cleanup": {
+    "serversStopped": true,
+    "tabLeftOpen": false,
+    "tabCloseAcknowledged": true,
+    "tabClosureVerified": true,
+    "privateProbeDisabledInProcess": true,
+    "launcherDisableVerified": true,
+    "postRunRequirement": "Completed: Computer Use dedicated fixture-window absence proof, plain Setup Install and independent IPC verification.",
+    "abandonedSession": false,
+    "resourceCleanupAcknowledged": true,
+    "passed": true,
+    "tabClosureVerification": {
+      "checkedAt": "2026-10-25T20:53:39.517Z",
+      "method": "Computer Use: dedicated single-tab fixture window observed before native cleanup and absent afterwards",
+      "fixtureWasOnlyTab": true,
+      "fixtureWindowAbsent": true,
+      "noFixtureWindowTitles": true,
+      "backgroundStillOpen": true
+    },
+    "privateProbeDisabledVerified": true,
+    "postRunVerificationPending": false,
+    "launcherOptInEnabledForPendingTest": false
+  },
+  "postRunVerification": {
+    "checkedAt": "2026-10-25T20:53:40.620Z",
+    "launcherDisableVerified": true,
+    "privateProbeDisabledVerified": true,
+    "nativeStatusProbeProtocol": null,
+    "connected": true,
+    "driverLoaded": true,
+    "driverVersion": "23.4.55.39317"
+  },
+  "publicG0GatePassed": false,
+  "publicToolCount": 5,
+  "publicDOMToolsImplemented": false,
+  "fixes": [
+    "Wait for all role documents to complete and serialize reports.",
+    "Translate exact pinned ElementNotFoundError {m_id:0} only with valid empty collection; reject unknown/conflicting errors.",
+    "Validate tab/frame IDs, document/node markers and generation; retain stale refs as stale.",
+    "Check advanced identity before/after reads and writes; quarantine uncertain post-write identity without retry.",
+    "Separate process disable from launcher disable; scope orphan cleanup after real reconnect.",
+    "Require independent tab-absence proof for aggregate cleanup; raw runner ACK remains pending.",
+    "Require current probe/runner/fixture/lock fingerprints and exact case names for matrix evidence promotion."
+  ],
+  "limitations": [
+    "Fixture guards are not general website document identity.",
+    "Separate native RPCs cannot make identity validation and dispatch atomic; postchecks cannot undo input.",
+    "Live scope covers fixed main frame, one same-origin and one cross-port iframe, React 19.3.1, fixed Unicode text and WriteText options 0/4 only.",
+    "Nested/arbitrary frames, shadow DOM, other frameworks, general change/blur parity, all sites and public DOM API readiness remain unverified."
+  ],
+  "sourceHashNotes": "Repository text uses LF to match Git checkout. Lockfile line endings were normalized after the live run; dependency data and fixture/probe/runner code were unchanged."
+}

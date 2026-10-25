@@ -1,6 +1,6 @@
 # RPA Agent MCP
 
-Local CLI/MCP bridge cho extension UiPath trên Chrome. Runtime prototype có bốn tool; bộ tài liệu đi kèm mô tả roadmap và giới hạn đã audit.
+Local CLI/MCP bridge cho extension UiPath trên Chrome. Runtime prototype có năm tool: bốn tool legacy và `browser_capabilities`; bộ tài liệu đi kèm mô tả roadmap và giới hạn đã audit.
 
 ```powershell
 git clone https://github.com/OrgGem/rpa-agent-mcp.git
@@ -21,7 +21,8 @@ Bản thử nghiệm đã được kiểm chứng với extension **UiPath Brows
 - `open URL`: mở URL HTTP(S) trong tab mới bằng lệnh UiPath `OpenTab`.
 - `tab ID`: đọc URL, tiêu đề và trạng thái tải bằng `GetHtmlAttribute`.
 - `active`, `find URL_PATTERN`: các lệnh chẩn đoán chỉ đọc.
-- `mcp`: MCP STDIO với `uipath_bridge_status`, `uipath_driver_versions`, `uipath_open_url`, `uipath_tab_info`.
+- `mcp`: MCP STDIO với `uipath_bridge_status`, `uipath_driver_versions`, `uipath_open_url`, `uipath_tab_info`, `browser_capabilities`.
+- `browser_capabilities({})`: trả schema có cấu trúc, availability theo trạng thái host/driver và nguồn bằng chứng. Hoạt động khi host chưa kết nối; không nạp driver hoặc mở tab. DOM vẫn báo `G0_NOT_VERIFIED`.
 - Chưa triển khai đọc nội dung DOM, click, nhập liệu hoặc thay thế UiPath Robot. Mở tab thành công không chứng minh các chức năng đó hoạt động.
 
 Không phân phối lại mã extension của UiPath. Giao thức được khảo sát từ bản đã cài; chưa có cam kết tương thích các phiên bản khác. Xem `verification.json` để biết kết quả kiểm chứng thực tế, tách khỏi kiểm thử với extension mô phỏng.
@@ -43,6 +44,7 @@ Cùng entry point `src/bridge.mjs`, nhưng `mcp` và `native` là hai tiến tr�
 - [Guide tổng quan và đầy đủ tên lệnh](docs/UIPATH-EXTENSION-GUIDE.vi.md): 88 tên lệnh driver, 4 lệnh loader và các tuyến GenericRequest.
 - [Bảng tương thích theo 6 driver nhúng](docs/FUNCTION-MATRIX.vi.md).
 - [Catalog JSON](docs/uipath-function-catalog.json): trường request quan sát được theo từng phiên bản, tên handler, offset và SHA256 nguồn.
+- [Ma trận triển khai đầy đủ](docs/EXTENSION-FUNCTION-MATRIX.vi.md): từng function/loader/callback/generic/content → adapter → MCP consumer → task/phase → test; unsupported có lý do và tuyến thay thế. [JSON](docs/extension-function-matrix.json) dùng cho validator.
 
 Danh mục phản ánh các entry trong mã extension 23.10.1; những lệnh chưa triển khai trong bridge không tự trở thành MCP tool.
 
@@ -53,9 +55,36 @@ Danh mục phản ánh các entry trong mã extension 23.10.1; những lệnh ch
 - [Hợp đồng MCP](docs/BROWSER-MCP-CONTRACTS.vi.md): context/ref, locator, errors, timeout/retry, watchers và ví dụ luồng agent.
 - [Feature registry JSON](docs/browser-feature-spec.json) và [kiểm tra tài liệu](docs/browser-docs-validation.json).
 
-Đặc tả đã được [đối chiếu lại với extension ngày 2026-10-26](docs/EXTENSION-CAPABILITY-VERIFICATION.vi.md), có [audit route](docs/pinned-driver-audit.json), [probe cô lập](docs/EXTENSION-PROTOCOL-PROBES.json) và [receipt live mới](docs/EXTENSION-LIVE-VERIFICATION.json). Bốn tool hiện có đạt trên fixture HTTP local; chưa có click/type/DOM live.
+Đặc tả đã được [đối chiếu lại với extension ngày 2026-10-26](docs/EXTENSION-CAPABILITY-VERIFICATION.vi.md), có [audit route](docs/pinned-driver-audit.json), [probe cô lập](docs/EXTENSION-PROTOCOL-PROBES.json) và [receipt metadata live](docs/EXTENSION-LIVE-VERIFICATION.json). Receipt metadata kiểm tra bốn API legacy; kiểm chứng DOM/input riêng ở các receipt G0 bên dưới.
 
-P0 còn chờ gate G0 discovery/ref/input. FindWebCtrlElements là stub trong driver ghim; candidate discovery đúng hơn là FindSelectors. GetHtmlValue đi qua generic message 5, click qua message 6, arbitrary JS qua InjectAndRunJs. Các tên `browser_*` vẫn là đề xuất; baseline activity UiPath `latest` không đồng nghĩa extension 23.10.1 hỗ trợ toàn bộ.
+P0 còn chờ gate G0 discovery/ref/input. FindWebCtrlElements là stub trong driver ghim; candidate discovery đúng hơn là FindSelectors. GetHtmlValue đi qua generic message 5, click qua message 6, arbitrary JS qua InjectAndRunJs. Ngoài `browser_capabilities` đã triển khai, các tên `browser_*` còn lại vẫn là đề xuất; baseline activity UiPath `latest` không đồng nghĩa extension 23.10.1 hỗ trợ toàn bộ.
+
+## Phát triển theo phase
+
+Xem [task theo phase](docs/DEVELOPMENT-PHASES.vi.md),
+[quy trình EGM](docs/EGM-WORKFLOW.md) và [hợp đồng code](EGM.md).
+Slice đầu triển khai capability discovery, kiểm thử offline và giữ API cũ.
+Task kế tiếp đã thêm fixture/runner và private probe G0, tắt mặc định, không public
+DOM tool mới. Xem [cách chạy preflight/live](scripts/README.md#g0-development-fixture)
+và `npm run matrix:check` để kiểm tra coverage của plan.
+Đã chuyển sang host repo mới và chạy [G0 main-frame smoke live đạt](docs/G0-LIVE-VERIFICATION.json):
+find 0/1/2, đọc value, replace/append Unicode và click counter có report độc lập;
+tab/server cleanup đạt. Probe đã tắt lại trên host đang kết nối. Đây chưa phải full
+G0 hoặc API DOM công khai. [G0.4 live](docs/G0-4-LIVE-VERIFICATION.json) đã đạt
+**11/11 ca** stale/remove/clone/reload/navigation/native reconnect, same/cross-origin
+iframe và React 19.3.1 controlled DOM/model sau rerender. Hai lần lỗi được giữ cùng
+bản sửa readiness/not-found semantics; **32/32 offline tests đạt**. Fixture/server
+cleanup và tắt probe cả trong tiến trình lẫn launcher đã xác nhận. Guard fixture
+không bảo đảm atomic identity/dispatch hoặc mọi framework/site; general DOM API
+và public G0 advertisement vẫn chờ các phase tiếp theo.
+Receipt tổng hợp có xác nhận UI độc lập rằng cửa sổ fixture đã biến mất; raw
+CloseBrowser acknowledgement không tự được coi là cleanup pass.
+Xem [receipt host](docs/HOST-TRANSITION-VERIFICATION.json) và
+[kiểm tra MCP 5 tool](docs/MCP-HOST-VERIFICATION.json). Giữ trang nền
+**UiPath Web Automation** mở; nó khác fixture thử nghiệm có thể đóng.
+Capability trả bằng chứng live lịch sử có ngày/nguồn; gọi discovery không tạo
+receipt live mới. Open/tab metadata chỉ báo available khi status xác nhận driver
+ghim đã nạp; dùng legacy open/activate khi cần nạp driver có chủ đích.
 
 ## Cài đăng ký native host cho người dùng hiện tại
 

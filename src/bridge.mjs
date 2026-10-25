@@ -4,6 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { NativeDecoder, LineDecoder, nativeFrame } from './transport.mjs';
+import { buildCapabilities, CAPABILITY_OUTPUT_SCHEMA } from './capabilities.mjs';
+import { createG0Probe, G0_PROTOCOL_VERSION } from './g0-probe.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const EXTENSION_ID = 'jfcmnbofjlffnejneillkgbniiidiigd';
@@ -116,12 +118,14 @@ export async function startNative() {
       openTabResponse: { retCode: opened.retCode, newTabId: opened.newTabId },
       instruction: 'A tab was created. Read this tab ID later; do not repeat OpenTab automatically.' };
   };
+  const g0Enabled = process.env.UIPATH_G0_PROBE === '1';
+  const g0Probe = createG0Probe({ enabled: g0Enabled, request: requestUiPath, activate: ensureDriver });
   const status = () => ({
     connected: true, startedAt, nativePid: process.pid, extensionId: EXTENSION_ID,
     receivedMessages, registeredWindowCount: windows.size,
     supportedOperations: ['status', 'versions', 'activate_driver', 'open_url', 'tab_info'],
     driverLoaded, driverVersion: driverLoaded ? DRIVER_VERSION : null, lastOpenedTabId,
-    unsupportedHostCalls: [...unsupportedHostCalls], driverAutomationReady: false,
+    unsupportedHostCalls: [...unsupportedHostCalls], driverAutomationReady: false, g0ProbeProtocol: g0Probe.isEnabled() ? G0_PROTOCOL_VERSION : null,
     scope: 'Embedded driver activation, navigation and tab metadata. Click and typing are not implemented.'
   });
   const server = net.createServer(socket => {
@@ -140,6 +144,7 @@ export async function startNative() {
             : call.method === 'tab_info' ? tabInfo(call.params?.tabId)
             : call.method === 'active_tab' ? ensureDriver().then(() => requestUiPath('GetActiveTabId', { windowId: -1 }))
             : call.method === 'find_tabs' && typeof call.params?.url === 'string' ? ensureDriver().then(() => requestUiPath('FindBrowserTabs', { attrMap: { url: call.params.url }, maxElems: 10 }))
+            : call.method === 'g0_probe' ? g0Probe.call(call.params)
             : Promise.reject(new Error('Unsupported local operation'));
           task.then(result => {
             if (!socket.destroyed) socket.end(JSON.stringify({ id: call.id, result }) + '\n');
@@ -227,6 +232,9 @@ tools.push({ name: 'uipath_open_url', description: 'Open an HTTP(S) URL in a NEW
 tools.push({ name: 'uipath_tab_info', description: 'Read URL, title and load status for one specified tab through the UiPath extension.',
   inputSchema: { type: 'object', properties: { tabId: { type: 'integer', minimum: 0 } }, required: ['tabId'], additionalProperties: false },
   annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true } });
+tools.push({ name: 'browser_capabilities', description: 'Read implemented browser capabilities and current bridge availability. Historical evidence is labeled; DOM discovery and input remain blocked on G0. This query does not activate the driver or navigate.',
+  inputSchema: { type: 'object', properties: {}, additionalProperties: false }, outputSchema: CAPABILITY_OUTPUT_SCHEMA,
+  annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } });
 
 export function startMcp() {
   const decoder = new LineDecoder();
@@ -256,7 +264,8 @@ export function startMcp() {
     if (message.method === 'tools/list') return result({ tools });
     if (message.method !== 'tools/call') return fail(id, -32601, 'Method not found');
     const tool = tools.find(item => item.name === message.params?.name);
-    const args = message.params?.arguments ?? {};
+    const args = tool?.name === 'browser_capabilities' && Object.hasOwn(message.params, 'arguments')
+      ? message.params.arguments : message.params?.arguments ?? {};
     if (!tool || typeof args !== 'object' || args === null || Array.isArray(args) ||
         Object.keys(args).some(key => !Object.hasOwn(tool.inputSchema.properties, key)) ||
         (tool.inputSchema.required ?? []).some(key => !Object.hasOwn(args, key)) ||
@@ -266,7 +275,12 @@ export function startMcp() {
     }
     try {
       let data;
-      if (tool.name === 'uipath_bridge_status') {
+      if (tool.name === 'browser_capabilities') {
+        let status = null;
+        try { status = await ipcCall('status'); } catch { /* Disconnection is an observation, not a discovery failure. */ }
+        const snapshot = buildCapabilities(status, DRIVER_VERSION);
+        return result({ content: [{ type: 'text', text: JSON.stringify(snapshot) }], structuredContent: snapshot, isError: false });
+      } else if (tool.name === 'uipath_bridge_status') {
         try { data = await ipcCall('status'); }
         catch (error) { data = { connected: false, reason: error.message, driverAutomationReady: false }; }
       } else if (tool.name === 'uipath_driver_versions') data = await ipcCall('versions');
@@ -274,7 +288,10 @@ export function startMcp() {
       else data = await ipcCall('tab_info', 40000, args);
       result({ content: [{ type: 'text', text: JSON.stringify(data) }], isError: false });
     } catch (error) {
-      result({ content: [{ type: 'text', text: error.message }], isError: true });
+      if (tool.name === 'browser_capabilities') {
+        const failure = { ok: false, data: null, error: { code: 'INTERNAL_ERROR', message: 'Capability discovery failed' } };
+        result({ content: [{ type: 'text', text: JSON.stringify(failure) }], structuredContent: failure, isError: true });
+      } else result({ content: [{ type: 'text', text: error.message }], isError: true });
     }
   }
   process.stdin.on('data', chunk => {

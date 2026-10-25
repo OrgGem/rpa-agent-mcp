@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import path from 'node:path';
+import Ajv from 'ajv';
 import { NativeDecoder, LineDecoder, nativeFrame, MAX_BYTES } from '../src/transport.mjs';
 process.env.UIPATH_BRIDGE_INSTANCE = `test-${process.pid}`;
 const { ROOT, ORIGIN, ipcCall, DRIVER_VERSION } = await import('../src/bridge.mjs');
@@ -21,7 +22,7 @@ test('Native transport survives fragmented headers, UTF-8 splits and coalesced f
 
 test('Native process, IPC and MCP complete a round trip with a simulated extension', { timeout: 15000 }, async t => {
   const entry = path.join(ROOT, 'src', 'bridge.mjs');
-  const host = spawn(process.execPath, [entry, 'native', ORIGIN], { stdio: ['pipe', 'pipe', 'pipe'] });
+  const host = spawn(process.execPath, [entry, 'native', ORIGIN], { stdio: ['pipe', 'pipe', 'pipe'], env: { ...process.env, UIPATH_G0_PROBE: '' } });
   let hostErrors = '';
   host.stderr.on('data', chunk => { hostErrors += chunk; });
   t.after(() => host.kill());
@@ -65,6 +66,9 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   for (let i = 0; i < 30 && !observed.some(m => m.returnId === 17); i++) await delay(20);
   assert.ok(observed.some(m => m.returnId === 17), 'The extension registration callback must be acknowledged');
   assert.equal((await ipcCall('status')).registeredWindowCount, 1);
+  assert.equal((await ipcCall('status')).g0ProbeProtocol, null);
+  assert.equal((await ipcCall('g0_probe', 1000, { action: 'preflight' })).enabled, false);
+  await assert.rejects(ipcCall('g0_probe', 1000, { action: 'open', fixtureUrl: 'http://127.0.0.1:123/g0/11111111-2222-3333-4444-555555555555/page' }), /G0_PROBE_DISABLED/);
   assert.deepEqual((await ipcCall('versions')).versions, ['test-driver-23.10']);
   await assert.rejects(ipcCall('arbitrary-operation'), /Unsupported/);
 
@@ -90,10 +94,27 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   assert.equal(init.result.protocolVersion, '2025-06-18');
   mcp.stdin.write(JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }) + '\n');
   const listed = await send('tools/list');
-  assert.deepEqual(listed.result.tools.map(tool => tool.name), ['uipath_bridge_status', 'uipath_driver_versions', 'uipath_open_url', 'uipath_tab_info']);
+  assert.deepEqual(listed.result.tools.map(tool => tool.name), ['uipath_bridge_status', 'uipath_driver_versions', 'uipath_open_url', 'uipath_tab_info', 'browser_capabilities']);
+  const discoveryTool = listed.result.tools.find(tool => tool.name === 'browser_capabilities');
+  const validate = new Ajv({ strict: true }).compile(discoveryTool.outputSchema);
+  const beforeDiscovery = observed.length;
+  const discovery = await send('tools/call', { name: 'browser_capabilities', arguments: {} });
+  assert.equal(discovery.result.isError, false);
+  assert.equal(validate(discovery.result.structuredContent), true, JSON.stringify(validate.errors));
+  assert.deepEqual(JSON.parse(discovery.result.content[0].text), discovery.result.structuredContent);
+  assert.equal(discovery.result.structuredContent.data.connection.driverLoaded, false);
+  assert.equal(discovery.result.structuredContent.data.capabilities.find(c => c.name === 'tab.open').available, false);
+  assert.equal(observed.length, beforeDiscovery, 'Capability discovery must not send extension commands');
+  for (const args of [null, [], true, 'string', 1, { functionCall: 'click' }]) {
+    const rejected = await send('tools/call', { name: 'browser_capabilities', arguments: args });
+    assert.equal(rejected.error.code, -32602);
+  }
+  assert.equal((await send('tools/call', { name: 'browser_capabilities' })).result.isError, false);
+  assert.equal(observed.length, beforeDiscovery, 'Rejected inputs and omitted arguments must not activate the driver');
   const call = await send('tools/call', { name: 'uipath_driver_versions', arguments: {} });
   assert.equal(call.result.isError, false);
   assert.deepEqual(JSON.parse(call.result.content[0].text).versions, ['test-driver-23.10']);
+  assert.equal((await send('tools/call', { name: 'uipath_driver_versions', arguments: null })).result.isError, false, 'Keep legacy null argument normalization');
   const badArguments = await send('tools/call', { name: 'uipath_driver_versions', arguments: { functionCall: 'click' } });
   assert.equal(badArguments.error.code, -32602);
   const invalidUrl = await send('tools/call', { name: 'uipath_open_url', arguments: { url: 'javascript:alert(1)' } });
@@ -106,6 +127,12 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   assert.equal(info.status, 'complete');
   assert.equal(info.url, 'https://example.test/');
   assert.equal(observed.filter(m => m.functionCall === 'OpenTab').length, 1, 'A transient metadata failure must not repeat OpenTab');
+  const afterOpen = observed.length;
+  const ready = (await send('tools/call', { name: 'browser_capabilities', arguments: {} })).result;
+  assert.equal(validate(ready.structuredContent), true, JSON.stringify(validate.errors));
+  assert.equal(ready.structuredContent.data.capabilities.find(c => c.name === 'tab.open').available, true);
+  assert.equal(ready.structuredContent.data.gates.g0.passed, false);
+  assert.equal(observed.length, afterOpen, 'Discovery must only read local host status');
   const loadScripts = observed.find(m => m.returnId === 99);
   assert.equal(loadScripts.version, DRIVER_VERSION);
   assert.equal(loadScripts.background, 'return null;', 'Decline an external adapter so the extension selects its embedded package');
@@ -114,8 +141,35 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   assert.equal(observed.filter(m => m.functionCall === 'OpenTab').length, 2, 'Failed navigation must not be automatically repeated');
   const invalidTab = await send('tools/call', { name: 'uipath_tab_info', arguments: { tabId: -1 } });
   assert.equal(invalidTab.error.code, -32602);
-  mcp.kill();
   host.stdin.end();
   await new Promise(resolve => host.once('exit', resolve));
   await assert.rejects(ipcCall('status', 500), /unavailable|disconnected/);
+  const offline = (await send('tools/call', { name: 'browser_capabilities', arguments: {} })).result;
+  assert.equal(offline.isError, false);
+  assert.equal(validate(offline.structuredContent), true, JSON.stringify(validate.errors));
+  assert.equal(offline.structuredContent.data.connection.reason, 'BRIDGE_DISCONNECTED');
+  assert.equal(offline.structuredContent.data.capabilities.find(c => c.name === 'connection.status').available, true);
+  assert.deepEqual(JSON.parse(offline.content[0].text), offline.structuredContent);
+  mcp.kill();
+});
+
+test('Opt-in native probe preflight works over IPC without dispatching extension actions', { timeout: 5000 }, async t => {
+  const host=spawn(process.execPath,[path.join(ROOT,'src/bridge.mjs'),'native',ORIGIN],
+    {stdio:['pipe','pipe','pipe'],env:{...process.env,UIPATH_G0_PROBE:'1'}});
+  t.after(()=>host.kill());
+  const nativeMessages=[];const decoder=new NativeDecoder();
+  host.stdout.on('data',chunk=>nativeMessages.push(...decoder.push(chunk)));
+  let connected=false;
+  for(let i=0;i<30;i++){
+    try{await ipcCall('status',300);connected=true;break;}catch{await delay(30);}
+  }
+  assert.equal(connected,true);
+  assert.equal((await ipcCall('status')).g0ProbeProtocol,2);
+  assert.deepEqual(await ipcCall('g0_probe',1000,{action:'preflight'}),
+    {enabled:true,protocolVersion:2,scope:'owned-fixture-only',quarantined:false});
+  await assert.rejects(ipcCall('g0_probe',1000,{action:['read'],sessionRef:'invalid',elementRef:'invalid'}),/PROBE_INVALID_ARGUMENT/);
+  assert.deepEqual(nativeMessages,[],'Preflight/invalid input must not send native commands');
+  assert.deepEqual(await ipcCall('g0_probe',1000,{action:'finish'}),{enabled:false,abandonedSession:false});
+  assert.equal((await ipcCall('status')).g0ProbeProtocol,null);
+  host.stdin.end();await new Promise(resolve=>host.once('exit',resolve));
 });

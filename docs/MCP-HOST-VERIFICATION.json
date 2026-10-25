@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-25T20:53:40.705Z",
+  "passed": true,
+  "configAlias": "uipath_bridge",
+  "configPointsTo": "new-repository",
+  "tools": [
+    "uipath_bridge_status",
+    "uipath_driver_versions",
+    "uipath_open_url",
+    "uipath_tab_info",
+    "browser_capabilities"
+  ],
+  "connection": {
+    "connected": true,
+    "driverLoaded": true,
+    "driverVersion": "23.4.55.39317",
+    "reason": null
+  },
+  "publicG0GatePassed": false,
+  "privateProbeEnabled": false
+}

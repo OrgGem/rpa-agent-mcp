@@ -1,0 +1,133 @@
+{
+  "task": "G0.2/G0.3",
+  "updatedAt": "2026-10-25T19:35:02.202620+00:00",
+  "gatePassed": false,
+  "smokePassed": true,
+  "latestLiveAttempt": {
+    "checkedAt": "2026-10-25T19:30:14.852Z",
+    "mode": "live",
+    "driverVersion": "23.4.55.39317",
+    "evidenceLevel": "live-fixture-attempt",
+    "smokePassed": true,
+    "g0GatePassed": false,
+    "unsupportedScopes": [
+      "iframe/shadow DOM",
+      "stale after navigation/disconnect",
+      "controlled inputs",
+      "change/blur parity"
+    ],
+    "steps": [
+      {
+        "step": "find-missing",
+        "count": 0,
+        "passed": true
+      },
+      {
+        "step": "find-input",
+        "count": 1,
+        "passed": true
+      },
+      {
+        "step": "find-duplicates",
+        "count": 2,
+        "passed": true
+      },
+      {
+        "step": "find-button",
+        "count": 1,
+        "passed": true
+      },
+      {
+        "step": "replace",
+        "passed": true,
+        "inputEvents": 10,
+        "changeEvents": 1
+      },
+      {
+        "step": "append",
+        "passed": true,
+        "inputEvents": 19,
+        "changeEvents": 2
+      },
+      {
+        "step": "click",
+        "passed": true,
+        "clicks": 1
+      }
+    ],
+    "cleanup": {
+      "serverStopped": true,
+      "tabLeftOpen": false,
+      "tab": {
+        "closed": true,
+        "tabLeftOpen": false
+      },
+      "passed": true
+    },
+    "preflight": {
+      "enabled": true,
+      "protocolVersion": 1
+    },
+    "preflightPassed": true,
+    "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+    "tabIdRedacted": true
+  },
+  "previousAttempts": [
+    {
+      "checkedAt": "2026-10-25T19:15:15.108Z",
+      "mode": "live",
+      "driverVersion": "23.4.55.39317",
+      "evidenceLevel": "live-fixture-attempt",
+      "smokePassed": false,
+      "g0GatePassed": false,
+      "unsupportedScopes": [
+        "iframe/shadow DOM",
+        "stale after navigation/disconnect",
+        "controlled inputs",
+        "change/blur parity"
+      ],
+      "steps": [
+        {
+          "step": "find-missing",
+          "count": 0,
+          "passed": true
+        }
+      ],
+      "cleanup": {
+        "serverStopped": true,
+        "tabLeftOpen": true,
+        "tab": {
+          "closed": false,
+          "tabLeftOpen": true,
+          "reason": "CLEANUP_UNCONFIRMED"
+        },
+        "passed": false
+      },
+      "preflight": {
+        "enabled": true,
+        "protocolVersion": 1
+      },
+      "sourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+      "error": {
+        "code": "PROBE_UNSUPPORTED_RESPONSE"
+      },
+      "tabIdRedacted": true
+    }
+  ],
+  "followUp": {
+    "status": "main-frame-smoke-passed-private-probe-disabled",
+    "normalizationWireRegressionPassed": true,
+    "liveRetestCompleted": true,
+    "remaining": [
+      "iframe/shadow boundaries",
+      "stale references after navigation/removal/disconnect",
+      "controlled inputs",
+      "change/blur semantics beyond this fixture"
+    ]
+  },
+  "evidenceScope": "Pinned extension/driver main-frame fixture only: 0/1/2 matches, attribute/value read, Unicode replace/append input events, one click, close acknowledgement and server shutdown. Public DOM tools remain gated.",
+  "receiptCaveats": [
+    "Failed attempt retained with machine-local tab IDs redacted; old preflightPassed flag was set only on overall success. The runner now records preflight before live steps.",
+    "Historical cleanup.passed recorded native close acknowledgement and server shutdown; it did not independently verify tab absence. G0.4 aggregate evidence separately corroborates its own closure through UI."
+  ]
+}

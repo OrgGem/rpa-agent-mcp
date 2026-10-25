@@ -1,0 +1,27 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {startG04Fixture} from '../scripts/g04-fixture.mjs';
+test('Two-origin G0.4 fixture validates role/generation/sequence and consumes commands once',async t=>{
+  const f=await startG04Fixture();t.after(()=>f.close());
+  assert.notEqual(f.mainOrigin,f.crossOrigin);assert.equal((await fetch(f.url)).status,200);
+  const body=await (await fetch(f.url)).text();assert.match(body,/react-root/);
+  const app=await fetch(f.mainOrigin+f.base+'/app.js');assert.equal(app.status,200);assert.ok((await app.text()).length>10000,'Actual bundled React app is served');
+  const post=(role,v,origin=f.mainOrigin,server=f.mainOrigin)=>fetch(server+f.base+'/report/'+role,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(v)});
+  const generation='aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',next='12345678-abcd-abcd-abcd-123456789abc';
+  const report={seq:0,generation,ack:0,documentReady:false,nativeValue:'initial',nodePresent:true,controlledDom:null,controlledModel:null,rejectingDom:null,rejectingModel:null,inputEvents:0,changeEvents:0,reactChanges:0,rejectChanges:0,frameworkVersion:'19.3.1'};
+  assert.equal((await post('main',report)).status,204);
+  assert.equal((await post('main',{...report,seq:1,documentReady:'true'})).status,400);
+  assert.equal(f.snapshot('main').documentReady,false);
+  assert.equal((await post('main',report)).status,409);
+  assert.equal((await post('main',{...report,seq:1,ack:999})).status,400,'Unknown command cannot be acknowledged');
+  assert.equal((await post('cross',report)).status,404);
+  assert.equal((await post('cross',report,f.crossOrigin,f.crossOrigin)).status,204);
+  assert.equal((await post('main',{...report,generation:next})).status,204);
+  assert.equal((await post('main',{...report,seq:3})).status,409,'Old document cannot overwrite new generation');
+  const id=f.command('replace'),cmdUrl=f.mainOrigin+f.base+'/commands';
+  assert.equal((await fetch(cmdUrl)).status,403);
+  const get=()=>fetch(cmdUrl,{headers:{'X-G04-Nonce':f.nonce}}).then(r=>r.json());
+  assert.deepEqual(await get(),{id,action:'replace'});assert.equal(await get(),null);
+  const snapshot=f.snapshot('main');snapshot.nativeValue='mutated';assert.notEqual(f.snapshot('main').nativeValue,'mutated');
+  assert.throws(()=>f.command('arbitrary-js'));
+});

@@ -1,10 +1,9 @@
-param([ValidateSet('Install','Uninstall','Status')][string]$Mode = 'Status')
+param([ValidateSet('Install','Uninstall','Status')][string]$Mode = 'Status', [switch]$EnableG0Probe)
 $ErrorActionPreference = 'Stop'
 $hostName = 'com.uipath.chromenativemsg_v2'
 $subKey = 'Software\Google\Chrome\NativeMessagingHosts\' + $hostName
 $manifestPath = Join-Path $PSScriptRoot 'native-host.json'
 $launcherPath = Join-Path $PSScriptRoot 'native-host.cmd'
-$nodePath = (Get-Command node -ErrorAction Stop).Source
 $entryPath = Join-Path $PSScriptRoot 'src\bridge.mjs'
 
 function Get-Registrations {
@@ -20,13 +19,15 @@ function Get-Registrations {
 $registrations = @(Get-Registrations)
 if ($Mode -eq 'Status') { $registrations | Format-Table -AutoSize; return }
 if ($Mode -eq 'Install') {
+    $nodePath = (Get-Command node -ErrorAction Stop).Source
     $foreign = @($registrations | Where-Object { $_.Manifest -ne $manifestPath })
     if ($foreign.Count) { throw 'Another UiPath native host is registered. No existing registration was overwritten.' }
     $extensionPath = Join-Path $env:LOCALAPPDATA 'Google\Chrome\User Data\Default\Extensions\jfcmnbofjlffnejneillkgbniiidiigd\23.10.1_0\manifest.json'
     if (!(Test-Path -LiteralPath $extensionPath)) { throw 'The inspected UiPath 23.10.1 extension was not found. Recheck compatibility before installation.' }
     [ordered]@{name=$hostName;description='Local UiPath browser MCP bridge prototype';path=$launcherPath;type='stdio';allowed_origins=@('chrome-extension://jfcmnbofjlffnejneillkgbniiidiigd/')} |
         ConvertTo-Json -Depth 3 | Set-Content -LiteralPath $manifestPath -Encoding ASCII
-    ('@echo off' + "`r`n" + '"' + $nodePath + '" "' + $entryPath + '" native %*' + "`r`n") |
+    $probeFlag = if ($EnableG0Probe) { '1' } else { '' }
+    ('@echo off' + "`r`n" + 'set "UIPATH_G0_PROBE=' + $probeFlag + '"' + "`r`n" + '"' + $nodePath + '" "' + $entryPath + '" native %*' + "`r`n") |
         Set-Content -LiteralPath $launcherPath -Encoding ASCII
     $snapshotPath = Join-Path $PSScriptRoot 'registration-before.json'
     if (!(Test-Path -LiteralPath $snapshotPath)) {
