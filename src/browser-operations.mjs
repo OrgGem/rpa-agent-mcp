@@ -45,7 +45,7 @@ export function createBrowserHandlers(r){
       const pending={ref:opaque('tab'),nativeId:response.newTabId,clientRef:op.client.id,contextRef:op.ctx.ref,docToken:null,windowId:null,pending:true,generation:0,retired:false,url,title:'',active:false,status:'unknown'};
       r.tabs.set(pending.ref,pending);op.tab=pending;
       try{const tab=await r.adopt(op,pending.nativeId);r.retireTab(pending);op.tab=tab;return ack({...r.tabData(tab),navigationRequested:true,acknowledged:true,metadataPending:false},'uipath');}
-      catch{return ack({tabRef:pending.ref,navigationRequested:true,acknowledged:true,metadataPending:true},'uipath');}
+      catch{return ack({tabRef:pending.ref,visibility:'unknown',navigationRequested:true,acknowledged:true,metadataPending:true},'uipath');}
     },
     async browser_tab_get(op,a){
       let t=r.tabs.get(a.tabRef),resolution=null;
@@ -190,7 +190,7 @@ export function createBrowserHandlers(r){
       return ack({...data,sourceRef:a.sourceRef,targetRef:a.targetRef,method:'dom-synthetic',trusted:false},'isolated-dom','dom-synthetic');
     },
     async browser_text_selection(op,a){const {entry,tab,frame}=await r.element(op,a.elementRef);if(a.action==='set')r.assertWrite(op,tab);const data=(await r.page(op,tab,frame,'selection',{targetToken:entry.token,action:a.action,start:a.start,end:a.end},a.action==='set')).data;return a.action==='set'?verified(data):read(data);},
-    async browser_highlight(op,a){const {entry,tab,frame}=await r.element(op,a.elementRef);r.assertWrite(op,tab);op.ctx.touchedFrames.add(frame.ref);const data=(await r.page(op,tab,frame,'highlight',{targetToken:entry.token,action:a.action,color:a.color,ttlMs:a.ttlMs??30000},true)).data;return ack(data);},
+    async browser_highlight(op,a){const {entry,tab,frame}=await r.element(op,a.elementRef);r.assertWrite(op,tab);r.touchFrame(op,tab,frame);const data=(await r.page(op,tab,frame,'highlight',{targetToken:entry.token,action:a.action,color:a.color,ttlMs:a.ttlMs??30000},true)).data;return ack(data);},
     async browser_frames(op,a){
       const {tab,frame}=await r.scope(op,a),d=(await r.page(op,tab,frame,'frames')).data;
       const frames=[{frameRef:frame.ref,main:frame.nativeId===0,attached:true,documentGeneration:frame.generation},...d.entries.map(n=>{const e=r.bind(op,tab,frame,n);return {elementRef:e.ref,parentFrameRef:frame.ref,name:n.name,main:false,attached:false};})];

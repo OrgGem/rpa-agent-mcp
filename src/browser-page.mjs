@@ -13,10 +13,13 @@ export function pageOperation(element,input){
     const slot=Symbol.for(q.namespace);
     let s=globalThis[slot];
     if(!s||s.document!==document){
-      s={document,token:uuid(),nodes:new Map(),byNode:new WeakMap(),watches:new Map(),highlights:new Map(),expected:new Map(),viewport:0};
+      s={document,token:uuid(),nodes:new Map(),byNode:new WeakMap(),watches:new Map(),highlights:new Map(),expected:new Map(),renders:new Map(),viewport:0};
       Object.defineProperty(globalThis,slot,{value:s,writable:true,configurable:true});
     }
     const now=Date.now();
+    s.renders??=new Map();
+    const cancelRender=id=>{const r=s.renders.get(id);if(!r)return;cancelAnimationFrame(r.first);cancelAnimationFrame(r.second);clearTimeout(r.timer);s.renders.delete(id);};
+    for(const [id,r] of s.renders)if(now>=r.expiresAt)cancelRender(id);
     for(const [token,r] of s.nodes)if(now-r.at>600000||!r.ref.deref())s.nodes.delete(token);
     for(const [id,w] of s.watches)if(now>=w.expiresAt){for(const [type,fn] of w.listeners)w.node.deref()?.removeEventListener(type,fn,true);w.listeners=[];w.expired=true;if(now-w.expiresAt>60000)s.watches.delete(id);}
     if(q.expectedDocument&&q.expectedDocument!==s.token)die('STALE_FRAME','Document changed');
@@ -115,8 +118,28 @@ export function pageOperation(element,input){
     };
     let data;
     switch(q.op){
-      case 'document':data={url:location.href,title:document.title,ready:document.readyState==='complete',timeOrigin:performance.timeOrigin,
+      case 'document':data={url:location.href,title:document.title,ready:document.readyState==='complete',visibility:['visible','hidden'].includes(document.visibilityState)?document.visibilityState:'unknown',timeOrigin:performance.timeOrigin,
         nativeHandleSupport:typeof g_globalContext!=='undefined'&&typeof g_globalContext.GenerateCustomIdForElement==='function',viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio}};break;
+      case 'render':{
+        if(q.action==='arm'){
+          if(!Number.isInteger(q.ttlMs)||q.ttlMs<100||q.ttlMs>2000)die('INVALID_ARGUMENT','Render ticket TTL must be 100–2000ms');
+          if(s.renders.size>=64)die('LIMIT_EXCEEDED','Document render ticket limit reached');
+          const ticket=uuid(),r={owner:q.owner,ready:false,expiresAt:Date.now()+q.ttlMs,first:0,second:0,timer:0};
+          s.renders.set(ticket,r);
+          const alive=()=>{if(!s.renders.has(ticket))return false;if(Date.now()>=r.expiresAt){cancelRender(ticket);return false;}return true;};
+          r.timer=setTimeout(()=>cancelRender(ticket),q.ttlMs);
+          r.first=requestAnimationFrame(()=>{if(alive())r.second=requestAnimationFrame(()=>{if(alive())r.ready=true;});});
+          data={ticket,ready:false};
+        }else{
+          const r=s.renders.get(q.ticket);
+          if(r&&r.owner!==q.owner)die('REF_SCOPE_MISMATCH','Render ticket belongs to another context');
+          if(q.action==='cancel'){cancelRender(q.ticket);data={ticket:q.ticket,cancelled:true};}
+          else if(q.action==='poll'){
+            if(!r)die('CAPTURE_NOT_READY','Render ticket expired or is unavailable');
+            data={ticket:q.ticket,ready:r.ready};if(r.ready)cancelRender(q.ticket);
+          }else die('INVALID_ARGUMENT','Unknown render ticket action');
+        }break;
+      }
       case 'bind':data={entry:describe(target)};break;
       case 'probe':{
         const node=q.targetToken?getNode(q.targetToken,true):target;
@@ -318,6 +341,7 @@ export function pageOperation(element,input){
         }break;
       }
       case 'release':{
+        for(const [id,r] of s.renders)if(r.owner===q.owner)cancelRender(id);
         for(const [id,w] of s.watches)if(w.owner===q.owner){clearTimeout(w.timer);for(const [type,fn] of w.listeners)w.node.deref()?.removeEventListener(type,fn,true);s.watches.delete(id);}
         for(const [id,h] of s.highlights)if(h.owner===q.owner){clearTimeout(h.timer);const n=h.ref.deref();if(n?.style.outline===h.applied)n.style.outline=h.previous;s.highlights.delete(id);}
         data={released:true};break;

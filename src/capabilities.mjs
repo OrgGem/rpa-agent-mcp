@@ -50,7 +50,7 @@ export function buildCapabilities(status, pinnedDriverVersion) {
   if(status?.browserRuntime?.protocolVersion===1){
     const runtime=status.browserRuntime;
     return {ok:true,data:{schemaVersion:2,connection,connectionRef:runtime.connectionRef??null,
-      tools:[...BROWSER_TOOLS.map(t=>({name:t.name,implemented:true,available:Boolean(confirmed&&runtime.tools?.includes(t.name)),unsupportedReason:confirmed?null:connection.reason,verificationLevel:'source-implemented',contract:'docs/browser-tool-contracts.json'})),
+      tools:[...BROWSER_TOOLS.map(t=>{const installed=Array.isArray(runtime.tools)&&runtime.tools.includes(t.name),blocked=typeof runtime.temporarilyUnavailable?.[t.name]==='string'?runtime.temporarilyUnavailable[t.name]:null;return {name:t.name,implemented:true,available:Boolean(confirmed&&installed&&!blocked),unsupportedReason:!confirmed?connection.reason:blocked??(installed?null:'ADAPTER_NOT_INSTALLED'),verificationLevel:'source-implemented',contract:'docs/browser-tool-contracts.json'};}),
         ...Object.entries(UNAVAILABLE_TOOLS).map(([name,unsupportedReason])=>({name,implemented:false,available:false,unsupportedReason,verificationLevel:'source-implemented',contract:'docs/browser-tool-contracts.json'}))],
       historicalG0:{receipt:'docs/G0-4-LIVE-VERIFICATION.json',scope:'historical-private-fixture-not-public-tool-acceptance'},limits:runtime.limits??null},error:null};
   }

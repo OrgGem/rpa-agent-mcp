@@ -6,6 +6,11 @@ import { DRIVER_VERSION } from '../src/bridge.mjs';
 
 const validate = new Ajv({ strict: true }).compile(CAPABILITY_OUTPUT_SCHEMA);
 const loaded = { connected: true, driverLoaded: true, driverVersion: DRIVER_VERSION };
+test('new runtime advertises temporary native capture failure separately from implementation',()=>{
+  const result=snapshot({...loaded,browserRuntime:{protocolVersion:1,connectionRef:'con_test',tools:['browser_screenshot','browser_tabs'],limits:{},temporarilyUnavailable:{browser_screenshot:'NATIVE_CAPTURE_RESPONSE_TIMEOUT'}}});
+  const shot=result.data.tools.find(t=>t.name==='browser_screenshot');assert.equal(shot.implemented,true);assert.equal(shot.available,false);assert.equal(shot.unsupportedReason,'NATIVE_CAPTURE_RESPONSE_TIMEOUT');
+  assert.equal(result.data.tools.find(t=>t.name==='browser_tabs').available,true);assert.equal(result.data.tools.find(t=>t.name==='browser_type').unsupportedReason,'ADAPTER_NOT_INSTALLED');
+});
 function snapshot(status) {
   const result = buildCapabilities(status, DRIVER_VERSION);
   assert.equal(validate(result), true, JSON.stringify(validate.errors));

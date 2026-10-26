@@ -17,28 +17,28 @@ là độ ưu tiên tính năng trong catalog.
 | 0 G0 | G0.2 | Live find 0/1/n mục tiêu; ref gắn tab/frame/document; DOM attribute/value đọc đúng | G0.1, F0.3 | Fixture main 0/1/2 và same/cross-origin frame, marker/ref lifetime đạt; general ref API thuộc F1/F2 |
 | 0 G0 | G0.3 | Live replace/append/input/change/click trên fixture; đối chiếu counter; không retry write | G0.2 | Native Unicode/click smoke + React 19.3.1 DOM/model/rerender và negative rejection đạt; general event parity chưa kiểm chứng |
 | 0 G0 | G0.4 | Stale sau remove/navigation/disconnect, frame đổi; receipt ghi version/hash/scope | G0.2 | Hoàn tất scoped live 11/11; 32/32 offline đạt; UI xác nhận fixture đóng, server/probe disable đạt |
-| 1 Phiên/tab | F1.1 | Connection/context/tab ref registry, attach strict, reject ref sai phiên | G0; nền tảng có thể làm song song | Đã triển khai source + offline; public live pending |
-| 1 Phiên/tab | F1.2 | tabs/list/open/get/activate/close; scope tab rõ, không kill browser | F1.1 | Đã triển khai source + offline; public live pending |
-| 1 Phiên/tab | F1.3 | navigate/history, deadline chung và invalidation ref | F1.2 | Đã triển khai source + offline; public live pending |
-| 2 DOM đọc | F2.1 | find_element(s), zero/multi match, giới hạn collection và locator đã thử | G0, F1.1 | Đã triển khai source + offline; public live pending |
-| 2 DOM đọc | F2.2 | get_element: attributes/value/text/state/rect theo field đã thử | F2.1 | Đã triển khai source + offline; public live pending |
-| 2 DOM đọc | F2.3 | snapshot có giới hạn và ref dùng lại được; wait đúng absent/detached/navigation | F2.2 | Đã triển khai source + offline; public live pending |
-| 3 DOM ghi | F3.1 | click/type; precondition, queue theo tab, outcome unknown; readback | G0, F2.2 | Đã triển khai source + offline; public live pending |
-| 3 DOM ghi | F3.2 | set_checked/select/scroll/focus; desired state và hậu kiểm | F3.1 | Đã triển khai source + offline; public live pending |
-| 3 Quan sát | F3.3 | Screenshot: active-tab/window guard, transport bound và artifact; reject nếu chưa an toàn | F1.2; gate screenshot riêng | Đã triển khai source + offline; public live pending |
-| 3 MVP | F3.4 | Workflow form hoàn chỉnh; stale/multi-tab/timeout tests; cập nhật capability theo receipt | F3.1–F3.3 | Workflow mock đạt; MVP live pending |
-| 4 P1 | F4.1 | Keyboard Enter/Tab/chords và JS; phân biệt RunJS registry/InjectAndRunJs | MVP; design riêng | JS/set-text có source; trusted keys unsupported |
-| 4 P1 | F4.2 | Form/extract/table/pagination; partial results, giới hạn output | F4.1 | Đã triển khai source + offline; public live pending |
-| 4 P1 | F4.3 | Network/cookie/download/debug theo permission, watcher TTL và cleanup | MVP; design riêng | Network/visible cookies có source; download/debug backend thiếu |
-| 4 Controls | F4.4 | Selection/highlight/hover/popup/set-attribute/tree/table-cell; mỗi control có fixture riêng | F2.2, F3.1 | Đã triển khai source + offline; public live pending |
+| 1 Phiên/tab | F1.1 | Connection/context/tab ref registry, attach strict, reject ref sai phiên | G0; nền tảng có thể làm song song | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 1 Phiên/tab | F1.2 | tabs/list/open/get/activate/close; scope tab rõ, không kill browser | F1.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 1 Phiên/tab | F1.3 | navigate/history, deadline chung và invalidation ref | F1.2 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 2 DOM đọc | F2.1 | find_element(s), zero/multi match, giới hạn collection và locator đã thử | G0, F1.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 2 DOM đọc | F2.2 | get_element: attributes/value/text/state/rect theo field đã thử | F2.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 2 DOM đọc | F2.3 | snapshot có giới hạn và ref dùng lại được; wait đúng absent/detached/navigation | F2.2 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 3 DOM ghi | F3.1 | click/type; precondition, queue theo tab, outcome unknown; readback | G0, F2.2 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 3 DOM ghi | F3.2 | set_checked/select/scroll/focus; desired state và hậu kiểm | F3.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 3 Quan sát | F3.3 | Screenshot: active-tab/window guard, transport bound và artifact; reject nếu chưa an toàn | F1.2; gate screenshot riêng | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 3 MVP | F3.4 | Workflow form hoàn chỉnh; stale/multi-tab/timeout tests; cập nhật capability theo receipt | F3.1–F3.3 | Workflow fixture live đạt; broad negative scenarios vẫn planned |
+| 4 P1 | F4.1 | Keyboard Enter/Tab/chords và JS; phân biệt RunJS registry/InjectAndRunJs | MVP; design riêng | JS/set-text fixture live đạt; trusted keys unsupported |
+| 4 P1 | F4.2 | Form/extract/table/pagination; partial results, giới hạn output | F4.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
+| 4 P1 | F4.3 | Network/cookie/download/debug theo permission, watcher TTL và cleanup | MVP; design riêng | Network/visible cookies fixture live đạt; download/debug backend thiếu |
+| 4 Controls | F4.4 | Selection/highlight/hover/popup/set-attribute/tree/table-cell; mỗi control có fixture riêng | F2.2, F3.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
 | 4 Debug | F4.5 | Debugger attach/detach ownership, permission, tracing/diagnostic; không chiếm phiên người dùng | F4.1, F3.3 | Deferred: chưa có debugger ownership an toàn |
-| 4 Frames | F4.6 | Frame list/attach/ref ownership, same/cross-origin boundaries; không suy closed shadow support | G0.4, F2.1 | Đã triển khai source + offline; public live pending |
+| 4 Frames | F4.6 | Frame list/attach/ref ownership, same/cross-origin boundaries; không suy closed shadow support | G0.4, F2.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
 | 5 P2 | F5.1 | Dialog response policy/control path không deadlock; file picker/native helper | Backend và fixture riêng | Deferred |
 | 5 P2 | F5.2 | OCR/CV/semantic; visualTarget có viewport generation và input backend | Provider + point input đã thử | Deferred |
-| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | Windows CI Node22/24, source ZIP/license đạt; browser live/signed release pending |
-| 5 Native | F5.4 | Window/launch/clipboard/image artifact/native; chỉ mở backend và action đã thử | Backend riêng; F1.1 | Window/image artifact có source; launch/clipboard/native helper thiếu |
-| 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider riêng | HTML date/composites có source; SAP/provider/audit thiếu |
-| 5 Events | F5.6 | Event broker/recorder và drag; schema, TTL/backpressure, target generation | F3.1, F4.6 | DOM events/drag synthetic có source; live pending |
+| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | CI Node22/24 baseline, local64 tests + public live đạt; signed release pending |
+| 5 Native | F5.4 | Window/launch/clipboard/image artifact/native; chỉ mở backend và action đã thử | Backend riêng; F1.1 | Window/image artifact fixture live đạt; launch/clipboard/native helper thiếu |
+| 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider riêng | HTML date/composites fixture live đạt; SAP/provider/audit thiếu |
+| 5 Events | F5.6 | Event broker/recorder và drag; schema, TTL/backpressure, target generation | F3.1, F4.6 | DOM events/drag synthetic fixture live đạt; không trusted input |
 
 ## Quy tắc nghiệm thu
 
@@ -244,7 +244,7 @@ Trạng thái vận hành hiện tại chờ trang nền kết nối; lần kế
   source vẫn ở ignored work/generated files. Chỉ source, plan, design/review,
   matrix và receipt đã loại dữ liệu máy được đưa vào commit.
 
-## Runtime public F1–F5 supported subset
+## Runtime public F1–F5 supported subset — snapshot source trước public live
 
 Baseline G0 đã commit/push `ac7d999`. Implementation mới theo
 [thiết kế EGM](designs/browser-runtime-full.md),
@@ -304,4 +304,14 @@ CI commit71525e7: Node24 đã đạt cả tests/matrix/license/source archive; N
 
 Commit c020364 đã qua cả hai job Node22.23.4 và24.22.1 trên GitHub Windows: npm ci, tests, matrix, license inventory và source archive. Node22 log55/55,0 skipped. Xem [receipt CI](WINDOWS-CI-VERIFICATION.json) và [run40266585783](https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40266585783). Source ZIP local đã khớp26 source hashes/108 entries. Đây là CI offline/packaging, không nghiệm thu browser live.
 
-Code đã lưu trên origin/main qua71525e7 vàc020364; các feature đích vẫn pending public live. Host IPC kiểm tra lại vẫn đang chạy bản legacy, chưa có runtimeVersion/public runtime descriptor. Yêu cầu reload thủ công trang UiPath Web Automation vẫn còn hiệu lực vì Computer Use/URL policy đã chặn thao tác tự động.
+Tại snapshot c020364, code đã lưu trên origin/main nhưng public live còn chờ host mới. Trạng thái hiện tại được cập nhật bên dưới.
+
+## Public live và capture readiness — 2026-10-26
+
+Đã tự reconnect host bằng CLI: xác minh đúng tiến trình node native của repo, dừng khi không còn action in-flight, extension tự kết nối lại theo timer10s. Không kill Chrome, không đổi registry và không truy cập URL extension bị browser policy từ chối. Host0.3.0 đã load đúng12 source/contract hashes.
+
+Public MCP trên Chrome155.0.0.0 UA, extension23.10.1/driver23.4.55.39317: **7/7 nhóm và42/42 tool browser mới đạt**; tools/list có47 tool. Fixture hai origin kiểm chứng native/DOM Unicode replace/append, React retained model, requestKey click dedup, stale/replaced nodes, same/cross-origin iframe reload isolation, MAIN Promise, form/table/tree/date, events/network/cookies/new-tab/navigation và PNG artifact inspect/read/save với MCP image block/hash. Tab/context/server/client cleanup đều xác nhận. Xem [receipt live](BROWSER-LIVE-VERIFICATION.json).
+
+Đã sửa capture theo [design/review EGM](designs/capture-visibility-readiness.md): active/focus không thay visibility; ticket hai animation frames có owner/document/TTL<=2s; tab ẩn trả TARGET_NOT_VISIBLE trước TakeScreenshot. Lỗi target không vô hiệu hóa toàn connection. Capture thành công trên fixture mở trong cửa sổ hiển thị, chọn base URL rõ ràng. Ca cửa sổ mới bị ẩn được kiểm tra riêng và từ chối đúng; không suy mọi cửa sổ đều render. Cũng sửa lỗi vendor capture bị biến thành timeout và cleanup sau tab đóng/ref pruning.
+
+**64/64 offline tests đạt**, matrix188 rows/53 roadmap tools đạt;423 scenario vẫn là kế hoạch rộng. Source review focused đã xử lý P2 precedence deadline/context; reviewer xác nhận không còn P1/P2 trong scope. G0 hoàn tất scoped trước đó; F1–F3 và supported subset F4/F5 nay có public fixture smoke. F4.5, backend ngoài extension, signed installer/public release và các option/site/negative scenario chưa có bằng chứng vẫn pending/deferred. Không tuyên bố full UiPath Activity parity.

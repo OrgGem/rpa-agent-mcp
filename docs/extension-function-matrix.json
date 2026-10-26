@@ -11,7 +11,7 @@
     "docs/browser-feature-spec.json": "2a7b9d3c095a6bb584b1b45441ec669d0b947b8f286f15019e2a8a875a05a305",
     "docs/G0-LIVE-VERIFICATION.json": "79e9d0adad2de1fb7b3516e51e1ac27407118e2d0b57b00bb4aceb78c9b91d68",
     "docs/G0-4-LIVE-VERIFICATION.json": "86475b84e8d7236aff881f0e84ce7abc4593f9e6a1c160cdbec21b1798655b5d",
-    "src/bridge.mjs": "ca7829ae7c13f9764a9fb4b1026c8c35c814d41af09bc6655b48d5005c0117f4",
+    "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
     "src/g0-probe.mjs": "67a07ee3174c6ae5b913cbbfbbc335f60c49ca7841e30575e5d483309b7d18a7",
     "scripts/run-g04.mjs": "feb825e68aeb8fe3427ea6f5e0f57eb45bf7b75e6414ae732ee16de37ead2907",
     "scripts/g04-fixture.mjs": "54d072c11112a50c5eb5e703c20997d682dbf07c45996071dd64f09a919c0f51",

@@ -10,9 +10,26 @@ export function createObserverHandlers(r){return {
     const before=await r.native('GetActiveTabId',{windowId:tab.windowId},op);
     if(Number(before.tabId)!==tab.nativeId)throw new BrowserError('TARGET_NOT_ACTIVE','Viewport capture requires the target tab to be active');
     const doc=await r.doc(op,tab,frame),format=a.format??'png';
-    const result=await r.native('TakeScreenshot',{tabId:tab.nativeId,customId:'',mode:1,format:format==='png'?0:1,waitForPageDelay:0},op);
+    if(doc.data.visibility!=='visible')throw new BrowserError('TARGET_NOT_VISIBLE','Viewport capture requires a visible document');
+    r.touchFrame(op,tab,frame);
+    let ticket;
+    try{
+      ticket=(await r.page(op,tab,frame,'render',{action:'arm',ttlMs:2000})).data.ticket;
+      while(!(await r.page(op,tab,frame,'render',{action:'poll',ticket})).data.ready)await r.sleep(op,40);
+    }catch(error){r.budget(op);throw error;
+    }finally{
+      if(ticket&&op.ctx.alive&&op.deadline>r.now())try{await r.page(op,tab,frame,'render',{action:'cancel',ticket});}catch{}
+    }
+    const rendered=await r.doc(op,tab,frame),current=await r.native('GetActiveTabId',{windowId:tab.windowId},op);
+    if(rendered.data.visibility!=='visible')throw new BrowserError('TARGET_NOT_VISIBLE','Document became hidden before capture');
+    if(rendered.documentToken!==doc.documentToken||Number(current.tabId)!==tab.nativeId)throw new BrowserError('CAPTURE_IDENTITY_UNCONFIRMED','Target changed before capture');
+    const result=await r.native('TakeScreenshot',{tabId:tab.nativeId,customId:'',mode:1,format:format==='png'?0:1,waitForPageDelay:0},op,{allowFailure:true});
+    if(!good(result.retCode)){
+      throw new BrowserError('CAPTURE_FAILED','Extension rejected viewport capture',{details:{vendorCode:Number.isSafeInteger(result.error?.code)?result.error.code:null,reason:typeof result.error?.message==='string'?result.error.message.slice(0,512):'No vendor message'}});
+    }
     const active=await r.native('GetActiveTabId',{windowId:tab.windowId},op),window=await r.native('GetWindowIdForTabId',{tabId:tab.nativeId},op),after=await r.doc(op,tab);
     if(Number(active.tabId)!==tab.nativeId||window.windowId!==tab.windowId||after.documentToken!==doc.documentToken)throw new BrowserError('CAPTURE_IDENTITY_UNCONFIRMED','Active tab/window/document changed during capture');
+    if(after.data.visibility!=='visible')throw new BrowserError('TARGET_NOT_VISIBLE','Document became hidden during capture');
     if(typeof result.data!=='string'||result.data.length>8*1024*1024-4096||! /^[A-Za-z0-9+/]*={0,2}$/.test(result.data))throw new BrowserError('RESULT_TOO_LARGE','Malformed or oversized screenshot payload');
     const bytes=Buffer.from(result.data,'base64');
     const data=await r.artifacts.put(op.client.id,op.ctx.ref,bytes,format==='png'?'image/png':'image/jpeg');
@@ -62,7 +79,7 @@ export function createObserverHandlers(r){return {
       let x=a.elementRef?await r.element(op,a.elementRef):await r.scope(op,a);
       if(x.tab.ref!==a.tabRef||(a.frameRef&&x.frame.ref!==a.frameRef))throw new BrowserError('REF_SCOPE_MISMATCH');
       const target=x.entry??x.root;
-      const w=r.makeWatch(op,'dom',{tabRef:x.tab.ref,nativeId:x.tab.nativeId,frameRef:x.frame.ref,targetToken:target?.token},a.ttlMs??30000);op.ctx.touchedFrames.add(x.frame.ref);
+      const w=r.makeWatch(op,'dom',{tabRef:x.tab.ref,nativeId:x.tab.nativeId,frameRef:x.frame.ref,targetToken:target?.token},a.ttlMs??30000);r.touchFrame(op,x.tab,x.frame);
       try{const data=(await r.page(op,x.tab,x.frame,'events',{targetToken:target?.token,action:'subscribe',eventTypes:[...new Set(a.eventTypes)],watchId:w.ref,ttlMs:w.ttlMs},true)).data;
         return observation({...data,watchRef:w.ref},'isolated-dom',op.dispatchState);}
       catch(e){await r.expireWatch(w);if(w.cleanupUnconfirmed)throw new BrowserError('MONITOR_CLEANUP_UNCONFIRMED','Event listener cleanup was not confirmed',{dispatchState:'unknown',details:{watchRef:w.ref}});throw e;}
@@ -70,7 +87,7 @@ export function createObserverHandlers(r){return {
     const w=r.watch(op,a.watchRef,'dom');
     if(w.tabRef!==a.tabRef)throw new BrowserError('REF_SCOPE_MISMATCH','Event watcher belongs to another tab');
     if(a.action==='unsubscribe'&&w.ended){
-      if(w.cleanupUnconfirmed){op.dispatchState='sent';const cleaned=await r.cleanupPage(r.frames.get(w.frameRef),w.contextRef,'events',{action:'unsubscribe',watchId:w.ref});if(!cleaned)throw new BrowserError('MONITOR_CLEANUP_UNCONFIRMED','Event listener cleanup remains unconfirmed',{dispatchState:'unknown',details:{watchRef:w.ref}});w.cleanupUnconfirmed=false;op.dispatchState='acknowledged';}
+      if(w.cleanupUnconfirmed){op.dispatchState='sent';const target=r.cleanupTarget(w.contextRef,w.frameRef),cleaned=await r.cleanupPage(target.frame,w.contextRef,'events',{action:'unsubscribe',watchId:w.ref},target.tab);if(!cleaned)throw new BrowserError('MONITOR_CLEANUP_UNCONFIRMED','Event listener cleanup remains unconfirmed',{dispatchState:'unknown',details:{watchRef:w.ref}});w.cleanupUnconfirmed=false;op.dispatchState='acknowledged';}
       return observation({action:'unsubscribe',watchRef:w.ref,cancelled:true},'isolated-dom',op.dispatchState);
     }
     const tab=await r.tab(op,a.tabRef),frame=await r.frame(op,tab,w.frameRef);

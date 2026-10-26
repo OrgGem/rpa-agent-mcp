@@ -81,8 +81,12 @@ lấy output nhỏ hơn. Trang và kết quả script là dữ liệu không tin
 - Cookies: chỉ document.cookie của origin/path hiện tại; không HttpOnly, không
   export/restore profile. Set/delete yêu cầu path khớp boundary của URL hiện tại.
 - Screenshot: viewport của đúng tab active, kiểm tra tab/window/document trước
-  và sau. Không tự activate hoặc fullpage/debugger capture; race focus bên ngoài
-  vẫn có thể xảy ra. Ảnh thành artifactRef trước IPC, không nhét base64 vào text.
+  và sau. Chọn tab có visibility=visible; active/focus không chứng minh trang đang
+  render. Tool chờ hai animation frames trong tối đa2s: tab ẩn/không rõ trả
+  TARGET_NOT_VISIBLE, ticket hết hạn trả CAPTURE_NOT_READY. Không tự raise/restore
+  cửa sổ; race focus bên ngoài vẫn có thể xảy ra. Lỗi capture ở một tab không
+  khóa capture trên tab khác. Ảnh thành artifactRef trước IPC, không nhét base64
+  vào text. Chưa hỗ trợ fullpage/debugger capture.
 - Image artifact inspect/read/save: read trả MCP image block riêng nếu <=384KiB.
   Save nhận basename png/jpg trong thư mục work do runtime quản lý, không ghi đè
   hay đọc path tùy ý. Artifact/exports là tạm, TTL1h và bị xóa khi release context.
@@ -99,3 +103,10 @@ trong capabilities/coverage. Không public placeholder sẽ treo hoặc giả th
 `--live` mở fixture loopback hai origin và gọi public MCP. Receipt ghi source hashes,
 tool smoke coverage và cleanup. Một smoke mỗi tool không bằng 423 scenario rộng,
 mọi option, framework, site, nested iframe hay shadow DOM đã được kiểm chứng.
+
+Trên máy có cửa sổ Chrome mới không render, dùng
+`--live --base-url http://127.0.0.1:PORT/owned-fixture` với tab HTTP thử nghiệm
+đang hiển thị do bạn chủ động mở. Runner yêu cầu đúng một URL, attach rõ base,
+mở fixture mới trong cùng cửa sổ và giữ nguyên base khi cleanup. Không chọn tab
+người dùng ngẫu nhiên. Kết quả live hiện tại:7/7 nhóm,42/42 tên tool mới đạt trên
+fixture hai origin/React/viewport PNG; xem [receipt](BROWSER-LIVE-VERIFICATION.json).

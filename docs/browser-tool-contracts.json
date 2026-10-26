@@ -976,6 +976,14 @@
                             "type": "integer",
                             "minimum": 0,
                             "maximum": 1000000
+                          },
+                          "visibility": {
+                            "type": "string",
+                            "enum": [
+                              "visible",
+                              "hidden",
+                              "unknown"
+                            ]
                           }
                         },
                         "required": [
@@ -1555,6 +1563,14 @@
                     },
                     "metadataPending": {
                       "type": "boolean"
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "enum": [
+                        "visible",
+                        "hidden",
+                        "unknown"
+                      ]
                     }
                   },
                   "required": [
@@ -2148,6 +2164,14 @@
                         {
                           "type": "null"
                         }
+                      ]
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "enum": [
+                        "visible",
+                        "hidden",
+                        "unknown"
                       ]
                     }
                   },
@@ -11784,7 +11808,7 @@
         "idempotentHint": true,
         "openWorldHint": true
       },
-      "result": "active-tab guarded bounded image artifact; no automatic activation",
+      "result": "active-tab guarded bounded image artifact; no automatic activation Hidden documents reject with TARGET_NOT_VISIBLE; expired render readiness with CAPTURE_NOT_READY. Target capture errors do not disable other tabs.",
       "outputSchema": {
         "type": "object",
         "properties": {
@@ -12305,7 +12329,7 @@
           }
         ]
       },
-      "description": "Capture only the active owned tab viewport, guarding tab/window/document before and after. Returns an artifactRef, not base64 text. Does not auto-activate, use fullpage debugger capture or guarantee external focus race freedom."
+      "description": "Capture only the active owned tab viewport, guarding tab/window/document before and after. Returns an artifactRef, not base64 text. Does not auto-activate, use fullpage debugger capture or guarantee external focus race freedom. Requires an explicitly selected active, visible document and bounded two-frame render readiness; never raises a hidden window implicitly."
     },
     {
       "name": "browser_set_attribute",
@@ -22637,6 +22661,14 @@
                           "type": "integer",
                           "minimum": 0,
                           "maximum": 1000000
+                        },
+                        "visibility": {
+                          "type": "string",
+                          "enum": [
+                            "visible",
+                            "hidden",
+                            "unknown"
+                          ]
                         }
                       },
                       "required": [

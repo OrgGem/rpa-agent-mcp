@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import path from 'node:path';
+import {randomUUID} from 'node:crypto';
 import Ajv from 'ajv';
 import { NativeDecoder, LineDecoder, nativeFrame, MAX_BYTES } from '../src/transport.mjs';
 process.env.UIPATH_BRIDGE_INSTANCE = `test-${process.pid}`;
@@ -174,5 +175,25 @@ test('Opt-in native probe preflight works over IPC without dispatching extension
   assert.deepEqual(nativeMessages,[],'Preflight/invalid input must not send native commands');
   assert.deepEqual(await ipcCall('g0_probe',1000,{action:'finish'}),{enabled:false,abandonedSession:false});
   assert.equal((await ipcCall('status')).g0ProbeProtocol,null);
+  host.stdin.end();await new Promise(resolve=>host.once('exit',resolve));
+});
+test('structured viewport rejection survives native framing and IPC without becoming a timeout', {timeout:20000},async t=>{
+  const host=spawn(process.execPath,[path.join(ROOT,'src/bridge.mjs'),'native',ORIGIN],{stdio:['pipe','pipe','pipe'],env:{...process.env,UIPATH_G0_PROBE:''}});t.after(()=>host.kill());host.stderr.on('data',()=>{});
+  const decoder=new NativeDecoder(),documentToken=randomUUID();host.stdout.on('data',chunk=>{for(const m of decoder.push(chunk)){
+    let reply={retCode:1};
+    if(m.functionCall==='OnProductVersionChanged')reply={wasDriverLoaded:1};
+    else if(m.functionCall==='GetHtmlAttribute')reply={retCode:1,attrValue:{url:'https://capture.test/',title:'Capture fixture',readystate:'1'}[m.attrName]};
+    else if(m.functionCall==='GetWindowIdForTabId')reply={retCode:1,windowId:1};
+    else if(m.functionCall==='GetActiveTabId')reply={retCode:1,tabId:'123'};
+    else if(m.functionCall==='FindBrowserTabs')reply={results:[{m_customId:'123'}],openTabsCount:1};
+    else if(m.functionCall==='GetTabCount')reply={retCode:1,tabCount:1};
+    else if(m.functionCall==='InjectAndRunJs'){const q=JSON.parse(m.input);reply={retCode:1,isScriptErr:0,result:JSON.stringify({ok:true,documentToken,data:q.op==='render'?{ticket:documentToken,ready:q.action==='poll'}:{url:'https://capture.test/',title:'Capture fixture',ready:true,visibility:'visible'}})};}
+    else if(m.functionCall==='TakeScreenshot')reply={retCode:0,error:{code:8,message:'Capture permission denied'}};
+    host.stdin.write(nativeFrame({returnId:m.requestId,...reply}));
+  }});
+  const status=await waitForHost(host),clientRef=randomUUID(),call=(name,args)=>ipcCall('browser_tool',12000,{clientRef,name,args});
+  const attached=await call('browser_attach',{connectionRef:status.browserRuntime.connectionRef});assert.equal(attached.ok,true);const contextRef=attached.data.contextRef;
+  const tabs=await call('browser_tabs',{contextRef});assert.equal(tabs.ok,true);
+  const capture=await call('browser_screenshot',{contextRef,tabRef:tabs.data.tabs[0].tabRef});assert.equal(capture.ok,false);assert.equal(capture.error.code,'CAPTURE_FAILED');assert.equal(capture.error.details.vendorCode,8);assert.equal(capture.error.details.reason,'Capture permission denied');
   host.stdin.end();await new Promise(resolve=>host.once('exit',resolve));
 });

@@ -47,7 +47,7 @@ the final released-client tombstone is additionally covered by parent regression
 The page reviewer confirmed the targeted fixes at source level. Review completion does not
 imply native protocol, actual Chrome realms/layout or live option acceptance.
 
-## Open acceptance boundary
+## Open acceptance boundary — historical snapshot before public live
 
 55 offline tests pass; their count is distinct from423 planned scenarios. jsdom
 uses the same simulated realm/layout for fixed and user scripts and cannot prove
@@ -71,3 +71,7 @@ keyboard/selection edge case in Chrome. These remain acceptance limits.
 Bổ sung bốn test dùng React thực trong jsdom, queued sanitizer/restoration và convergence. Text/check/select/date giờ xác minh retained state ở RPC sau dispatch; không chỉ dùng synchronous match. Source review focused không còn P1/P2 trong các nhánh đã đọc; đây chưa phải live Chrome. Mô tả42 tool MCP đã ghi rõ mục đích, giới hạn và recovery thay cho mô tả generic.
 
 CI commit71525e7: Node24 đã đạt cả tests/matrix/license/source archive; Node22 lỗi test startup chờ host30 lần*30ms. Đã đổi sang readiness deadline10s và xác nhận PID của đúng child. Full local55/55 đạt; CI của bản sửa còn chờ run.
+
+## Public live follow-up
+
+Current scoped fixture evidence is7/7 groups and42/42 new tool names with source/loaded-host hash checks and explicit cleanup.64 offline tests pass. See BROWSER-LIVE-VERIFICATION.json and capture-visibility-readiness-review.md for capture/cleanup/error fixes and fresh-context review conclusions. Earlier pending/manual-reload statements above describe the historical pre-reconnect snapshot; verified owned-native-process restart now uses extension auto-reconnect without protected-page access. Broad423 scenarios, all options/sites/frameworks and external backend parity remain unverified.

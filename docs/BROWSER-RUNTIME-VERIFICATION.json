@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-26T03:57:20.005Z",
+  "checkedAt": "2026-10-26T05:27:35.992Z",
   "runtimeVersion": "0.3.0",
   "baselineCommit": "ac7d9995897ec5a905c933d2fa11ef5cb5249d13",
-  "implementationStatus": "source-complete-supported-subset-live-pending",
+  "implementationStatus": "supported-subset-source-offline-and-scoped-public-live-passed",
   "counts": {
     "publicMcpTools": 47,
     "roadmapTools": 53,
@@ -14,7 +14,7 @@
   "offline": {
     "command": "npm test",
     "passed": true,
-    "tests": 55,
+    "tests": 64,
     "failed": 0,
     "scope": "Transport, native process simulation, MCP-to-IPC, jsdom adapter regression, source/coverage consistency and loopback fixture HTTP; not real Chrome realms/layout."
   },
@@ -29,33 +29,38 @@
   "reviews": {
     "mode": "independent-read-only-source",
     "ledger": "docs/designs/browser-runtime-full-review.md",
-    "scope": "Targeted core/observer/page fixes; no live actions by reviewers."
+    "scope": "Targeted core/observer/page fixes; no live actions by reviewers.",
+    "captureReadiness": "docs/designs/capture-visibility-readiness-review.md"
   },
   "live": {
-    "status": "not-run",
-    "passed": false,
+    "status": "scoped-fixture-passed",
+    "passed": true,
     "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-    "reason": "NEW_HOST_NOT_LOADED; manual UiPath background reload required"
+    "groups": 7,
+    "successfulNewToolNames": 42,
+    "totalNewToolNames": 42,
+    "windowScope": "explicit-visible-base-window",
+    "scope": "Exact fixture calls only; not every option, site or all423 planned scenarios."
   },
   "sourceHashes": {
-    "docs/browser-tool-contracts.json": "c92d1c93a8eb70bcafbfdc359e6d03790dfdecc404d685ab2ac2c94addf37916",
-    "src/browser-runtime.mjs": "8fcbb0e9fa70026d053d81761615bc7f03c756d01416d0a9d5317e57ca299fbb",
-    "src/browser-operations.mjs": "8bcb60c7c7594ea7ab1a157b2e1b51f7caac889c0b36214fd1c9ed1cfc243c5c",
-    "src/browser-observers.mjs": "de81433a1ec04e0fae72e2536b96b7d17668eafca131297a338c5647653939ce",
+    "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
+    "src/browser-runtime.mjs": "76dad6c5ad20f14bc6a8cd643d71976e1804ae3e6df33515522d92605d6236c4",
+    "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
+    "src/browser-observers.mjs": "b03b3b5a4592e0b691d8266d55e32006d9f71b14e3f82e05161b78ba73be1b50",
     "src/browser-composites.mjs": "3b5a49cc2206e5f093fca7cec2ebe5b654660006659f958c924d169d8000aa9f",
-    "src/browser-page.mjs": "fbfac66c3ad6d9708a98e3ce6c70f8d737bbdbd9e113465c98fd27729a33d748",
+    "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
     "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
     "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
-    "src/bridge.mjs": "ca7829ae7c13f9764a9fb4b1026c8c35c814d41af09bc6655b48d5005c0117f4",
-    "src/capabilities.mjs": "746ce96e49b6df5671dcb11eb55835b7c3e7157969e6d5b21bce8b8f3c7f24f8",
+    "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
+    "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
     "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
-    "scripts/build-runtime-coverage.mjs": "c2c4b9f3a9160ce21da147c6cf6f321caaca9e170bd63007add467c6d7f63608",
-    "test/browser-runtime.test.mjs": "b46372d34e3925c57838bc5d7e9ee8df7a5eecbcfc2537085fd1142bfd83af63",
+    "scripts/build-runtime-coverage.mjs": "59dbdc68c5ca5b3cce16db04acc33da5297d61bf2875bbf9628c0102f79bc890",
+    "test/browser-runtime.test.mjs": "45169c3f97156490bfc1e38b47c8f7255d27bb512180c722f0bd23c3dcafb4c5",
     "test/browser-harness.mjs": "77321cca65c3c8ba4258c6c171c66b5a5df3ce3d3638353b9fc8ef34a65948a4",
     "test/browser-mcp.test.mjs": "3f41734ad0869ea87e9e223693302e43dd8c6fcbb64de93b58e48af6e984da1f",
     "test/browser-fixture.test.mjs": "5d4a1c98ebb690ba0ea61ad40ca74743b8746afed2016ed69737ca997fe9bf7c",
-    "test/runtime-coverage.test.mjs": "7cf826e20798517b0bf33049d45bc292a510a93d65dc2846eefaa9b9dbdc2427",
-    "scripts/run-browser-live.mjs": "bc11a51ccedd3971d1c9e67db7fecb488768c41369b83258657159cfac40344a",
+    "test/runtime-coverage.test.mjs": "64d4a506d0d96f8721301543b460d12d0b2b5d1e9329ae174b90abe6437c2996",
+    "scripts/run-browser-live.mjs": "8aa05bbe02e4da278d7aad269dee059a71a9d90bf8306d07d55ef933a52e6abe",
     "scripts/browser-runtime-fixture.mjs": "3e0c7cdd2d3b5d3d285f0c78104ca13846c137fd36d4efc8d03b5be8a961a6bd",
     "scripts/fixtures/browser-runtime.jsx": "ea82523d6d1870081f25eb19ef30a8f26ddc78b37c490debc50b25a65ff885e0",
     "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828",
@@ -63,7 +68,7 @@
     "scripts/check-licenses.mjs": "84f313894578b84d763ffe8ccbf6d8c4052ca8c70ce5764ee527e17e41723ea9",
     ".github/workflows/ci.yml": "bd9f5ff97ebdac830f48ffe5c7f1bde5171a60f5d6f2ee09fcdde13001b9eb57",
     "test/browser-controlled.test.mjs": "79b769719624c475677e8d1dd794a0173473cfc164392fbcbf8e957d06c4695f",
-    "test/bridge.test.mjs": "fe4f9fc2957ef83ef4abf3000f2f2aaacbb5a3de289aa4f695849407b3e4f0fe"
+    "test/bridge.test.mjs": "2e722f7e186a4e645a65c04b6da84febdc40f62f2261ee949d97a27bd73dc2cc"
   },
   "packaging": {
     "sourceArchiveBuildPassed": true,
@@ -72,7 +77,8 @@
     "productionPackages": 6,
     "windowsCiConfigured": true,
     "windowsCiRunVerified": true,
-    "publishedRelease": false
+    "publishedRelease": false,
+    "windowsCiScope": "Prior c020364 baseline; current changes require their own CI run after push."
   },
   "ci": {
     "schemaVersion": 1,

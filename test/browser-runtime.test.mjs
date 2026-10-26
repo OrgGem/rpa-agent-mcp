@@ -143,3 +143,60 @@ test('new-tab waits do not hold the window write queue and client release drains
   assert.equal([...h.runtime.tabs.values()].filter(t=>t.clientRef===h.client&&!t.retired).length,0);assert.equal(h.runtime.clients.has(h.client),false);
   assert.equal((await h.call('browser_tabs')).error.code,'STALE_CONTEXT');assert.equal(h.runtime.clients.has(h.client),false);
 });
+test('confirmed tab closure proves page resources gone even after ref registry pruning',async t=>{
+  const h=await harness(t),events=await h.must('browser_events',{...h.args,action:'subscribe',eventTypes:['input']});
+  await h.must('browser_tab_close',h.args);await h.runtime.sweep();
+  const calls=h.calls.length;await h.runtime.expireWatch(h.runtime.watches.get(events.data.watchRef));assert.equal(h.runtime.cleanupUnconfirmed,0);
+  const result=await h.must('browser_attach',{action:'release',contextRef:h.args.contextRef});assert.equal(result.data.cleanupConfirmed,true);
+  assert.equal(h.calls.length,calls,'No page cleanup RPC may target an independently closed native tab');
+});
+test('structured screenshot rejection is distinct from a missing native reply',async t=>{
+  const h=await harness(t);h.setHook(name=>name==='TakeScreenshot'?{retCode:0,error:{code:8,message:'Capture denied'}}:undefined);
+  const result=await h.call('browser_screenshot',h.args);assert.equal(result.error.code,'CAPTURE_FAILED');assert.equal(result.error.details.vendorCode,8);assert.equal(result.error.details.reason,'Capture denied');
+  h.setHook(name=>name==='TakeScreenshot'?{retCode:0,error:{code:8,message:'Failed to capture tab: image readback failed'}}:undefined);
+  const unavailable=await h.call('browser_screenshot',h.args);assert.equal(unavailable.error.code,'CAPTURE_FAILED');assert.equal(h.runtime.descriptor().temporarilyUnavailable.browser_screenshot,undefined);
+});
+test('a timed-out capture preserves diagnostics without disabling a different visible target',async t=>{
+  const h=await harness(t);h.setHook(name=>{if(name==='TakeScreenshot')throw Object.assign(Error('No callback'),{code:'NATIVE_RESPONSE_TIMEOUT'});});
+  const failed=await h.call('browser_screenshot',h.args);assert.equal(failed.error.code,'TIMEOUT');assert.equal(failed.error.details.nativeCode,'NATIVE_RESPONSE_TIMEOUT');
+  const count=h.calls.filter(c=>c.name==='TakeScreenshot').length;
+  const other=(await h.must('browser_tabs',{contextRef:h.args.contextRef})).data.tabs.find(x=>x.url.startsWith('https://other'));
+  h.setHook(null);await h.must('browser_tab_activate',{contextRef:h.args.contextRef,tabRef:other.tabRef});
+  await h.must('browser_screenshot',{contextRef:h.args.contextRef,tabRef:other.tabRef});assert.equal(h.calls.filter(c=>c.name==='TakeScreenshot').length,count+1);
+  assert.equal(h.runtime.descriptor().temporarilyUnavailable.browser_screenshot,undefined);
+});
+test('visibility refresh rejects hidden targets before native capture and readiness expiry never quarantines writes',async t=>{
+  const h=await harness(t),w=h.pages.get(1).w;
+  Object.defineProperty(w.document,'visibilityState',{value:'hidden',configurable:true});
+  assert.equal((await h.must('browser_tab_get',h.args)).data.visibility,'hidden');
+  assert.equal((await h.must('browser_tabs',{contextRef:h.args.contextRef})).data.tabs.find(x=>x.tabRef===h.args.tabRef).visibility,'hidden');
+  assert.equal((await h.call('browser_screenshot',h.args)).error.code,'TARGET_NOT_VISIBLE');assert.equal(h.calls.some(c=>c.name==='TakeScreenshot'),false);
+  Object.defineProperty(w.document,'visibilityState',{value:'visible',configurable:true});w.requestAnimationFrame=()=>1;w.cancelAnimationFrame=()=>{};
+  const failed=await h.call('browser_screenshot',{...h.args,timeoutMs:5000});assert.equal(failed.error.code,'CAPTURE_NOT_READY');assert.equal(failed.error.dispatchState,'notSent');
+  assert.equal(h.calls.some(c=>c.name==='TakeScreenshot'),false);assert.equal(h.runtime.unknownTabs.size,0);
+  await h.must('browser_type',{contextRef:h.args.contextRef,elementRef:await h.find('text'),text:'still writable'});
+});
+test('render tickets enforce owner, bounded lifetime, consumption and release cleanup',async t=>{
+  const h=await harness(t),w=h.pages.get(1).w,namespace=h.runtime.namespace;
+  const run=(owner,action,extra={})=>JSON.parse(w.eval(`(${h.calls.find(c=>c.name==='InjectAndRunJs').a.jsCode})`)(null,JSON.stringify({namespace,owner,op:'render',action,...extra})));
+  const ticket=run('one','arm',{ttlMs:2000}).data.ticket;
+  assert.equal(run('two','poll',{ticket}).error.code,'REF_SCOPE_MISMATCH');assert.equal(run('two','cancel',{ticket}).error.code,'REF_SCOPE_MISMATCH');
+  let observed;const deadline=Date.now()+2000;
+  do{await delay(20);observed=run('one','poll',{ticket});}while(observed.ok&&!observed.data.ready&&Date.now()<deadline);
+  assert.equal(observed.data?.ready,true);assert.equal(run('one','poll',{ticket}).error.code,'CAPTURE_NOT_READY');assert.equal(run('one','cancel',{ticket}).ok,true);
+  run(h.args.contextRef,'arm',{ttlMs:2000});assert.equal(w[Symbol.for(namespace)].renders.size,1);
+  // Screenshot registers owner-release cleanup before an arm, even when its acknowledgement is lost.
+  const tab=h.runtime.tabs.get(h.args.tabRef),ctx=h.runtime.contexts.get(h.args.contextRef),frame=h.runtime.mainFrame({ctx},tab);h.runtime.touchFrame({ctx},tab,frame);
+  await h.must('browser_attach',{action:'release',contextRef:h.args.contextRef});assert.equal(w[Symbol.for(namespace)].renders.size,0);
+  w.requestAnimationFrame=()=>1;const expiring=run('one','arm',{ttlMs:100}).data.ticket;await delay(130);assert.equal(run('one','poll',{ticket:expiring}).error.code,'CAPTURE_NOT_READY');assert.equal(w[Symbol.for(namespace)].renders.size,0);
+});
+test('context and absolute deadline take precedence over a late readiness rejection',async t=>{
+  for(const mode of ['context','deadline']){
+    const h=await harness(t);h.setHook(async(name,a)=>{
+      if(name!=='InjectAndRunJs')return;const q=JSON.parse(a.input);if(q.op!=='render'||q.action!=='poll')return;
+      if(mode==='context')h.runtime.contexts.get(h.args.contextRef).alive=false;else await delay(160);
+      return {retCode:1,isScriptErr:0,result:JSON.stringify({ok:false,mutated:false,error:{code:'CAPTURE_NOT_READY',message:'expired'}})};
+    });
+    const result=await h.call('browser_screenshot',{...h.args,timeoutMs:100});assert.equal(result.error.code,mode==='context'?'STALE_CONTEXT':'TIMEOUT');assert.equal(result.error.dispatchState,'notSent');assert.equal(h.runtime.unknownTabs.size,0);assert.equal(h.calls.some(c=>c.name==='TakeScreenshot'),false);
+  }
+});

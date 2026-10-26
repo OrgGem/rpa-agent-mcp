@@ -27,5 +27,7 @@ snapshot hoặc uncommitted changes. Live gate, cleanup và artifact receipts ph
 `npm run licenses:check` so license metadata trong package-lock với inventory đã
 review và allowlist. Inventory gồm cả dependency development, không phải kết luận
 pháp lý. Dependency do npm cài giữ license của upstream. MIT của dự án không cấp
-quyền cho extension/driver UiPath cài riêng. Không bundle mã vendor. Signed binary
-installer, release publication và kiểm chứng upgrade/live vẫn pending.
+quyền cho extension/driver UiPath cài riêng. Không bundle mã vendor. Public fixture live đã đạt theo receipt riêng; không thay thế kiểm chứng upgrade toàn diện. Signed binary
+installer và release publication vẫn pending.
+
+Có thể nạp source mới bằng cách xác minh đúng PID/path/command line của node native host thuộc repo, bảo đảm không có action in-flight rồi dừng riêng tiến trình đó. Extension23.10.1 đã tự reconnect sau timer10s trong kiểm chứng này. Luôn xác nhận host-loaded hashes sau đó; không kill Chrome hoặc giả định cơ chế này hoạt động trên mọi version.

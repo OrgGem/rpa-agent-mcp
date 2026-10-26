@@ -43,9 +43,16 @@ Read [the usage guide](README.md) before execution.
   records exact step/cleanup outcomes in ignored work/BROWSER-LIVE-VERIFICATION.json.
   It does not retry a failed action, register a host, reload Chrome or promote its
   raw receipt to documentation automatically.
+  Optional --base-url HTTP_URL requires a unique, visible discovery result and
+  explicitly attaches to that base before opening the fixture in its window.
+  The base tab is retained; only runner-owned tabs are closed. The runner saves
+  the returned MCP image in ignored work/ and records its hash/size/dimensions.
 - [build-runtime-coverage.mjs](build-runtime-coverage.mjs) records each roadmap
   tool's exact adapter/routes and all 188 protocol row dispositions. The planning
   matrix remains the broad scenario baseline; test source does not mean test pass.
+  Scoped public live promotion requires matching current source and host-loaded
+  hashes, the exact full-suite groups/tool names and explicit cleanup. A partial
+  receipt marks only successful tool calls, never all options/native routes.
 
 ## Invariants
 

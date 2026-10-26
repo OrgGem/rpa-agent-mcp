@@ -18,13 +18,13 @@ export class BrowserRuntime{
   constructor({request,activate,root,driverVersion,now=Date.now}){
     this.request=request;this.activate=activate;this.root=root;this.driverVersion=driverVersion;this.now=now;
     this.connectionRef=opaque('con');this.namespace=opaque('rpa');this.clients=new Map();this.releasedClients=new Set();this.contexts=new Map();
-    this.tabs=new Map();this.frames=new Map();this.elements=new Map();this.watches=new Map();this.network=new Map();
+    this.tabs=new Map();this.frames=new Map();this.elements=new Map();this.watches=new Map();this.network=new Map();this.temporaryBlocks=new Map();
     this.unknownTabs=new Map();this.knownTabs=new Map();this.allocations=new Map();this.generations=new Map();this.tabQueues=new Map();this.windowQueue=Promise.resolve();this.pending=0;this.identityInitialized=false;this.cleanupUnconfirmed=0;
     this.artifacts=createArtifactStore(path.join(root,'work','browser-artifacts'),{now});this.handlers=createBrowserHandlers(this);
     this.sweeper=setInterval(()=>this.sweep().catch(()=>{}),15000);this.sweeper.unref();
   }
   descriptor(){return {protocolVersion:1,runtimeVersion:'0.3.0',sourceHashes:{...loadedSourceHashes},connectionRef:this.connectionRef,identityInitialized:this.identityInitialized,
-    tools:Object.keys(this.handlers),unavailable:UNAVAILABLE_TOOLS,limits:{contextsPerClient:16,elementRefsPerContext:2048,maxTimeoutMs:30000,maxResultBytes:245760,
+    tools:Object.keys(this.handlers),unavailable:UNAVAILABLE_TOOLS,temporarilyUnavailable:Object.fromEntries(this.temporaryBlocks),limits:{contextsPerClient:16,elementRefsPerContext:2048,maxTimeoutMs:30000,maxResultBytes:245760,
       tabLifetime:'unexpected-document-change-expires-tab-ref',inputDefault:'dom',nativeInputAtomic:false,profileIdentity:'extension-connection-only'},cleanupUnconfirmed:this.cleanupUnconfirmed};}
   client(id){
     if(typeof id!=='string'||!uuid.test(id))throw new BrowserError('INVALID_ARGUMENT','Invalid internal client identity');
@@ -57,9 +57,10 @@ export class BrowserRuntime{
   async native(name,params,op,{write=false,allowFailure=false}={}){
     const timeout=Math.min(7000,this.budget(op));if(write)op.dispatchState='sent';
     let result;
-    try{result=await this.request(name,params,timeout);}catch{
-      throw new BrowserError(write?'ACTION_OUTCOME_UNKNOWN':'TIMEOUT',write?'Native action acknowledgement was lost':'Native read did not complete',
-        {dispatchState:write?'unknown':op.dispatchState,retryableRead:!write&&op.dispatchState==='notSent',details:{route:name}});
+    try{result=await this.request(name,params,timeout);}catch(error){
+      const reported=error?.code==='NATIVE_REPORTED_ERROR';
+      throw new BrowserError(write?'ACTION_OUTCOME_UNKNOWN':reported?'BACKEND_FAILURE':'TIMEOUT',write?'Native action acknowledgement was lost':reported?'Extension reported a request failure':'Native read did not complete',
+        {dispatchState:write?'unknown':op.dispatchState,retryableRead:!write&&op.dispatchState==='notSent',details:{route:name,...(typeof error?.code==='string'?{nativeCode:error.code.slice(0,64)}:{})}});
     }
     if(write)op.dispatchState='acknowledged';
     if(!result||typeof result!=='object')throw new BrowserError(write?'ACTION_OUTCOME_UNKNOWN':'BACKEND_FAILURE','Malformed extension response',{dispatchState:write?'unknown':op.dispatchState});
@@ -121,7 +122,8 @@ export class BrowserRuntime{
     const count=await this.native('GetTabCount',{},op);
     if(!Number.isSafeInteger(count.tabCount)||count.tabCount<0)throw new BrowserError('BACKEND_FAILURE','Invalid independent tab count');
     const complete=ids.length===r.openTabsCount&&count.tabCount===r.openTabsCount;
-    if(complete){for(const tab of this.tabs.values())if(!ids.includes(tab.nativeId))this.retireTab(tab);for(const id of this.knownTabs.keys())if(!ids.includes(id)){this.knownTabs.delete(id);this.unknownTabs.delete(id);this.allocations.delete(id);for(const key of this.generations.keys())if(key.startsWith(`${id}|`))this.generations.delete(key);}}
+    if(complete){for(const ctx of this.contexts.values())for(const {tab} of ctx.cleanupFrames?.values()??[])if(!ids.includes(tab.nativeId))tab.closedConfirmed=true;
+      for(const tab of this.tabs.values())if(!ids.includes(tab.nativeId)){tab.closedConfirmed=true;this.retireTab(tab);}for(const id of this.knownTabs.keys())if(!ids.includes(id)){this.knownTabs.delete(id);this.unknownTabs.delete(id);this.allocations.delete(id);for(const key of this.generations.keys())if(key.startsWith(`${id}|`))this.generations.delete(key);}}
     return {ids,complete,count:r.openTabsCount};
   }
   async adopt(op,id,{contextRef=op.ctx?.ref??null,forceNew=false}={}){
@@ -132,11 +134,12 @@ export class BrowserRuntime{
     if(this.knownTabs.has(id)&&this.knownTabs.get(id).docToken!==observed.documentToken){for(const t of this.tabs.values())if(t.nativeId===id)this.retireTab(t);this.allocations.delete(id);}
     this.knownTabs.set(id,{docToken:observed.documentToken,windowId:meta.windowId});
     const existing=!forceNew&&[...this.tabs.values()].find(t=>!t.retired&&t.nativeId===id&&t.clientRef===op.client.id&&t.contextRef===contextRef&&t.docToken===observed.documentToken&&t.windowId===meta.windowId);
-    if(existing){Object.assign(existing,meta);return existing;}
+    const visibility=['visible','hidden'].includes(observed.data.visibility)?observed.data.visibility:'unknown';
+    if(existing){Object.assign(existing,meta,{visibility});return existing;}
     if([...this.tabs.values()].filter(t=>!t.retired).length>=8192)throw new BrowserError('LIMIT_EXCEEDED','Tab ref registry is full');
-    const tab={ref:opaque('tab'),nativeId:id,clientRef:op.client.id,contextRef,docToken:observed.documentToken,generation:observed.generation,retired:false,...meta};this.tabs.set(tab.ref,tab);return tab;
+    const tab={ref:opaque('tab'),nativeId:id,clientRef:op.client.id,contextRef,docToken:observed.documentToken,generation:observed.generation,retired:false,...meta,visibility};this.tabs.set(tab.ref,tab);return tab;
   }
-  tabData(t){return {tabRef:t.ref,url:t.url,title:t.title,windowRef:`win_${t.windowId}_${this.connectionRef.slice(-8)}`,active:t.active,status:t.status,documentGeneration:t.generation};}
+  tabData(t){return {tabRef:t.ref,url:t.url,title:t.title,windowRef:`win_${t.windowId}_${this.connectionRef.slice(-8)}`,active:t.active,status:t.status,visibility:t.visibility??'unknown',documentGeneration:t.generation};}
   mainFrame(op,tab){
     let frame=[...this.frames.values()].find(f=>!f.retired&&f.tabRef===tab.ref&&f.nativeId===0);
     if(!frame){frame={ref:opaque('frm'),tabRef:tab.ref,contextRef:op.ctx.ref,clientRef:op.client.id,nativeId:0,docToken:tab.docToken,generation:tab.generation,parentRef:null,retired:false};this.frames.set(frame.ref,frame);}
@@ -152,6 +155,7 @@ export class BrowserRuntime{
     const w=await this.native('GetWindowIdForTabId',{tabId:tab.nativeId},op);
     if(d.documentToken!==tab.docToken||w.windowId!==tab.windowId){this.retireTab(tab);throw new BrowserError('STALE_TAB','Unexpected document/tab incarnation changed; rediscover tabs');}
     tab.url=d.data.url.slice(0,2048);tab.title=d.data.title.slice(0,512);tab.status=d.data.ready?'complete':'loading';
+    tab.visibility=['visible','hidden'].includes(d.data.visibility)?d.data.visibility:'unknown';
     return tab;
   }
   async frame(op,tab,ref){
@@ -257,8 +261,10 @@ export class BrowserRuntime{
     const w={ref:opaque('watch'),kind,clientRef:op.client.id,contextRef:op.ctx.ref,expiresAt:this.now()+ttl,ttlMs:ttl,ended:false,...data};this.watches.set(w.ref,w);
     w.timer=setTimeout(()=>this.expireWatch(w).catch(()=>{w.cleanupUnconfirmed=true;}),ttl);w.timer.unref();return w;
   }
-  async cleanupPage(frame,contextRef,operation='release',extra={}){
-    const tab=this.tabs.get(frame?.tabRef);if(!tab||!frame)return false;
+  touchFrame(op,tab,frame){op.ctx.touchedFrames.add(frame.ref);op.ctx.cleanupFrames??=new Map();op.ctx.cleanupFrames.set(frame.ref,{tab,frame});}
+  cleanupTarget(contextRef,frameRef){return this.contexts.get(contextRef)?.cleanupFrames?.get(frameRef)??{frame:this.frames.get(frameRef)};}
+  async cleanupPage(frame,contextRef,operation='release',extra={},savedTab=null){
+    const tab=savedTab??this.tabs.get(frame?.tabRef);if(!tab||!frame)return false;if(tab.closedConfirmed)return true;
     try{const response=await this.request('InjectAndRunJs',{tabId:tab.nativeId,customId:`${frame.nativeId}|`,executionWorld:0,jsCode:PAGE_FUNCTION,input:JSON.stringify({namespace:this.namespace,owner:contextRef,expectedDocument:frame.docToken,op:operation,...extra})},3000);
       const value=JSON.parse(response?.result);return good(response?.retCode)&&!good(response?.isScriptErr)&&value?.ok===true;
     }catch{return false;}
@@ -266,7 +272,7 @@ export class BrowserRuntime{
   async expireWatch(w){
     if(w.ended)return;w.expired=true;w.ended=true;w.endedAt=this.now();
     if(w.kind==='network')await this.stopNetwork(w);
-    if(w.kind==='dom'&&!await this.cleanupPage(this.frames.get(w.frameRef),w.contextRef,'events',{action:'unsubscribe',watchId:w.ref})){w.cleanupUnconfirmed=true;this.cleanupUnconfirmed++;}
+    if(w.kind==='dom'){const target=this.cleanupTarget(w.contextRef,w.frameRef);if(!await this.cleanupPage(target.frame,w.contextRef,'events',{action:'unsubscribe',watchId:w.ref},target.tab)){w.cleanupUnconfirmed=true;this.cleanupUnconfirmed++;}}
   }
   async stopNetwork(w){
     if(w.stopped)return true;if(w.stopping)return w.stopping;
@@ -292,7 +298,7 @@ export class BrowserRuntime{
     ctx.alive=false;
     ctx.releasePromise=(async()=>{
     await Promise.allSettled([...(ctx.jobs??new Map())].filter(([id])=>id!==excludeRequestId).map(([,job])=>job));
-    const pageFrames=[...ctx.touchedFrames].map(id=>this.frames.get(id)).filter(Boolean),results=await Promise.allSettled(pageFrames.map(f=>this.cleanupPage(f,ctx.ref)));
+    const targets=[...ctx.touchedFrames].map(id=>ctx.cleanupFrames?.get(id)??{frame:this.frames.get(id)}),results=await Promise.allSettled(targets.map(x=>this.cleanupPage(x.frame,ctx.ref,'release',{},x.tab)));
     const pageFailures=results.filter(x=>x.status==='rejected'||x.value!==true).length;this.cleanupUnconfirmed+=pageFailures;
     let networkFailures=0;
     for(const w of this.watches.values())if(w.contextRef===ctx.ref){clearTimeout(w.timer);w.ended=true;w.endedAt=this.now();if(w.kind==='network'&&!await this.stopNetwork(w)){this.cleanupUnconfirmed++;networkFailures++;}}
@@ -343,7 +349,9 @@ export class BrowserRuntime{
       if(['browser_network_wait','browser_wait_new_tab','browser_events'].includes(name)&&['cancel','unsubscribe'].includes(args.action)&&args.watchRef){const w=this.watch(op,args.watchRef);w.cancelRequested=true;}
       const run=async()=>{
         try{
-          this.budget(op);this.preflight(op,args);await this.activation(op);
+          this.budget(op);this.preflight(op,args);
+          if(this.temporaryBlocks.has(name))throw new BrowserError('UNSUPPORTED_CAPABILITY','Backend is unavailable on this native connection; diagnose it before reconnecting',{details:{reason:this.temporaryBlocks.get(name)}});
+          await this.activation(op);
           const handler=this.handlers[name];if(!handler)throw new BrowserError('UNSUPPORTED_CAPABILITY','No browser adapter is installed');
           const outcome=await handler(op,args);
           if(!(name==='browser_attach'&&args.action==='release'))this.budget(op);

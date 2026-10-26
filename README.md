@@ -13,6 +13,8 @@ Yêu cầu runtime: Windows, Node.js 22.22.2+ (v22) hoặc 24.15+ và extension 
 
 Bản thử nghiệm đã được kiểm chứng với extension **UiPath Browser Automation 23.10.1**. Native host riêng cung cấp kết nối cho CLI và MCP; không cần chương trình `ChromeNativeMessaging.exe` của UiPath cho các thao tác đã triển khai.
 
+Public runtime đã đạt **7/7 nhóm live và42/42 tên tool browser mới** trên fixture hai origin/React, cùng64/64 offline tests. Screenshot PNG qua MCP đạt trong cửa sổ hiển thị; tab ẩn bị từ chối trước capture. Xem [kết quả và giới hạn](docs/BROWSER-LIVE-VERIFICATION.json) và [tiến độ phase](docs/DEVELOPMENT-PHASES.vi.md).
+
 ## Phạm vi hiện tại
 
 - `status`: xem native host có kết nối hay không và số cửa sổ đã đăng ký.
@@ -27,7 +29,7 @@ Bản thử nghiệm đã được kiểm chứng với extension **UiPath Brows
 
 Không phân phối lại mã extension của UiPath. Giao thức được khảo sát từ bản đã cài; chưa có cam kết tương thích các phiên bản khác. Xem `verification.json` để biết kết quả kiểm chứng thực tế, tách khỏi kiểm thử với extension mô phỏng.
 
-Đã kiểm chứng ngày 2026-10-25: native host được Chrome khởi chạy, CLI và MCP STDIO nhận được 6 phiên bản driver từ extension thật. MCP đã mở `https://www.google.com/` qua `OpenTab`, rồi đọc lại URL, tiêu đề `Google` và trạng thái `complete` từ tab ID **561209531**. Hash `BackgroundMain.js` không đổi so với trước khi đăng ký host. Chưa kiểm chứng click hoặc nhập liệu.
+Mốc bootstrap lịch sử ngày 2026-10-25: native host được Chrome khởi chạy, CLI và MCP STDIO nhận được 6 phiên bản driver từ extension thật. MCP đã mở `https://www.google.com/` qua `OpenTab`, rồi đọc lại URL, tiêu đề `Google` và trạng thái `complete` từ tab ID **561209531**. Hash `BackgroundMain.js` không đổi so với trước khi đăng ký host. Tại mốc bootstrap này chưa kiểm chứng click hoặc nhập liệu; public runtime hiện tại có receipt riêng ở trên.
 
 Native host trả lời `LoadScripts` bằng metadata phiên bản và stub `return null;` để từ chối driver bên ngoài; extension chọn package nhúng tương thích. Không sao chép mã driver UiPath vào dự án. Prototype ghim driver 23.4 đã kiểm chứng trong extension 23.10.1; chưa cam kết với phiên bản extension khác.
 

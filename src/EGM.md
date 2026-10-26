@@ -53,6 +53,17 @@ local IPC. The native host talks to the installed UiPath extension.
 - The runtime descriptor snapshots relative code/contract/lockfile hashes on module
   load. The live runner compares those to disk before browser actions, rejecting a
   stale in-memory host even if it already advertises the new tool names.
+- Tab metadata normalizes current document visibility to visible/hidden/unknown.
+  Viewport capture requires an explicit active, visible document, a two-frame
+  isolated render ticket (owner/document scoped, <=64/document, <=2s TTL), and
+  pre/post tab/window/document/visibility guards. Capture never raises a window
+  implicitly. Ticket cleanup is read-only bookkeeping, registered before arm;
+  expiration, consumption, cancel and owner release cancel its frames/timer.
+  Context/deadline errors take precedence over late readiness errors. A target
+  capture failure does not disable another visible target on the connection.
+- Touched-frame cleanup retains native targets after ref-registry pruning.
+  Only complete tab enumeration proves an independently closed document gone;
+  missing registry records alone never prove listeners were removed.
 - Validate input before activation/dispatch and output before publication.
   Per-tab queues and connection window coordination share absolute deadlines.
   Write keys reserve in flight; uncertain writes block the native tab across

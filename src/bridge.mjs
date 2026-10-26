@@ -65,9 +65,9 @@ export async function startNative() {
     const requestId = `bridge-${++nextId}`;
     const timer = setTimeout(() => {
       pending.delete(requestId);
-      reject(new Error(`UiPath extension did not answer ${functionCall}; do not automatically repeat page actions`));
+      reject(Object.assign(new Error(`UiPath extension did not answer ${functionCall}; do not automatically repeat page actions`),{code:'NATIVE_RESPONSE_TIMEOUT'}));
     }, timeout);
-    pending.set(requestId, { resolve, reject, timer });
+    pending.set(requestId, { resolve, reject, timer, functionCall });
     send({ ...params, functionCall, requestId, codeVersion: DRIVER_VERSION });
   });
   const requestVersions = async () => {
@@ -190,7 +190,7 @@ export async function startNative() {
           if (item) {
             clearTimeout(item.timer);
             pending.delete(message.returnId);
-            if (message.error) item.reject(new Error(String(message.error)));
+            if (message.error && !(item.functionCall==='TakeScreenshot'&&message.retCode===0&&typeof message.error==='object')) item.reject(Object.assign(new Error(String(message.error)),{code:'NATIVE_REPORTED_ERROR'}));
             else item.resolve(message);
           }
           continue;
