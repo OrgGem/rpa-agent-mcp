@@ -6,8 +6,7 @@ host, node_modules, .env hoặc vendor EmbeddedDriversContainer.js. Không đăn
 host, chạy browser hay publish release. Đây chưa phải gói binary/installer ký số.
 
 Windows CI chạy Node22/24, npm ci, test, matrix/coverage và license inventory,
-rồi dựng source archive. Chưa có bằng chứng workflow đã chạy trên GitHub khi
-chưa push. Cấu hình dùng action SHA cố định từ các repository
+rồi dựng source archive. Cả hai job đã đạt trên commit c020364; xem [receipt CI](WINDOWS-CI-VERIFICATION.json). Cấu hình dùng action SHA cố định từ các repository
 [checkout](https://github.com/actions/checkout) và
 [setup-node](https://github.com/actions/setup-node); hosted runner không có UiPath
 fixture thật và không được coi là browser live acceptance.

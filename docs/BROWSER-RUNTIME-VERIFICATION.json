@@ -71,14 +71,39 @@
     "licenseMetadataPackages": 71,
     "productionPackages": 6,
     "windowsCiConfigured": true,
-    "windowsCiRunVerified": false,
+    "windowsCiRunVerified": true,
     "publishedRelease": false
   },
   "ci": {
-    "baselineCommit": "71525e7c2e26775064bccf76b047a939b74335a4",
-    "runUrl": "https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40265119862",
-    "node24": "passed-tests-matrix-license-source-archive",
-    "node22": "failed-test-host-startup-short-wait",
-    "fix": "Bounded10-second readiness deadline, child PID match; pending new CI run"
+    "schemaVersion": 1,
+    "checkedAt": "2026-10-26T04:00:33.002Z",
+    "testedCommit": "c020364ee814f34ce2b5be2d5dda0fe756520373",
+    "runId": 40266585783,
+    "runUrl": "https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40266585783",
+    "passed": true,
+    "jobs": [
+      {
+        "jobId": 121390216557,
+        "node": "22.23.4",
+        "conclusion": "success",
+        "tests": 55,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "jobId": 121390216681,
+        "node": "24.22.1",
+        "conclusion": "success",
+        "testStep": "success"
+      }
+    ],
+    "checks": [
+      "npm ci",
+      "npm test",
+      "npm run matrix:check",
+      "npm run licenses:check",
+      "npm run release:source"
+    ],
+    "scope": "GitHub-hosted Windows offline validation and source archive only; no UiPath extension/native host/browser live acceptance."
   }
 }

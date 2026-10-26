@@ -35,7 +35,7 @@ là độ ưu tiên tính năng trong catalog.
 | 4 Frames | F4.6 | Frame list/attach/ref ownership, same/cross-origin boundaries; không suy closed shadow support | G0.4, F2.1 | Đã triển khai source + offline; public live pending |
 | 5 P2 | F5.1 | Dialog response policy/control path không deadlock; file picker/native helper | Backend và fixture riêng | Deferred |
 | 5 P2 | F5.2 | OCR/CV/semantic; visualTarget có viewport generation và input backend | Provider + point input đã thử | Deferred |
-| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | Đã có source ZIP/Windows CI/license inventory; CI/live/release signoff pending |
+| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | Windows CI Node22/24, source ZIP/license đạt; browser live/signed release pending |
 | 5 Native | F5.4 | Window/launch/clipboard/image artifact/native; chỉ mở backend và action đã thử | Backend riêng; F1.1 | Window/image artifact có source; launch/clipboard/native helper thiếu |
 | 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider riêng | HTML date/composites có source; SAP/provider/audit thiếu |
 | 5 Events | F5.6 | Event broker/recorder và drag; schema, TTL/backpressure, target generation | F3.1, F4.6 | DOM events/drag synthetic có source; live pending |
@@ -299,3 +299,9 @@ matrix vẫn planned; receipt G0 cũ là lịch sử sau khi source/lockfile tha
 Bổ sung bốn test dùng React thực trong jsdom, queued sanitizer/restoration và convergence. Text/check/select/date giờ xác minh retained state ở RPC sau dispatch; không chỉ dùng synchronous match. Source review focused không còn P1/P2 trong các nhánh đã đọc; đây chưa phải live Chrome. Mô tả42 tool MCP đã ghi rõ mục đích, giới hạn và recovery thay cho mô tả generic.
 
 CI commit71525e7: Node24 đã đạt cả tests/matrix/license/source archive; Node22 lỗi test startup chờ host30 lần*30ms. Đã đổi sang readiness deadline10s và xác nhận PID của đúng child. Full local55/55 đạt; CI của bản sửa còn chờ run.
+
+### Windows CI đã đạt trên remote
+
+Commit c020364 đã qua cả hai job Node22.23.4 và24.22.1 trên GitHub Windows: npm ci, tests, matrix, license inventory và source archive. Node22 log55/55,0 skipped. Xem [receipt CI](WINDOWS-CI-VERIFICATION.json) và [run40266585783](https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40266585783). Source ZIP local đã khớp26 source hashes/108 entries. Đây là CI offline/packaging, không nghiệm thu browser live.
+
+Code đã lưu trên origin/main qua71525e7 vàc020364; các feature đích vẫn pending public live. Host IPC kiểm tra lại vẫn đang chạy bản legacy, chưa có runtimeVersion/public runtime descriptor. Yêu cầu reload thủ công trang UiPath Web Automation vẫn còn hiệu lực vì Computer Use/URL policy đã chặn thao tác tự động.
