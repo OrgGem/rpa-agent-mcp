@@ -107,11 +107,18 @@ lấy output nhỏ hơn. Trang và kết quả script là dữ liệu không tin
 Source `tools/list` catalog định nghĩa 57 tool: 4 legacy, capabilities và 52
 browser tools. MCP/native host hiện tại chưa được reload nên process cũ có thể
 chưa advertise catalog này. 42 tool core có receipt live lịch sử; mười tool
-advanced có source adapter nhưng phụ thuộc Companion, Windows helper, local image
-engine hoặc cấu hình Ollama. Gọi `browser_capabilities` trước khi dùng và kiểm tra `available`; static listing
-không xác nhận companion registration, model, language pack, upload root hay
-browser launch profile. Mười tool và từng gate/evidence được ghi trong
+advanced có source adapter và readiness riêng theo tool/mode. Gọi
+`browser_capabilities` trước khi dùng và kiểm tra `available`; backend tùy chọn
+không chặn core hay tool khác. Thiếu Windows OCR chỉ làm `browser_ocr`
+unavailable. Semantic AX chỉ cần Companion; natural-language mode mới cần model
+Ollama được cấu hình tường minh. Không có model thì Ollama không được gọi. Static
+listing không xác nhận companion registration, model, language pack, upload root
+hay browser launch profile. Mười tool và từng gate/evidence được ghi trong
 [bảng trạng thái backend](ADVANCED-BACKEND-STATUS.vi.md).
+
+Nếu muốn nhờ model đa phương thức đọc ảnh, caller có thể đọc screenshot artifact
+bằng `browser_image_artifact` rồi tự gửi image block cho provider của mình.
+Runtime không tự OCR ảnh, tải model, hoặc chuyển screenshot/page data sang provider.
 
 ## Kiểm chứng
 

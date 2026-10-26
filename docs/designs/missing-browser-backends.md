@@ -1,7 +1,7 @@
 # Missing browser backends
 
 * **Author:** Codex
-* **Status:** Source implementation approved by focused fresh-context review; implementation and live acceptance in progress
+* **Status:** Source implementation complete; advanced live acceptance pending (Companion is not installed or registered)
 * **Date:** 2026-10-26
 
 ## Overview
@@ -10,19 +10,24 @@ This design adds real, bounded implementations for the ten deferred tools while
 keeping the installed UiPath extension as the owner of the existing tab, DOM,
 and element operations. A small, separately installed Chrome companion handles
 the browser APIs that the UiPath bridge does not expose. Windows OCR and
-clipboard use local Windows facilities. Image matching and accessibility
-auditing run locally. Natural-language semantic queries use an explicitly
-configured local Ollama model over a bounded accessibility snapshot; an optional
-structured mode queries Chrome's accessibility tree directly. Model output is
-limited to candidate IDs or abstention.
+clipboard use local Windows facilities. OCR is optional: without it, only
+`browser_ocr` is unavailable; a caller may instead read the owned screenshot
+artifact and pass its image to a multimodal model it controls. The runtime never
+forwards screenshots to a provider. Image matching and accessibility auditing
+run locally. Natural-language semantic queries are an optional mode using an
+explicitly configured local Ollama model over a bounded accessibility snapshot;
+the structured AX mode queries Chrome's accessibility tree directly and does
+not require Ollama. Model output is limited to candidate IDs or abstention.
 
-Backend presence is checked at runtime. Once a real adapter, strict schema, and
-offline contract tests exist, the tool is registered. If its required backend
-is not ready for the selected connection, its handler returns a typed
-`BACKEND_UNAVAILABLE` before dispatch and `browser_capabilities` reports the
-specific reason. No no-op stub is published, and no tool silently installs an
-extension, launches a browser, changes registry state, enables remote debugging,
-or installs a model or language pack.
+Backend presence is checked at runtime per tool and per mode. Once a real
+adapter, strict schema, and offline contract tests exist, the tool is
+registered. If its required backend is not ready for the selected tool/mode,
+that call returns a typed `BACKEND_UNAVAILABLE` before dispatch and
+`browser_capabilities` reports the specific reason. An optional backend never
+blocks runtime startup, core tools, or unrelated advanced tools. No no-op stub
+is published. Tools never silently install an extension, launch a browser,
+change registry state, enable remote debugging, or install a model or language
+pack.
 
 ## The Problem
 
@@ -51,8 +56,8 @@ download IDs instead of guessing that correlation.
   tunnel.
 * Make dialog response independent of a page-action queue that may be blocked
   by the dialog.
-* Provide local, explicit semantics for OCR, template matching, semantic query,
-  accessibility audit, clipboard, and browser launch.
+* Provide local, explicit semantics for optional OCR, template matching,
+  semantic query, accessibility audit, clipboard, and browser launch.
 * Test offline protocol behavior separately from live Chrome and OS evidence.
 
 ## Non-Goals
@@ -95,9 +100,10 @@ Chrome extension, not the older feature catalog:
   specifies the exact PowerShell 5.1 subprocess, FIFO, clipboard, OCR, deadline,
   and error protocol. This design delegates to its exported
   `createWindowsBrowserHelper` API rather than defining a second OS interface.
-* The model-backed mode uses the local [Ollama chat API](https://docs.ollama.com/api/chat),
+* The optional model-backed mode uses the local [Ollama chat API](https://docs.ollama.com/api/chat),
   with the strict loopback and result restrictions below. No Ollama package or
-  model is present in the inspected host, so the mode is currently unavailable.
+  model is present in the inspected host, so only natural-language mode is
+  unavailable; structured AX mode does not depend on it.
 
 The extension permission list is a prerequisite, not proof that the route is
 usable. The companion below is the proposed concrete route because the existing
@@ -337,6 +343,11 @@ second reference namespace. The source is the existing
 `browser_image_artifact` tool has inspect/read/save only and no import. The
 design does not add arbitrary image-path reads. A caller selects a template by
 cropping a region from a second owned screenshot artifact.
+
+OCR remains optional. A caller may use `browser_image_artifact` with
+`action:"read"`, its `contextRef`, and the screenshot `artifactRef` to receive
+an MCP image block and route it to a multimodal provider it controls; the
+runtime never forwards screenshot bytes to a model or provider.
 
 Add an internal artifact-store operation
 `analysisRead(clientRef,contextRef,artifactRef,{maxBytes,maxPixels})`. It
@@ -588,11 +599,11 @@ the exact owned process exits and the profile lock is independently absent.
 | Tools | Required local readiness | Default behavior when missing |
 |---|---|---|
 | `browser_press_keys`, `browser_dialog`, `browser_file_picker`, `browser_download`, semantic AX mode | Companion extension installed in the selected Chrome profile, separate native-messaging host registered, valid profile pairing and epoch, target tab attach allowed. | `browser_capabilities` reports the specific missing companion, unpaired profile, debugger conflict, unsupported picker, or policy restriction. After implementation and static registration, a call fails with `BACKEND_UNAVAILABLE` before dispatch while readiness is false. |
-| `browser_semantic_query` natural-language mode | Companion readiness plus explicit `UIPATH_SEMANTIC_MODEL`; Ollama listening on IPv4 loopback `127.0.0.1:11434` with that model installed. | Report this mode unavailable when service/model is absent. No remote fallback. |
+| `browser_semantic_query` natural-language mode | Optional mode: Companion readiness plus explicit `UIPATH_SEMANTIC_MODEL`; Ollama listening on IPv4 loopback `127.0.0.1:11434` with that model installed. | If no model is configured, report only this mode unavailable without making an HTTP request. AX mode remains available when Companion supports it. No remote fallback. |
 | `browser_launch` | Explicit executable and isolated profile alias in local config; profile is not locked by another Chrome. Extension presence is reported separately and is not inferred from process start. | After implementation, report unavailable without safe launch configuration and fail before process creation. Never default to the user's shared `Default` profile. |
 | `system_clipboard` | Windows and Windows PowerShell STA clipboard support in the same interactive session. | Report unavailable if session/backend probe fails; do not read clipboard contents during probing. |
 | `browser_visual_find` | Pinned local OpenCV.js matcher and PNG decoder packaged with runtime. | Report unavailable if package or bounded image decoder is absent. |
-| `browser_ocr` | Windows OCR API and requested language available. `en-US` is the observed host language; other machines/languages are rechecked. | Report unavailable if the configured default language is unsupported; a call for a requested unsupported language returns a typed unsupported-language error. |
+| `browser_ocr` | Optional tool: Windows OCR API and requested language available. `en-US` is the observed host language; other machines/languages are rechecked. | If the API/language is absent, only `browser_ocr` is unavailable. Screenshot artifact read remains available for caller-controlled multimodal analysis; the runtime never forwards it automatically. A requested unsupported language returns a typed unsupported-language error. |
 | `browser_accessibility_audit` | Pinned axe-core bundle packaged and fixed asynchronous isolated-world ticket route ready. | Report unavailable if bundle or script route is absent. |
 
 Use explicit local configuration for upload roots and launch profile aliases.
@@ -602,7 +613,11 @@ native commands from tool input. The Ollama endpoint is fixed to
 tool input. The natural-language mode uses direct IPv4 loopback HTTP, rejects
 redirects, bypasses environment proxies, caps request/response bytes and
 generation tokens, and returns only allowlisted candidate IDs or abstention.
-An absent Ollama service/model disables that mode; there is no remote fallback.
+Without `UIPATH_SEMANTIC_MODEL`, readiness returns unavailable without an HTTP
+request. With a model configured, readiness checks only the fixed loopback
+service/model; the model chat request is made only when the caller selects
+natural-language mode. An absent service/model disables that mode only; there
+is no remote fallback.
 
 ### Tool discovery and local-only dispatch
 
@@ -615,7 +630,8 @@ tool in `tools/list` even when its backend is unconfigured; a call checks the
 cached readiness state and returns typed `BACKEND_UNAVAILABLE` before any
 dispatch. This is a real adapter with a truthful setup gate, not a no-op
 placeholder. `browser_capabilities` reports per-tool/per-mode availability and
-reason.
+reason; an optional backend failure cannot gate core tools or another
+tool/mode.
 
 Backend probes run asynchronously at initialization and on explicit
 `browser_capabilities` refresh when the cache is older than 30 seconds. They
@@ -623,8 +639,11 @@ update an immutable readiness snapshot with fixed deadlines; tools/list never
 waits or changes dynamically. No probe reads or writes clipboard contents.
 
 The Windows helper's `capabilities({deadline,signal})` is read-only and supplies
-clipboard/Windows OCR readiness without touching the clipboard. Ollama
-readiness checks only the fixed loopback service and configured model. Companion
+clipboard/Windows OCR readiness without touching the clipboard. Its two
+readiness fields gate only `system_clipboard` and `browser_ocr` respectively.
+When no semantic model is configured, Ollama readiness returns
+`MODEL_NOT_CONFIGURED` without network access; with a model configured it checks
+only the fixed loopback service and that model. Companion
 availability is event-driven from its authenticated handshake/pairing. Image
 matcher/decoder and axe bundle readiness comes from local package loading.
 Launch readiness checks only explicit profile configuration and lock/ownership
@@ -810,6 +829,12 @@ the companion or modify a live browser.
   match, repeated match, overlapping match suppression, image bounds, deadline,
   and screenshot provenance. Run axe against known passing and failing fixture
   pages and verify sanitized bounded output.
+* **Optional-backend regression:** With no Windows helper and no semantic model,
+  prove a core operation and Companion AX query still work, while OCR and
+  semantic natural-language report only their own unavailable status. Assert
+  readiness and AX mode make zero Ollama HTTP requests. Screenshot artifact
+  reading remains available for a caller-owned multimodal route; the runtime
+  must not call that provider itself.
 * **Windows helper tests:** Mock process invocation and stdin/stdout for
   clipboard and launch; assert no clipboard content in logs, no shell
   interpolation, no shared-profile default, and no close when ownership is

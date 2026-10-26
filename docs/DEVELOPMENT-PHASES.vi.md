@@ -34,10 +34,10 @@ là độ ưu tiên tính năng trong catalog.
 | 4 Debug | F4.5 | Debugger attach/detach ownership, permission, tracing/diagnostic; không chiếm phiên người dùng | F4.1, F3.3 | Deferred: chưa có debugger ownership an toàn |
 | 4 Frames | F4.6 | Frame list/attach/ref ownership, same/cross-origin boundaries; không suy closed shadow support | G0.4, F2.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
 | 5 P2 | F5.1 | Dialog response policy/control path không deadlock; file picker/native helper | Backend và fixture riêng | Dialog + `input[type=file]` có source/Companion mock; manual Companion install và live fixture pending; OS picker không hỗ trợ |
-| 5 P2 | F5.2 | OCR/CV/semantic; visualTarget có viewport generation và input backend | Provider + point input đã thử | OCR WinRT và OpenCV chạy trên ảnh tổng hợp; Ollama dùng fake HTTP test; Chrome screenshot/model live pending |
+| 5 P2 | F5.2 | OCR/CV/semantic; visualTarget có viewport generation và input backend | OCR/Ollama chỉ cần cho mode được chọn; point input là backend riêng | OCR WinRT là tùy chọn, OpenCV chạy trên ảnh tổng hợp; semantic AX độc lập với model; Ollama fake HTTP test chỉ bao phủ natural-language mode; Chrome/model live pending |
 | 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | Companion build/launcher, license và source ZIP checks đạt; signed release và install/upgrade live pending |
 | 5 Native | F5.4 | Window/launch/clipboard/image artifact/native; chỉ mở backend và action đã thử | Backend riêng; F1.1 | Launch lock/process helper có temp fixture; clipboard chưa chạm; không launch Chrome hay profile thật |
-| 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider riêng | Accessibility audit ticket + semantic provider có source/mock; scan thật và Ollama model chưa chạy; SAP vẫn ngoài scope |
+| 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider chỉ cho natural-language mode tùy chọn | Accessibility audit ticket + AX semantic có source/mock; scan thật và Ollama model chưa chạy; SAP vẫn ngoài scope |
 | 5 Events | F5.6 | Event broker/recorder và drag; schema, TTL/backpressure, target generation | F3.1, F4.6 | DOM events/drag synthetic fixture live đạt; không trusted input |
 
 ## Quy tắc nghiệm thu
@@ -371,19 +371,20 @@ Source static catalog định nghĩa **57 tool**: 4 legacy, `browser_capabilitie
 và **52 browser tools** (42 core + 10 advanced). `tools/list` regression response
 trong source tests là 352,519 bytes dưới limit 1 MiB. MCP/native host process chưa
 được reload, nên đây không xác nhận tool list của process hiện tại. Mười tool
-advanced có source adapter và backend định kiểu. Readiness vẫn
-phụ thuộc Windows API/cấu hình, Companion load/đăng ký, upload roots được
-allowlist, Ollama model đã cấu hình hoặc profile launch cô lập. Route và evidence
-từng tool nằm trong
+advanced có source adapter và backend định kiểu. Readiness được tính riêng theo
+tool/mode: Windows OCR và Ollama natural-language là tùy chọn, không phải điều
+kiện cho core hoặc tool advanced khác; semantic AX không cần Ollama. Readiness
+còn phụ thuộc Companion load/đăng ký cho các route tương ứng, upload roots được
+allowlist, và profile launch cô lập cho tool launch. Route và evidence từng tool nằm trong
 [advanced backend status](ADVANCED-BACKEND-STATUS.vi.md).
 
 Runtime coverage ghi nhận **42 core + 10 advanced**, với advanced live verified
 **0/10**. Receipt live core 42/42 trước đây là lịch sử, chỉ gắn với hashes/scope
 được ghi; không chứng nhận source snapshot hiện tại hoặc advanced tools.
 
-Final validation: 43 local backend tests và 44 Companion tests đạt; hai strict
-runtime/backend integration tests đạt 2/2. Default `npm test` đạt **139 pass,
-0 fail, 1 skip (140 total)**; opt-in `RUN_WINDOWS_OCR_TEST=1` chạy riêng đạt 1/1
+Final validation: 43 local backend tests và 44 Companion tests đạt; ba strict
+runtime/backend integration tests đạt 3/3. Default `npm test` đạt **140 pass,
+0 fail, 1 skip (141 total)**; opt-in `RUN_WINDOWS_OCR_TEST=1` chạy riêng đạt 1/1
 với full image và crop. `npm run matrix:check` đạt 188 rows và 423 scenario vẫn
 planned. `npm run licenses:check` đạt với 74 packages / 9 production. Companion
 build, package validation, generated Unicode launcher và source ZIP inspection

@@ -66,6 +66,8 @@ Mỗi capability cần `name`, `available`, `implementationStatus`, `backend`, `
 
 Tên entry có trong catalog không đủ bật capability. Mặc định chỉ public các tool đã triển khai; nếu một tool nhiều action, từ chối action chưa hỗ trợ trước khi gửi lệnh. `browser_capabilities` cần cho biết version và lý do thiếu capability để agent lập kế hoạch.
 
+Readiness được đánh giá theo tool và mode. Backend OCR là tùy chọn: thiếu Windows OCR chỉ làm `browser_ocr` unavailable, không chặn core hoặc tool advanced khác. `browser_semantic_query` có hai mode độc lập: AX cần Companion, natural-language cần model Ollama được cấu hình tường minh; mode đầu vẫn dùng được khi mode sau unavailable. Không có model thì runtime không gửi request tới Ollama. Caller có thể đọc screenshot artifact và tự chuyển image block cho provider đa phương thức của mình; runtime không tự gửi ảnh hoặc thay OCR bằng dịch vụ bên ngoài.
+
 ## Input chung và kết quả
 
 Tool nhận JSON object có schema, các trường bắt buộc rõ và giới hạn kích thước. `contextRef` và target là bắt buộc cho thao tác trang; capability/status/list connection có thể không cần context. Không nhận nhiều target xung đột, ví dụ vừa `elementRef` vừa locator khác scope.

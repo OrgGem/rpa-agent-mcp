@@ -7,6 +7,7 @@ import { harness } from './browser-harness.mjs';
 import { validateCompanionReply, validateCompanionRequest } from '../src/companion-protocol.mjs';
 import { validateToolOutput } from '../src/browser-tools.mjs';
 import { createAccessibilityAuditTickets } from '../src/browser-accessibility.mjs';
+import { createBrowserSemanticClient } from '../src/browser-semantic.mjs';
 import { createBrowserVisualMatcher } from '../src/browser-visual.mjs';
 
 const profile = Object.freeze({ profileSessionRef: 'profile_real_backend_test', companionEpoch: 1,
@@ -53,7 +54,7 @@ function buildScenePng() {
   return PNG.sync.write(image);
 }
 
-function makeStrictCompanion() {
+function makeStrictCompanion(activeProfile = profile) {
   let runtime = null;
   let nextAuditMode = 'complete';
   let sequence = 0;
@@ -73,7 +74,7 @@ function makeStrictCompanion() {
 
   const companion = {
     extensionId: 'test-companion-extension',
-    readiness() { return { available: true, browser_capabilities: [profile] }; },
+    readiness() { return { available: true, browser_capabilities: [activeProfile] }; },
     async beginPairing() { assert.fail('a valid current binding must not open a pairing challenge'); },
     async waitForPairing() { assert.fail('a valid current binding must not wait for pairing'); },
     getBinding(...args) {
@@ -84,8 +85,8 @@ function makeStrictCompanion() {
       const tab = runtime?.tabs.get(target.tabRef);
       if (!tab || tab.clientRef !== target.ownerRef || tab.contextRef !== target.contextRef) return null;
       return { ...target, pairRef: `pair_${target.ownerRef.slice(0, 12)}`,
-        profileSessionRef: profile.profileSessionRef, companionEpoch: profile.companionEpoch,
-        connectionEpoch: profile.connectionEpoch, hostEpoch: runtime.hostEpoch,
+        profileSessionRef: activeProfile.profileSessionRef, companionEpoch: activeProfile.companionEpoch,
+        connectionEpoch: activeProfile.connectionEpoch, hostEpoch: runtime.hostEpoch,
         documentToken: tab.docToken, generation: tab.generation };
     },
     async request(requestEnvelope) {
@@ -126,6 +127,13 @@ function makeStrictCompanion() {
         }
         case 'ax.audit.cancel':
           data = { state: 'cancelled', cleanupState: 'result-dropped' };
+          break;
+        case 'ax.query':
+          assert.equal(requestEnvelope.payload.role, 'button');
+          assert.equal(requestEnvelope.payload.accessibleName, 'Continue');
+          data = { matches: [{ candidateId: 'candidate_continue', role: 'button', name: 'Continue',
+            states: { disabled: false, checked: null, expanded: null, selected: null }, backendNodeId: 17 }],
+            truncated: false, source: 'chrome-accessibility-tree' };
           break;
         default:
           assert.fail(`unexpected companion operation ${requestEnvelope.operation}`);
@@ -308,4 +316,60 @@ test('real visual matcher analyzes only context-owned synthetic screenshot artif
   });
   assert.equal(foreign.ok, false);
   assert.equal(foreign.error.code, 'STALE_ARTIFACT');
+});
+
+test('core and AX mode stay available without optional Windows OCR or an Ollama model', {
+  timeout: 12_000,
+}, async t => {
+  let modelRequests = 0;
+  const server = (await import('node:http')).createServer((_request, response) => {
+    modelRequests++;
+    response.writeHead(200, { 'content-type': 'application/json' });
+    response.end('{}');
+  });
+  await new Promise((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const endpoint = `http://127.0.0.1:${server.address().port}`;
+  const activeProfile = Object.freeze({ ...profile, profileSessionRef: 'profile_ax_without_ollama', axQuery: true });
+  const boundary = makeStrictCompanion(activeProfile);
+  const semanticClient = createBrowserSemanticClient({ model: null, endpoint });
+  const h = await harness(t, { backends: { companion: boundary.companion, semanticClient } });
+  boundary.setRuntime(h.runtime);
+
+  const descriptor = await h.runtime.capabilities();
+  assert.equal(descriptor.toolReadiness.browser_ocr.available, false);
+  assert.equal(descriptor.toolReadiness.browser_semantic_query.available, true);
+  assert.equal(descriptor.toolReadiness.browser_semantic_query.modes.ax.available, true);
+  assert.equal(descriptor.toolReadiness.browser_semantic_query.modes['natural-language'].available, false);
+  assert.equal(descriptor.toolReadiness.browser_semantic_query.modes['natural-language'].reason, 'MODEL_NOT_CONFIGURED');
+  assert.equal(descriptor.backends.semantic.available, false);
+  assert.equal(descriptor.backends.semantic.model, null);
+
+  const coreResult = await callChecked(h.runtime, h.client, 'browser_find_element', {
+    ...h.args, locator: { kind: 'css', value: '#button' },
+  });
+  assert.equal(typeof coreResult.data.elementRef, 'string');
+
+  const axResult = await callChecked(h.runtime, h.client, 'browser_semantic_query', {
+    mode: 'ax', ...h.args, role: 'button', accessibleName: 'Continue', limit: 10, includeDisabled: false,
+  });
+  assert.equal(axResult.data.mode, 'ax');
+  assert.equal(axResult.data.matches.length, 1);
+  assert.equal(axResult.data.matches[0].accessibleName, 'Continue');
+  assert.equal(axResult.data.matches[0].elementRef, null);
+  assert.ok(boundary.requests.every(validateCompanionRequest));
+  assert.equal(boundary.requests.filter(request => request.operation === 'ax.query').length, 1);
+  assert.equal(boundary.requests.some(request => request.operation === 'ax.candidates'), false,
+    'AX mode must not fetch candidate snapshots for Ollama');
+
+  const naturalLanguage = await h.runtime.call(h.client, 'browser_semantic_query', {
+    mode: 'natural-language', ...h.args, query: 'the Continue button', limit: 5,
+  });
+  assert.equal(naturalLanguage.ok, false);
+  assert.equal(naturalLanguage.error.code, 'BACKEND_UNAVAILABLE');
+  assert.equal(naturalLanguage.error.details.reason, 'MODEL_NOT_CONFIGURED');
+  assert.equal(modelRequests, 0, 'readiness and AX mode must not call Ollama when no model is configured');
 });
