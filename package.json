@@ -1,15 +1,21 @@
 {
   "name": "rpa-agent-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": "^22.22.2 || >=24.15.0"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "matrix:build": "node scripts/build-function-matrix.mjs",
-    "matrix:check": "node scripts/validate-function-matrix.mjs"
+    "matrix:check": "node scripts/validate-function-matrix.mjs",
+    "runtime:coverage": "node scripts/build-runtime-coverage.mjs",
+    "browser:preflight": "node scripts/run-browser-live.mjs",
+    "browser:live": "node scripts/run-browser-live.mjs --live",
+    "licenses:build": "node scripts/check-licenses.mjs --write",
+    "licenses:check": "node scripts/check-licenses.mjs",
+    "release:source": "pwsh -NoProfile -NonInteractive -File scripts/Build-SourceRelease.ps1"
   },
   "description": "Local MCP bridge for the installed UiPath Chrome extension, with audited capability plans.",
   "license": "MIT",
@@ -18,10 +24,13 @@
     "url": "https://github.com/OrgGem/rpa-agent-mcp.git"
   },
   "devDependencies": {
-    "acorn": "8.15.0",
-    "ajv": "8.20.0",
     "esbuild": "0.28.2",
+    "jsdom": "30.1.3",
     "react": "19.3.1",
     "react-dom": "19.3.1"
+  },
+  "dependencies": {
+    "acorn": "8.15.0",
+    "ajv": "8.20.0"
   }
 }

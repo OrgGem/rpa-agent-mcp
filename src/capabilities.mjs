@@ -21,11 +21,16 @@ const dataSchema = object({
   capabilities: { type: 'array', items: capabilitySchema },
   gates: object({ g0: object({ passed: { const: false }, verificationLevel: { const: 'source-audited' }, reason: { const: 'G0_NOT_VERIFIED' } }) })
 });
-export const CAPABILITY_OUTPUT_SCHEMA = object({
+const legacyOutputSchema = object({
   ok: { type: 'boolean' },
   data: { anyOf: [dataSchema, { type: 'null' }] },
   error: { anyOf: [object({ code: { const: 'INTERNAL_ERROR' }, message: { const: 'Capability discovery failed' } }), { type: 'null' }] }
 });
+const runtimeData=object({schemaVersion:{const:2},connection:dataSchema.properties.connection,
+  connectionRef:nullableString,tools:{type:'array',maxItems:64,items:object({name:{type:'string'},implemented:{type:'boolean'},available:{type:'boolean'},unsupportedReason:nullableString,verificationLevel:{const:'source-implemented'},contract:{const:'docs/browser-tool-contracts.json'}})},
+  historicalG0:object({receipt:{const:'docs/G0-4-LIVE-VERIFICATION.json'},scope:{const:'historical-private-fixture-not-public-tool-acceptance'}}),
+  limits:{type:['object','null']}});
+export const CAPABILITY_OUTPUT_SCHEMA={anyOf:[legacyOutputSchema,object({ok:{const:true},data:runtimeData,error:{type:'null'}})]};
 
 const liveEvidence = () => [{ kind: 'historical-live-fixture', source: 'docs/EXTENSION-LIVE-VERIFICATION.json', date: '2026-10-26' }];
 const sourceEvidence = () => [{ kind: 'historical-source-audit', source: 'docs/EXTENSION-CAPABILITY-VERIFICATION.vi.md', date: '2026-10-26' }];
@@ -42,6 +47,13 @@ export function buildCapabilities(status, pinnedDriverVersion) {
   const confirmed = driverLoaded && driverVersion === pinnedDriverVersion;
   const connection = { connected, driverLoaded, driverVersion,
     reason: !connected ? 'BRIDGE_DISCONNECTED' : confirmed ? null : 'DRIVER_NOT_CONFIRMED' };
+  if(status?.browserRuntime?.protocolVersion===1){
+    const runtime=status.browserRuntime;
+    return {ok:true,data:{schemaVersion:2,connection,connectionRef:runtime.connectionRef??null,
+      tools:[...BROWSER_TOOLS.map(t=>({name:t.name,implemented:true,available:Boolean(confirmed&&runtime.tools?.includes(t.name)),unsupportedReason:confirmed?null:connection.reason,verificationLevel:'source-implemented',contract:'docs/browser-tool-contracts.json'})),
+        ...Object.entries(UNAVAILABLE_TOOLS).map(([name,unsupportedReason])=>({name,implemented:false,available:false,unsupportedReason,verificationLevel:'source-implemented',contract:'docs/browser-tool-contracts.json'}))],
+      historicalG0:{receipt:'docs/G0-4-LIVE-VERIFICATION.json',scope:'historical-private-fixture-not-public-tool-acceptance'},limits:runtime.limits??null},error:null};
+  }
   const implemented = (name, tool, available, backend, supportedOptions, limits, verificationLevel, evidence, version = driverVersion) => ({
     name, tool, implemented: true, available, implementationStatus: 'implemented', backend,
     driverVersion: version, supportedOptions, limits, verificationLevel,
@@ -69,3 +81,4 @@ export function buildCapabilities(status, pinnedDriverVersion) {
   return { ok: true, data: { schemaVersion: 1, connection, capabilities,
     gates: { g0: { passed: false, verificationLevel: 'source-audited', reason: 'G0_NOT_VERIFIED' } } }, error: null };
 }
+import {BROWSER_TOOLS,UNAVAILABLE_TOOLS} from './browser-tools.mjs';

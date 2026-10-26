@@ -11,13 +11,20 @@ local IPC. The native host talks to the installed UiPath extension.
   `ROOT`, `EXTENSION_ID`, `ORIGIN`, `DRIVER_VERSION`, `ENDPOINT`.
 - MCP tools: `uipath_bridge_status`, `uipath_driver_versions`,
   `uipath_open_url({url})`, `uipath_tab_info({tabId})`, `browser_capabilities({})`.
+- The public runtime adds 42 strict browser tools from
+  [the JSON contract](../docs/browser-tool-contracts.json). Runtime/operations/page/
+  observers/composites/artifacts modules own contexts, document/node refs, typed
+  actions, watchers and temporary images. Ten unavailable backends are omitted.
 - [capabilities.mjs](capabilities.mjs): `buildCapabilities(status, pinnedDriverVersion)`
   and `CAPABILITY_OUTPUT_SCHEMA`. The pure builder emits bounded metadata and
-  dated historical evidence, with a closed G0 gate. Discovery reads status only;
+  dated historical evidence. New-host schema v2 reports actual adapter availability;
+  old/disconnected status retains the compatibility v1 snapshot. Discovery reads status only;
   disconnected/malformed status fails closed for extension-dependent capabilities.
   The new tool rejects explicit null arguments; legacy null normalization stays.
 - Local IPC additionally accepts `activate_driver`, `active_tab`, `find_tabs`;
   these are not published MCP tools.
+- Private IPC `browser_tool`, `browser_artifact_image`, `browser_client_release`
+  carries MCP-process clientRef. This is same-user IPC, not an authentication boundary.
 - [transport.mjs](transport.mjs): `MAX_BYTES`, `nativeFrame(message)`,
   `NativeDecoder.push(chunk)`, `LineDecoder.push(chunk)`.
 - [g0-probe.mjs](g0-probe.mjs): development-only `createG0Probe` adapter, fixed
@@ -28,7 +35,8 @@ local IPC. The native host talks to the installed UiPath extension.
 ## Invariants
 
 - Native messages use four-byte little-endian lengths and UTF-8 JSON; local IPC
-  and MCP use newline-delimited JSON. Frames/lines are limited to 1 MiB.
+  and MCP use newline-delimited JSON. Native inbound is 8 MiB for screenshot
+  payloads; native outbound and IPC/MCP lines remain 1 MiB. Artifacts precede IPC.
 - Native startup requires the configured extension origin. Endpoint identity
   derives from repository path, OS username and optional `UIPATH_BRIDGE_INSTANCE`.
   This naming and origin check do not establish a comprehensive security boundary.
@@ -39,8 +47,24 @@ local IPC. The native host talks to the installed UiPath extension.
   `OpenTab` once; subsequent retries only read metadata. A timeout may leave an
   opened tab and must not trigger an automatic repeat of navigation.
 - Tab IDs are non-negative integers. MCP tool discovery/calls require initialization.
-- Status reports `driverAutomationReady: false`. Click, type and DOM extraction
-  public tools are not implemented. Page content is untrusted input.
+- Status reports driverAutomationReady only after driver load and a valid isolated
+  identity response; this is readiness, not acceptance evidence. Public results
+  distinguish ACK, readback, verified postcondition and unknown outcomes.
+- The runtime descriptor snapshots relative code/contract/lockfile hashes on module
+  load. The live runner compares those to disk before browser actions, rejecting a
+  stale in-memory host even if it already advertises the new tool names.
+- Validate input before activation/dispatch and output before publication.
+  Per-tab queues and connection window coordination share absolute deadlines.
+  Write keys reserve in flight; uncertain writes block the native tab across
+  contexts. Explicit originating-context abandon expires all refs before unblocking.
+- Default input is synthetic isolated DOM with atomic node/document guards inside
+  the script. Optional native actions use non-atomic pre/post RPC guards.
+  MAIN evaluate uses bounded async tickets; failed scripts may have mutated and
+  quarantine writes. Password observations are redacted; user JS is never executed
+  on the Node host. Page content is untrusted input.
+- Context release/idle TTL and client exit remove owner listeners, highlights,
+  monitors and images. Native-monitor cleanup failure is explicit and retried;
+  a host crash cannot guarantee vendor listener cleanup.
 - Private G0 probe v2 targets one nonce-scoped loopback fixture; the basic suite
   uses the main frame, G0.4 uses fixed main/same-origin/cross-port frame targets,
   at most 40 temporary refs and one 5-minute session. Arbitrary commands, locators,
@@ -73,8 +97,9 @@ scope or write outcome is uncertain; the runner records that condition.
 ## Verification
 
 Run `npm test` from the repository root. These tests use a simulated extension.
-Ajv validates the new structured output against its published schema in offline
-tests. It is a development dependency; runtime remains dependency-free.
+Ajv validates strict input/output at runtime; Acorn validates function-expression
+syntax without executing user JS. Both are pinned production dependencies.
+The jsdom test harness simulates native routes/layout and is not live browser proof.
 Live browser support requires separate fixture evidence. Initial bootstrap scout
 covered bridge lines 1–300 and the complete transport file; it was not a security
 audit or a completed Goldfish design review.

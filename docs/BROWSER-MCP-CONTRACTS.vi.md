@@ -1,6 +1,6 @@
 # Hợp đồng MCP cho agent thao tác browser
 
-Bản thiết kế cập nhật ngày 2026-10-26, dùng cùng [feature catalog](BROWSER-AUTOMATION-FEATURES.vi.md), [mapping activity](BROWSER-ACTIVITY-MAPPING.vi.md) và [audit route extension](EXTENSION-CAPABILITY-VERIFICATION.vi.md). Các schema và ví dụ `browser_*` là API đề xuất. Bốn tool `uipath_*` đã qua kiểm chứng live mới; các primitive DOM chưa đạt gate G0. [JSON spec](browser-feature-spec.json) là feature registry có cấu trúc, chưa phải JSON Schema triển khai.
+Bản baseline thiết kế ngày 2026-10-26, dùng cùng [feature catalog](BROWSER-AUTOMATION-FEATURES.vi.md), [mapping activity](BROWSER-ACTIVITY-MAPPING.vi.md) và [audit route extension](EXTENSION-CAPABILITY-VERIFICATION.vi.md). Các ví dụ bên dưới giữ vocabulary đề xuất. API runtime chính xác hiện là [browser-tool-contracts.json](browser-tool-contracts.json) và [guide agent](BROWSER-RUNTIME-GUIDE.vi.md): 42 adapter mới + capabilities +4 legacy, 10 backend unsupported. Không gửi option baseline chưa có trong schema runtime. G0.4 có receipt live lịch sử; public runtime mới cần acceptance riêng.
 
 ## Context và vòng đời ref
 

@@ -808,7 +808,21 @@
       "liveVerified": false,
       "observedDirectRequestFields": [],
       "contentCommandIds": [],
-      "contentBindings": []
+      "contentBindings": [],
+      "responseFields": [
+        "retCode",
+        "tabCount"
+      ],
+      "sourceContract": {
+        "sourceOffset": 3004740,
+        "endOffset": 3004849,
+        "request": {},
+        "response": {
+          "retCode": 1,
+          "tabCount": "integer >= 0, chrome.tabs.query({}) result length"
+        },
+        "verifiedBy": "Independent pinned installed source inspection; no live claim"
+      }
     },
     {
       "name": "GetTaskMiningInfoFromFocus",

@@ -1,6 +1,6 @@
 # RPA Agent MCP
 
-Local CLI/MCP bridge cho extension UiPath trên Chrome. Runtime prototype có năm tool: bốn tool legacy và `browser_capabilities`; bộ tài liệu đi kèm mô tả roadmap và giới hạn đã audit.
+Local CLI/MCP bridge cho extension UiPath trên Chrome: **47 MCP tools** gồm bốn API legacy, `browser_capabilities` và 42 adapter browser. Xem [coverage runtime](docs/RUNTIME-FUNCTION-COVERAGE.vi.md) và [schema input/output](docs/browser-tool-contracts.json). 10 tool cần backend riêng được ghi unsupported và không xuất hiện trong `tools/list`.
 
 ```powershell
 git clone https://github.com/OrgGem/rpa-agent-mcp.git
@@ -9,7 +9,7 @@ npm ci
 npm test
 ```
 
-Yêu cầu runtime: Windows, Node.js 22+ và extension UiPath đã cài riêng. Xem phần cài đặt bên dưới để đăng ký native host. Các file native-host.json, native-host.cmd và registration-before.json được Setup.ps1 sinh trên máy cài và không được commit.
+Yêu cầu runtime: Windows, Node.js 22.22.2+ (v22) hoặc 24.15+ và extension UiPath đã cài riêng. Xem phần cài đặt bên dưới để đăng ký native host. Các file native-host.json, native-host.cmd và registration-before.json được Setup.ps1 sinh trên máy cài và không được commit.
 
 Bản thử nghiệm đã được kiểm chứng với extension **UiPath Browser Automation 23.10.1**. Native host riêng cung cấp kết nối cho CLI và MCP; không cần chương trình `ChromeNativeMessaging.exe` của UiPath cho các thao tác đã triển khai.
 
@@ -21,9 +21,9 @@ Bản thử nghiệm đã được kiểm chứng với extension **UiPath Brows
 - `open URL`: mở URL HTTP(S) trong tab mới bằng lệnh UiPath `OpenTab`.
 - `tab ID`: đọc URL, tiêu đề và trạng thái tải bằng `GetHtmlAttribute`.
 - `active`, `find URL_PATTERN`: các lệnh chẩn đoán chỉ đọc.
-- `mcp`: MCP STDIO với `uipath_bridge_status`, `uipath_driver_versions`, `uipath_open_url`, `uipath_tab_info`, `browser_capabilities`.
-- `browser_capabilities({})`: trả schema có cấu trúc, availability theo trạng thái host/driver và nguồn bằng chứng. Hoạt động khi host chưa kết nối; không nạp driver hoặc mở tab. DOM vẫn báo `G0_NOT_VERIFIED`.
-- Chưa triển khai đọc nội dung DOM, click, nhập liệu hoặc thay thế UiPath Robot. Mở tab thành công không chứng minh các chức năng đó hoạt động.
+- `mcp`: MCP STDIO với session/tab/navigation, DOM read/snapshot/find/wait, input, iframe, evaluate, form/table/tree/date, watchers, cookies và ảnh.
+- `browser_capabilities({})`: snapshot không dispatch browser action. Host mới trả schema v2 với connectionRef, tool availability, giới hạn và unsupported reasons. Availability không chứng nhận mọi option đã live; receipt G0 lịch sử tách khỏi acceptance public tool mới.
+- [Hướng dẫn agent](docs/BROWSER-RUNTIME-GUIDE.vi.md): attach, refs, requestKey, xử lý lỗi, input method, artifact và cleanup.
 
 Không phân phối lại mã extension của UiPath. Giao thức được khảo sát từ bản đã cài; chưa có cam kết tương thích các phiên bản khác. Xem `verification.json` để biết kết quả kiểm chứng thực tế, tách khỏi kiểm thử với extension mô phỏng.
 
@@ -57,7 +57,7 @@ Danh mục phản ánh các entry trong mã extension 23.10.1; những lệnh ch
 
 Đặc tả đã được [đối chiếu lại với extension ngày 2026-10-26](docs/EXTENSION-CAPABILITY-VERIFICATION.vi.md), có [audit route](docs/pinned-driver-audit.json), [probe cô lập](docs/EXTENSION-PROTOCOL-PROBES.json) và [receipt metadata live](docs/EXTENSION-LIVE-VERIFICATION.json). Receipt metadata kiểm tra bốn API legacy; kiểm chứng DOM/input riêng ở các receipt G0 bên dưới.
 
-P0 còn chờ gate G0 discovery/ref/input. FindWebCtrlElements là stub trong driver ghim; candidate discovery đúng hơn là FindSelectors. GetHtmlValue đi qua generic message 5, click qua message 6, arbitrary JS qua InjectAndRunJs. Ngoài `browser_capabilities` đã triển khai, các tên `browser_*` còn lại vẫn là đề xuất; baseline activity UiPath `latest` không đồng nghĩa extension 23.10.1 hỗ trợ toàn bộ.
+Catalog activity và ma trận cũ là baseline kế hoạch. Runtime mới dùng typed isolated DOM script cho nhiều chức năng; native literal discovery/iframe dùng FindSelectors, native click dùng GenericRequest 6, native text dùng WriteTextHtmlElem 0/4. GetHtmlValue generic 5 chỉ là route private G0 lịch sử; public read dùng script DOM. Không coi tên activity là bằng chứng endpoint vendor được gọi. [Coverage từng protocol row](docs/runtime-function-coverage.json) ghi rõ wired, dom-composite và not-wired.
 
 ## Phát triển theo phase
 
@@ -76,7 +76,7 @@ iframe và React 19.3.1 controlled DOM/model sau rerender. Hai lần lỗi đư�
 bản sửa readiness/not-found semantics; **32/32 offline tests đạt**. Fixture/server
 cleanup và tắt probe cả trong tiến trình lẫn launcher đã xác nhận. Guard fixture
 không bảo đảm atomic identity/dispatch hoặc mọi framework/site; general DOM API
-và public G0 advertisement vẫn chờ các phase tiếp theo.
+được giữ là bằng chứng lịch sử. Runtime public mới cần receipt riêng từ `node scripts/run-browser-live.mjs --live`; kết quả hiện tại nằm trong [plan](docs/DEVELOPMENT-PHASES.vi.md#runtime-public-f1f5-supported-subset).
 Receipt tổng hợp có xác nhận UI độc lập rằng cửa sổ fixture đã biến mất; raw
 CloseBrowser acknowledgement không tự được coi là cleanup pass.
 Xem [receipt host](docs/HOST-TRANSITION-VERIFICATION.json) và
@@ -88,7 +88,7 @@ ghim đã nạp; dùng legacy open/activate khi cần nạp driver có chủ đ�
 
 ## Cài đăng ký native host cho người dùng hiện tại
 
-Yêu cầu Windows, Node.js 22+, Chrome và đúng extension đã khảo sát.
+Yêu cầu Windows, Node.js 22.22.2+ (v22) hoặc 24.15+, Chrome và đúng extension đã khảo sát.
 
 ```powershell
 .\Setup.ps1 -Mode Install

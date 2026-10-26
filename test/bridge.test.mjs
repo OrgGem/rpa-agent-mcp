@@ -94,7 +94,10 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   assert.equal(init.result.protocolVersion, '2025-06-18');
   mcp.stdin.write(JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }) + '\n');
   const listed = await send('tools/list');
-  assert.deepEqual(listed.result.tools.map(tool => tool.name), ['uipath_bridge_status', 'uipath_driver_versions', 'uipath_open_url', 'uipath_tab_info', 'browser_capabilities']);
+  assert.equal(listed.result.tools.length,47);
+  assert.equal(new Set(listed.result.tools.map(t=>t.name)).size,47);
+  assert.ok(listed.result.tools.some(t=>t.name==='browser_type'));
+  assert.ok(!listed.result.tools.some(t=>t.name==='browser_ocr'));
   const discoveryTool = listed.result.tools.find(tool => tool.name === 'browser_capabilities');
   const validate = new Ajv({ strict: true }).compile(discoveryTool.outputSchema);
   const beforeDiscovery = observed.length;
@@ -103,7 +106,7 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   assert.equal(validate(discovery.result.structuredContent), true, JSON.stringify(validate.errors));
   assert.deepEqual(JSON.parse(discovery.result.content[0].text), discovery.result.structuredContent);
   assert.equal(discovery.result.structuredContent.data.connection.driverLoaded, false);
-  assert.equal(discovery.result.structuredContent.data.capabilities.find(c => c.name === 'tab.open').available, false);
+  assert.equal(discovery.result.structuredContent.data.tools.find(c => c.name === 'browser_tab_open').available, false);
   assert.equal(observed.length, beforeDiscovery, 'Capability discovery must not send extension commands');
   for (const args of [null, [], true, 'string', 1, { functionCall: 'click' }]) {
     const rejected = await send('tools/call', { name: 'browser_capabilities', arguments: args });
@@ -130,8 +133,8 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   const afterOpen = observed.length;
   const ready = (await send('tools/call', { name: 'browser_capabilities', arguments: {} })).result;
   assert.equal(validate(ready.structuredContent), true, JSON.stringify(validate.errors));
-  assert.equal(ready.structuredContent.data.capabilities.find(c => c.name === 'tab.open').available, true);
-  assert.equal(ready.structuredContent.data.gates.g0.passed, false);
+  assert.equal(ready.structuredContent.data.tools.find(c => c.name === 'browser_tab_open').available, true);
+  assert.equal(ready.structuredContent.data.historicalG0.scope,'historical-private-fixture-not-public-tool-acceptance');
   assert.equal(observed.length, afterOpen, 'Discovery must only read local host status');
   const loadScripts = observed.find(m => m.returnId === 99);
   assert.equal(loadScripts.version, DRIVER_VERSION);

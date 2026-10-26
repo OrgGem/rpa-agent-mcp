@@ -1,0 +1,4562 @@
+{
+  "schemaVersion": 1,
+  "driverVersion": "23.4.55.39317",
+  "extensionVersion": "23.10.1",
+  "counts": {
+    "publicMcpTools": 47,
+    "roadmapTools": 53,
+    "implementedBrowserTools": 43,
+    "unsupportedTools": 10,
+    "protocolRows": 188
+  },
+  "capabilityTool": {
+    "name": "browser_capabilities",
+    "status": "implemented-source",
+    "adapter": "src/capabilities.mjs",
+    "phase": "F0.2"
+  },
+  "sourceHashes": {
+    "docs/browser-tool-contracts.json": "0d25af68f64aa6397dddbe6fe780c4f36452f8cce2cc89ee382ef1fa329e9b30",
+    "src/browser-runtime.mjs": "8fcbb0e9fa70026d053d81761615bc7f03c756d01416d0a9d5317e57ca299fbb",
+    "src/browser-operations.mjs": "5916d6aa316b3688b7c569654c2563ce16d8466839e304981eb156409a525183",
+    "src/browser-observers.mjs": "de81433a1ec04e0fae72e2536b96b7d17668eafca131297a338c5647653939ce",
+    "src/browser-composites.mjs": "8a49302daffab168ab3f2de11da706d81a1c6d914d1338c33549deb510296832",
+    "src/browser-page.mjs": "fbfac66c3ad6d9708a98e3ce6c70f8d737bbdbd9e113465c98fd27729a33d748",
+    "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
+    "src/browser-tools.mjs": "94675ab8fbb758299aa68695cee619a58cd3c41c9f2b86e2a618ad2bfc01be45",
+    "src/bridge.mjs": "ca7829ae7c13f9764a9fb4b1026c8c35c814d41af09bc6655b48d5005c0117f4",
+    "src/capabilities.mjs": "746ce96e49b6df5671dcb11eb55835b7c3e7157969e6d5b21bce8b8f3c7f24f8",
+    "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
+    "scripts/build-runtime-coverage.mjs": "c2c4b9f3a9160ce21da147c6cf6f321caaca9e170bd63007add467c6d7f63608"
+  },
+  "tools": [
+    {
+      "name": "browser_attach",
+      "phase": "F1.1",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "GetHtmlAttribute",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "InjectAndRunJs"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "contextRef and selected tab metadata",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_tabs",
+      "phase": "F1.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "FindBrowserTabs",
+        "GetTabCount",
+        "GetHtmlAttribute",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "InjectAndRunJs"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "tabs[] with opaque tabRef/url/title/active/windowRef; complete/truncated",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_tab_open",
+      "phase": "F1.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "OpenTab",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "GetHtmlAttribute",
+        "GetActiveTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "new tabRef retained even if metadata/load verification times out",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_tab_get",
+      "phase": "F1.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "tab metadata/generation and unknown-action state; explicit abandon never retries or marks outcome verified",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_tab_activate",
+      "phase": "F1.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "NavigationCommand",
+        "GetActiveTabId",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "active state after activation",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_tab_close",
+      "phase": "F1.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "CloseBrowser",
+        "FindBrowserTabs",
+        "GetTabCount",
+        "GetHtmlAttribute",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "InjectAndRunJs"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "close acknowledgement plus independently enumerated absence",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_navigate",
+      "phase": "F1.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "Navigate",
+        "GetHtmlAttribute",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "InjectAndRunJs"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "acknowledgement, new tabRef after owned navigation, load observation",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_history",
+      "phase": "F1.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "NavigationCommand",
+        "GetHtmlAttribute",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "InjectAndRunJs"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "Bounded operation data",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_find_element",
+      "phase": "F2.1",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "opaque refs, exact observed matchCount, truncated; strict single reports NOT_FOUND/AMBIGUOUS_TARGET",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_find_elements",
+      "phase": "F2.1",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "opaque refs, exact observed matchCount, truncated; strict single reports NOT_FOUND/AMBIGUOUS_TARGET",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_snapshot",
+      "phase": "F2.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "bounded flat nodes with refs/parentIndex/tag/label/value/state/rect and truncation",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_get_element",
+      "phase": "F2.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "requested fields, unsupportedFields and redaction flags",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_wait_for",
+      "phase": "F2.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "Bounded operation data",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_click",
+      "phase": "F3.1",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors",
+        "IsHtmlElemValid",
+        "GenericRequest"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "method, acknowledged/verified outcome, documentChanged; no business-success inference",
+      "limitations": "Default dom is synthetic; optional uipath uses separate best-effort native identity checks."
+    },
+    {
+      "name": "browser_type",
+      "phase": "F3.1",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors",
+        "IsHtmlElemValid",
+        "WriteTextHtmlElem"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "method, valueMatch/verified outcome and redacted readback",
+      "limitations": "Default dom is synthetic; optional uipath uses separate best-effort native identity checks."
+    },
+    {
+      "name": "browser_set_text",
+      "phase": "F4.1",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "Bounded operation data",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_set_checked",
+      "phase": "F3.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors",
+        "IsHtmlElemValid",
+        "CheckHtmlElem"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "Bounded operation data",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_select_options",
+      "phase": "F3.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors",
+        "IsHtmlElemValid",
+        "HtmlSetSelectedItems"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "native HTML select only; exactly one of values/labels",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_scroll",
+      "phase": "F3.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "Bounded operation data",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_focus",
+      "phase": "F3.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "NavigationCommand",
+        "GetActiveTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "exactly one tabRef or elementRef; tab focus activates owning window",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_screenshot",
+      "phase": "F3.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-observers.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "TakeScreenshot"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "active-tab guarded bounded image artifact; no automatic activation",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_set_attribute",
+      "phase": "F4.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "Bounded operation data",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_hover",
+      "phase": "F4.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "synthetic DOM pointer/mouse events; not OS pointer movement",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_drag_and_drop",
+      "phase": "F5.6",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "synthetic HTML5 drag events, no OS drag; unsupported if browser/control rejects DataTransfer",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_frames",
+      "phase": "F4.6",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "main frame plus immediate child iframe element refs; no implicit recursive traversal",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_frame_attach",
+      "phase": "F4.6",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors",
+        "IsHtmlElemValid"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "explicit iframe ref -> owned child frameRef/document generation",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_text_selection",
+      "phase": "F4.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "DOM input/textarea selection UTF-16 offsets; SAP native selection route separate",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_highlight",
+      "phase": "F4.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "temporary owned outline restored at stop/TTL",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_evaluate",
+      "phase": "F4.1",
+      "status": "implemented-source",
+      "adapter": "src/browser-operations.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "FindSelectors",
+        "IsHtmlElemValid"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "JSON result; page MAIN world only, explicit side effects; Promise support by bounded bridge job polling",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_extract_table",
+      "phase": "F4.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-composites.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "GetHtmlAttribute",
+        "GetActiveTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "bounded rows/columns and per-page partial outcomes; pagination explicit only",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_table_cell",
+      "phase": "F4.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-composites.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "HTML table cell ref (zero-based DOM row/cell indices)",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_tree",
+      "phase": "F4.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-composites.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "HTML ARIA tree only; no generic SAP activity parity",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_calendar_select",
+      "phase": "F5.5",
+      "status": "implemented-source",
+      "adapter": "src/browser-composites.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "native input[type=date] only; custom/SAP calendars unavailable",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_form_read",
+      "phase": "F4.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-composites.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "bounded HTML controls, refs and values; password fields redacted",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_form_fill",
+      "phase": "F4.2",
+      "status": "implemented-source",
+      "adapter": "src/browser-composites.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "sequential desired-state steps, partial failures, no submit or rollback",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_close_popup",
+      "phase": "F4.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-composites.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "GetHtmlAttribute",
+        "GetActiveTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "explicit DOM close control only; not browser/OS/JS dialogs",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_network_wait",
+      "phase": "F4.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-observers.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "StartWebRequestMonitoring",
+        "AnyWebRequestsInFlight",
+        "StopWebRequestMonitoring"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "Arm before trigger, wait for continuous quiet among requests observed since arm, cancel/TTL/finally stop; no claim about pre-existing requests.",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_events",
+      "phase": "F5.6",
+      "status": "implemented-source",
+      "adapter": "src/browser-observers.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "bounded event queue, nextCursor/droppedCount, no arbitrary event serialization",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_wait_new_tab",
+      "phase": "F4.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-observers.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "FindBrowserTabs",
+        "GetTabCount",
+        "GetHtmlAttribute",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "InjectAndRunJs"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "baseline + exact URL new-tab correlation; no opener guarantee",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_cookies",
+      "phase": "F4.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-observers.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "current document origin visible cookies only; no HttpOnly/profile-wide restore",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_window",
+      "phase": "F5.4",
+      "status": "implemented-source",
+      "adapter": "src/browser-observers.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake",
+        "InjectAndRunJs",
+        "GetWindowIdForTabId",
+        "GetActiveTabId",
+        "NavigationCommand",
+        "MaximizeWindow"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "native owning-window metadata/activate/maximize only",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_image_artifact",
+      "phase": "F5.3",
+      "status": "implemented-source",
+      "adapter": "src/browser-observers.mjs",
+      "routes": [
+        "OnProductVersionChanged",
+        "Handshake"
+      ],
+      "contract": "docs/browser-tool-contracts.json",
+      "offline": {
+        "status": "test-source",
+        "source": "test/browser-runtime.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
+      },
+      "live": {
+        "status": "pending",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
+      },
+      "semantics": "owner-scoped image metadata/bounded read/export within artifact output root; never arbitrary path",
+      "limitations": "Only the enums/options in the strict input schema are implemented."
+    },
+    {
+      "name": "browser_press_keys",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "NO_SAFE_TARGETED_KEY_BACKEND: pinned normal WriteText ignores key tokens; debugger route lacks verified target/default-action semantics.",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_semantic_query",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "SEMANTIC_PROVIDER_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_dialog",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "INDEPENDENT_ASYNC_DIALOG_BACKEND_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_file_picker",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "NATIVE_FILE_PICKER_BACKEND_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_download",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "CORRELATED_DOWNLOAD_BACKEND_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_launch",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "OWNED_PROFILE_LAUNCH_BACKEND_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "system_clipboard",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "OPTIONAL_NATIVE_CLIPBOARD_BACKEND_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_visual_find",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "VISION_PROVIDER_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_ocr",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "OCR_PROVIDER_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    },
+    {
+      "name": "browser_accessibility_audit",
+      "phase": "deferred",
+      "status": "unsupported",
+      "unsupportedReason": "ACCESSIBILITY_AUDIT_ENGINE_REQUIRED",
+      "adapter": null,
+      "routes": [],
+      "offline": {
+        "status": "not-applicable"
+      },
+      "live": {
+        "status": "not-applicable"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "key": "named:AnyWebRequestsInFlight",
+      "kind": "named",
+      "name": "AnyWebRequestsInFlight",
+      "disposition": "wired",
+      "consumers": [
+        "browser_network_wait"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:AppendBigString",
+      "kind": "named",
+      "name": "AppendBigString",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:AttachDebugger",
+      "kind": "named",
+      "name": "AttachDebugger",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "Not dispatched: shared debugger ownership and targeted trusted key input are not implemented.",
+      "taskIds": [
+        "F4.5"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:BringElementIntoView",
+      "kind": "named",
+      "name": "BringElementIntoView",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_scroll"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:CheckHtmlElem",
+      "kind": "named",
+      "name": "CheckHtmlElem",
+      "disposition": "wired",
+      "consumers": [
+        "browser_set_checked"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:ClickHtmlElem",
+      "kind": "named",
+      "name": "ClickHtmlElem",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT: driver ghim dùng GenericRequest messageId 6.",
+      "taskIds": [
+        "G0.3",
+        "F3.1"
+      ],
+      "phaseNumbers": [
+        0,
+        3
+      ]
+    },
+    {
+      "key": "named:CloseBrowser",
+      "kind": "named",
+      "name": "CloseBrowser",
+      "disposition": "wired",
+      "consumers": [
+        "browser_tab_close"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:CloseMarkerTabs",
+      "kind": "named",
+      "name": "CloseMarkerTabs",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT: marker workflow legacy không có trong driver ghim và không cần cho own tab refs.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:DeleteBigString",
+      "kind": "named",
+      "name": "DeleteBigString",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:DetachDebugger",
+      "kind": "named",
+      "name": "DetachDebugger",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "Not dispatched: cannot detach a debugger owned by another client.",
+      "taskIds": [
+        "F4.5"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:EnableTracing",
+      "kind": "named",
+      "name": "EnableTracing",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DRIVER_VERSION_MISMATCH: entry chỉ có ở driver 23.10, không có ở 23.4 ghim.",
+      "taskIds": [
+        "F0.4",
+        "F4.5"
+      ],
+      "phaseNumbers": [
+        0,
+        4
+      ]
+    },
+    {
+      "key": "named:ExtractData",
+      "kind": "named",
+      "name": "ExtractData",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_extract_table",
+        "browser_table_cell"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:ExtractMetadata",
+      "kind": "named",
+      "name": "ExtractMetadata",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_extract_table",
+        "browser_table_cell"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:FindBrowserTabs",
+      "kind": "named",
+      "name": "FindBrowserTabs",
+      "disposition": "wired",
+      "consumers": [
+        "browser_tabs",
+        "browser_tab_close",
+        "browser_wait_new_tab"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:FindContainer",
+      "kind": "named",
+      "name": "FindContainer",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:FindSelectors",
+      "kind": "named",
+      "name": "FindSelectors",
+      "disposition": "wired",
+      "consumers": [
+        "browser_find_element",
+        "browser_find_elements",
+        "browser_click",
+        "browser_type",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_frame_attach",
+        "browser_evaluate"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:FindWebCtrlElements",
+      "kind": "named",
+      "name": "FindWebCtrlElements",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "PINNED_STUB_NO_CALLBACK: handler chỉ khai báo biến, không trả kết quả.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:GenericRequest",
+      "kind": "named",
+      "name": "GenericRequest",
+      "disposition": "wired",
+      "consumers": [
+        "browser_click"
+      ],
+      "reason": "Only messageId 6 non-debugger single-left-click. Generic 5 remains private historical G0 only.",
+      "taskIds": [
+        "G0.2",
+        "F2.2",
+        "G0.4",
+        "F2.3",
+        "F3.2",
+        "F3.3",
+        "F2.1",
+        "F4.1",
+        "G0.3",
+        "F3.1",
+        "F4.4",
+        "F5.6",
+        "F5.5",
+        "F1.1",
+        "F1.2",
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        1
+      ]
+    },
+    {
+      "key": "named:GetActiveTabId",
+      "kind": "named",
+      "name": "GetActiveTabId",
+      "disposition": "wired",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_activate",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_focus",
+        "browser_screenshot",
+        "browser_extract_table",
+        "browser_close_popup",
+        "browser_wait_new_tab",
+        "browser_window"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:GetAttributeForElements",
+      "kind": "named",
+      "name": "GetAttributeForElements",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_form_read",
+        "browser_extract_table"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetBigString",
+      "kind": "named",
+      "name": "GetBigString",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:GetBrowserData",
+      "kind": "named",
+      "name": "GetBrowserData",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "Not dispatched: exports cookies across the entire profile, including unrelated origins; public cookies use document.cookie only.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:GetBrowserTabZoom",
+      "kind": "named",
+      "name": "GetBrowserTabZoom",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:GetBrowserWindows",
+      "kind": "named",
+      "name": "GetBrowserWindows",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:GetFocusedHtmlElement",
+      "kind": "named",
+      "name": "GetFocusedHtmlElement",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_focus"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlAncestryInfo",
+      "kind": "named",
+      "name": "GetHtmlAncestryInfo",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlAttrValuesList",
+      "kind": "named",
+      "name": "GetHtmlAttrValuesList",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_form_read",
+        "browser_extract_table"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlAttribute",
+      "kind": "named",
+      "name": "GetHtmlAttribute",
+      "disposition": "wired",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_extract_table",
+        "browser_close_popup",
+        "browser_wait_new_tab"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlAttributesList",
+      "kind": "named",
+      "name": "GetHtmlAttributesList",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_form_read",
+        "browser_extract_table"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlCollectionById",
+      "kind": "named",
+      "name": "GetHtmlCollectionById",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT: legacy collection không tồn tại ở driver ghim; không suy schema tương đương FindSelectors.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:GetHtmlDevicePixelRatio",
+      "kind": "named",
+      "name": "GetHtmlDevicePixelRatio",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_screenshot"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "named:GetHtmlElemById",
+      "kind": "named",
+      "name": "GetHtmlElemById",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "PINNED_PARTIAL_TAB_ONLY: tabId thường/index hợp lệ không trả lời nhánh DOM.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:GetHtmlFromPoint",
+      "kind": "named",
+      "name": "GetHtmlFromPoint",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlIdInfo",
+      "kind": "named",
+      "name": "GetHtmlIdInfo",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT: chưa có contract tương đương cho helper ID legacy.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:GetHtmlIndex",
+      "kind": "named",
+      "name": "GetHtmlIndex",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlRectangle",
+      "kind": "named",
+      "name": "GetHtmlRectangle",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_screenshot"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "named:GetHtmlValue",
+      "kind": "named",
+      "name": "GetHtmlValue",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_wait_for"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetHtmlValueForElements",
+      "kind": "named",
+      "name": "GetHtmlValueForElements",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_form_read",
+        "browser_extract_table"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetRectFromText",
+      "kind": "named",
+      "name": "GetRectFromText",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "named:GetSapFioriAllColLabels",
+      "kind": "named",
+      "name": "GetSapFioriAllColLabels",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "SAP-specific native schema is not a generic HTML table contract; public table tools use isolated DOM.",
+      "taskIds": [
+        "F4.4",
+        "F5.5"
+      ],
+      "phaseNumbers": [
+        4,
+        5
+      ]
+    },
+    {
+      "key": "named:GetSelectedRange",
+      "kind": "named",
+      "name": "GetSelectedRange",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_text_selection"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:GetSelectorAttributeNames",
+      "kind": "named",
+      "name": "GetSelectorAttributeNames",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:GetTabCount",
+      "kind": "named",
+      "name": "GetTabCount",
+      "disposition": "wired",
+      "consumers": [
+        "browser_tabs",
+        "browser_tab_close",
+        "browser_wait_new_tab"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:GetTaskMiningInfoFromFocus",
+      "kind": "named",
+      "name": "GetTaskMiningInfoFromFocus",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "OUTSIDE_CURRENT_PUBLIC_CONTRACT: telemetry Task Mining không có API/schema/acceptance trong 53 tool browser; không suy thành DOM read.",
+      "taskIds": [
+        "F0.4",
+        "F5.6"
+      ],
+      "phaseNumbers": [
+        0,
+        5
+      ]
+    },
+    {
+      "key": "named:GetTaskMiningInfoFromPoint",
+      "kind": "named",
+      "name": "GetTaskMiningInfoFromPoint",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "OUTSIDE_CURRENT_PUBLIC_CONTRACT: telemetry Task Mining không có API/schema/acceptance trong 53 tool browser; không suy thành DOM read.",
+      "taskIds": [
+        "F0.4",
+        "F5.6"
+      ],
+      "phaseNumbers": [
+        0,
+        5
+      ]
+    },
+    {
+      "key": "named:GetTextFromScreenRect",
+      "kind": "named",
+      "name": "GetTextFromScreenRect",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "named:GetWindowIdForTabId",
+      "kind": "named",
+      "name": "GetWindowIdForTabId",
+      "disposition": "wired",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_get",
+        "browser_tab_activate",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_find_element",
+        "browser_find_elements",
+        "browser_snapshot",
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_click",
+        "browser_type",
+        "browser_set_text",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_scroll",
+        "browser_focus",
+        "browser_screenshot",
+        "browser_set_attribute",
+        "browser_hover",
+        "browser_drag_and_drop",
+        "browser_frames",
+        "browser_frame_attach",
+        "browser_text_selection",
+        "browser_highlight",
+        "browser_evaluate",
+        "browser_extract_table",
+        "browser_table_cell",
+        "browser_tree",
+        "browser_calendar_select",
+        "browser_form_read",
+        "browser_form_fill",
+        "browser_close_popup",
+        "browser_network_wait",
+        "browser_events",
+        "browser_wait_new_tab",
+        "browser_cookies",
+        "browser_window"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:Handshake",
+      "kind": "named",
+      "name": "Handshake",
+      "disposition": "wired",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_get",
+        "browser_tab_activate",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_find_element",
+        "browser_find_elements",
+        "browser_snapshot",
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_click",
+        "browser_type",
+        "browser_set_text",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_scroll",
+        "browser_focus",
+        "browser_screenshot",
+        "browser_set_attribute",
+        "browser_hover",
+        "browser_drag_and_drop",
+        "browser_frames",
+        "browser_frame_attach",
+        "browser_text_selection",
+        "browser_highlight",
+        "browser_evaluate",
+        "browser_extract_table",
+        "browser_table_cell",
+        "browser_tree",
+        "browser_calendar_select",
+        "browser_form_read",
+        "browser_form_fill",
+        "browser_close_popup",
+        "browser_network_wait",
+        "browser_events",
+        "browser_wait_new_tab",
+        "browser_cookies",
+        "browser_window",
+        "browser_image_artifact"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "named:HtmlGetSelectedItems",
+      "kind": "named",
+      "name": "HtmlGetSelectedItems",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_select_options",
+        "browser_get_element",
+        "browser_form_fill"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:HtmlSetSelectedItems",
+      "kind": "named",
+      "name": "HtmlSetSelectedItems",
+      "disposition": "wired",
+      "consumers": [
+        "browser_select_options"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:IgnoreNextKeystrokeEvent",
+      "kind": "named",
+      "name": "IgnoreNextKeystrokeEvent",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT_AND_WRONG_SEMANTICS: bỏ qua sự kiện recorder không phải phát phím.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:InjectAndRunJs",
+      "kind": "named",
+      "name": "InjectAndRunJs",
+      "disposition": "wired",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_get",
+        "browser_tab_activate",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_find_element",
+        "browser_find_elements",
+        "browser_snapshot",
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_click",
+        "browser_type",
+        "browser_set_text",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_scroll",
+        "browser_focus",
+        "browser_screenshot",
+        "browser_set_attribute",
+        "browser_hover",
+        "browser_drag_and_drop",
+        "browser_frames",
+        "browser_frame_attach",
+        "browser_text_selection",
+        "browser_highlight",
+        "browser_evaluate",
+        "browser_extract_table",
+        "browser_table_cell",
+        "browser_tree",
+        "browser_calendar_select",
+        "browser_form_read",
+        "browser_form_fill",
+        "browser_close_popup",
+        "browser_network_wait",
+        "browser_events",
+        "browser_wait_new_tab",
+        "browser_cookies",
+        "browser_window"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:IsBrowserTabActive",
+      "kind": "named",
+      "name": "IsBrowserTabActive",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:IsHtmlElemDisabled",
+      "kind": "named",
+      "name": "IsHtmlElemDisabled",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_focus"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:IsHtmlElemValid",
+      "kind": "named",
+      "name": "IsHtmlElemValid",
+      "disposition": "wired",
+      "consumers": [
+        "browser_click",
+        "browser_type",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_frame_attach",
+        "browser_evaluate"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:IsHtmlElemVisible",
+      "kind": "named",
+      "name": "IsHtmlElemVisible",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_focus"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:IsHtmlPointVisible",
+      "kind": "named",
+      "name": "IsHtmlPointVisible",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_focus"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:IsHtmlVisible",
+      "kind": "named",
+      "name": "IsHtmlVisible",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT: visibility legacy không có ở driver ghim; không alias âm thầm.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:IsInstanceOfHtmlElement",
+      "kind": "named",
+      "name": "IsInstanceOfHtmlElement",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT: helper legacy không có tuyến trực tiếp đã audit trong driver ghim.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:IsSamplePartOfANewColumn",
+      "kind": "named",
+      "name": "IsSamplePartOfANewColumn",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_extract_table",
+        "browser_table_cell"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:IsTabContentAccessible",
+      "kind": "named",
+      "name": "IsTabContentAccessible",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:MatchesTag",
+      "kind": "named",
+      "name": "MatchesTag",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "named:MaximizeWindow",
+      "kind": "named",
+      "name": "MaximizeWindow",
+      "disposition": "wired",
+      "consumers": [
+        "browser_window"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F5.4"
+      ],
+      "phaseNumbers": [
+        5
+      ]
+    },
+    {
+      "key": "named:MonitorNativeEvents",
+      "kind": "named",
+      "name": "MonitorNativeEvents",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_events"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F5.6"
+      ],
+      "phaseNumbers": [
+        5
+      ]
+    },
+    {
+      "key": "named:MouseWheelDebugger",
+      "kind": "named",
+      "name": "MouseWheelDebugger",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:Navigate",
+      "kind": "named",
+      "name": "Navigate",
+      "disposition": "wired",
+      "consumers": [
+        "browser_navigate"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.3"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:NavigationCommand",
+      "kind": "named",
+      "name": "NavigationCommand",
+      "disposition": "wired",
+      "consumers": [
+        "browser_tab_activate",
+        "browser_history",
+        "browser_focus",
+        "browser_window"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.3"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:OpenMarkerTabs",
+      "kind": "named",
+      "name": "OpenMarkerTabs",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "DIRECT_ENTRY_ABSENT: marker workflow legacy không có trong driver ghim và không cần cho own tab refs.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "named:OpenTab",
+      "kind": "named",
+      "name": "OpenTab",
+      "disposition": "wired",
+      "consumers": [
+        "browser_tab_open"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:ReplaceTabAndNavigate",
+      "kind": "named",
+      "name": "ReplaceTabAndNavigate",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "Not dispatched: replacing a native tab needs separate ownership/identity semantics; public navigate uses Navigate.",
+      "taskIds": [
+        "F1.3"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "named:RunJS",
+      "kind": "named",
+      "name": "RunJS",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:ScrollIntoView",
+      "kind": "named",
+      "name": "ScrollIntoView",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_scroll"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:SetBigString",
+      "kind": "named",
+      "name": "SetBigString",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:SetBrowserData",
+      "kind": "named",
+      "name": "SetBrowserData",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "Not dispatched: profile-wide destructive cookie replacement is not a scoped/transactional cookie API.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:SetFocusedHtmlElement",
+      "kind": "named",
+      "name": "SetFocusedHtmlElement",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_focus"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:SetHtmlAttribute",
+      "kind": "named",
+      "name": "SetHtmlAttribute",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_set_attribute"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:SetSelectedRange",
+      "kind": "named",
+      "name": "SetSelectedRange",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_text_selection"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:SimulateEvent",
+      "kind": "named",
+      "name": "SimulateEvent",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_hover",
+        "browser_drag_and_drop",
+        "browser_close_popup"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4",
+        "F5.6"
+      ],
+      "phaseNumbers": [
+        4,
+        5
+      ]
+    },
+    {
+      "key": "named:StartHighlight",
+      "kind": "named",
+      "name": "StartHighlight",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_highlight"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:StartWebRequestMonitoring",
+      "kind": "named",
+      "name": "StartWebRequestMonitoring",
+      "disposition": "wired",
+      "consumers": [
+        "browser_network_wait"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:StopHighlight",
+      "kind": "named",
+      "name": "StopHighlight",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_highlight"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:StopWebRequestMonitoring",
+      "kind": "named",
+      "name": "StopWebRequestMonitoring",
+      "disposition": "wired",
+      "consumers": [
+        "browser_network_wait"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F4.3"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:SupportsDebugger",
+      "kind": "named",
+      "name": "SupportsDebugger",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No debugger-backed public option is enabled.",
+      "taskIds": [
+        "F4.5"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:TakeScreenshot",
+      "kind": "named",
+      "name": "TakeScreenshot",
+      "disposition": "wired",
+      "consumers": [
+        "browser_screenshot"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "named:TreeExpandPath",
+      "kind": "named",
+      "name": "TreeExpandPath",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_tree"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:TreeGetAllPaths",
+      "kind": "named",
+      "name": "TreeGetAllPaths",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_tree"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:TreeGetNodePath",
+      "kind": "named",
+      "name": "TreeGetNodePath",
+      "disposition": "dom-composite",
+      "consumers": [
+        "browser_tree"
+      ],
+      "reason": "This vendor function is not dispatched. Public semantics use typed isolated InjectAndRunJs DOM operations; no parity with native/SAP/extraction schema is claimed.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "named:WriteTextHtmlElem",
+      "kind": "named",
+      "name": "WriteTextHtmlElem",
+      "disposition": "wired",
+      "consumers": [
+        "browser_type"
+      ],
+      "reason": "Native text only options 0/4; debugger key-token route is unavailable.",
+      "taskIds": [
+        "G0.3",
+        "F3.1",
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        0,
+        3,
+        4
+      ]
+    },
+    {
+      "key": "loader:CanLoadDriverVersion",
+      "kind": "loader",
+      "name": "CanLoadDriverVersion",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "loader:GetEmbeddedDriverVersions",
+      "kind": "loader",
+      "name": "GetEmbeddedDriverVersions",
+      "disposition": "wired",
+      "consumers": [
+        "uipath_driver_versions"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "loader:OnProductVersionChanged",
+      "kind": "loader",
+      "name": "OnProductVersionChanged",
+      "disposition": "wired",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_get",
+        "browser_tab_activate",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_find_element",
+        "browser_find_elements",
+        "browser_snapshot",
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_click",
+        "browser_type",
+        "browser_set_text",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_scroll",
+        "browser_focus",
+        "browser_screenshot",
+        "browser_set_attribute",
+        "browser_hover",
+        "browser_drag_and_drop",
+        "browser_frames",
+        "browser_frame_attach",
+        "browser_text_selection",
+        "browser_highlight",
+        "browser_evaluate",
+        "browser_extract_table",
+        "browser_table_cell",
+        "browser_tree",
+        "browser_calendar_select",
+        "browser_form_read",
+        "browser_form_fill",
+        "browser_close_popup",
+        "browser_network_wait",
+        "browser_events",
+        "browser_wait_new_tab",
+        "browser_cookies",
+        "browser_window",
+        "browser_image_artifact"
+      ],
+      "reason": "Exact public adapter and shared lifecycle/identity route listed in consumers.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "loader:_ValidatePermissions",
+      "kind": "loader",
+      "name": "_ValidatePermissions",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public route in the strict supported subset needs this vendor endpoint; no raw dispatcher is exposed.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "host-callback:GetDetailedDriverVersion",
+      "kind": "host-callback",
+      "name": "GetDetailedDriverVersion",
+      "disposition": "fixed-host-handler",
+      "consumers": [],
+      "reason": "Fixed pinned host callback, not a callable public tool.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "host-callback:IsTraceEnabled",
+      "kind": "host-callback",
+      "name": "IsTraceEnabled",
+      "disposition": "fixed-host-handler",
+      "consumers": [],
+      "reason": "Fixed pinned host callback, not a callable public tool.",
+      "taskIds": [
+        "F4.5"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "host-callback:LoadScripts",
+      "kind": "host-callback",
+      "name": "LoadScripts",
+      "disposition": "fixed-host-handler",
+      "consumers": [],
+      "reason": "Fixed pinned host callback, not a callable public tool.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "host-callback:RegisterNewlyCreatedWindowId",
+      "kind": "host-callback",
+      "name": "RegisterNewlyCreatedWindowId",
+      "disposition": "fixed-host-handler",
+      "consumers": [],
+      "reason": "Fixed pinned host callback, not a callable public tool.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "host-callback:UnregisterWindowId",
+      "kind": "host-callback",
+      "name": "UnregisterWindowId",
+      "disposition": "fixed-host-handler",
+      "consumers": [],
+      "reason": "Fixed pinned host callback, not a callable public tool.",
+      "taskIds": [
+        "F0.3",
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        0,
+        1
+      ]
+    },
+    {
+      "key": "content:0",
+      "kind": "content",
+      "name": "0",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "content:1",
+      "kind": "content",
+      "name": "1",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_set_checked"
+      ],
+      "reason": "Vendor background route CheckHtmlElem forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "content:2",
+      "kind": "content",
+      "name": "2",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_click"
+      ],
+      "reason": "Vendor background route GenericRequest forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "G0.3",
+        "F3.1"
+      ],
+      "phaseNumbers": [
+        0,
+        3
+      ]
+    },
+    {
+      "key": "content:3",
+      "kind": "content",
+      "name": "3",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:4",
+      "kind": "content",
+      "name": "4",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "content:5",
+      "kind": "content",
+      "name": "5",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:6",
+      "kind": "content",
+      "name": "6",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:7",
+      "kind": "content",
+      "name": "7",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:8",
+      "kind": "content",
+      "name": "8",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_find_element",
+        "browser_find_elements",
+        "browser_click",
+        "browser_type",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_frame_attach",
+        "browser_evaluate"
+      ],
+      "reason": "Vendor background route FindSelectors forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:9",
+      "kind": "content",
+      "name": "9",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:10",
+      "kind": "content",
+      "name": "10",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:11",
+      "kind": "content",
+      "name": "11",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_extract_table",
+        "browser_close_popup",
+        "browser_wait_new_tab"
+      ],
+      "reason": "Vendor background route GetHtmlAttribute forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:12",
+      "kind": "content",
+      "name": "12",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:13",
+      "kind": "content",
+      "name": "13",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:14",
+      "kind": "content",
+      "name": "14",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "content:15",
+      "kind": "content",
+      "name": "15",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:16",
+      "kind": "content",
+      "name": "16",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:17",
+      "kind": "content",
+      "name": "17",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "content:18",
+      "kind": "content",
+      "name": "18",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:19",
+      "kind": "content",
+      "name": "19",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "content:20",
+      "kind": "content",
+      "name": "20",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4",
+        "F5.5"
+      ],
+      "phaseNumbers": [
+        4,
+        5
+      ]
+    },
+    {
+      "key": "content:21",
+      "kind": "content",
+      "name": "21",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:22",
+      "kind": "content",
+      "name": "22",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "content:23",
+      "kind": "content",
+      "name": "23",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "content:24",
+      "kind": "content",
+      "name": "24",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:25",
+      "kind": "content",
+      "name": "25",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_select_options"
+      ],
+      "reason": "Vendor background route HtmlSetSelectedItems forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "content:26",
+      "kind": "content",
+      "name": "26",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:27",
+      "kind": "content",
+      "name": "27",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_attach",
+        "browser_tabs",
+        "browser_tab_open",
+        "browser_tab_get",
+        "browser_tab_activate",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_find_element",
+        "browser_find_elements",
+        "browser_snapshot",
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_click",
+        "browser_type",
+        "browser_set_text",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_scroll",
+        "browser_focus",
+        "browser_screenshot",
+        "browser_set_attribute",
+        "browser_hover",
+        "browser_drag_and_drop",
+        "browser_frames",
+        "browser_frame_attach",
+        "browser_text_selection",
+        "browser_highlight",
+        "browser_evaluate",
+        "browser_extract_table",
+        "browser_table_cell",
+        "browser_tree",
+        "browser_calendar_select",
+        "browser_form_read",
+        "browser_form_fill",
+        "browser_close_popup",
+        "browser_network_wait",
+        "browser_events",
+        "browser_wait_new_tab",
+        "browser_cookies",
+        "browser_window"
+      ],
+      "reason": "Vendor background route InjectAndRunJs forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:28",
+      "kind": "content",
+      "name": "28",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:29",
+      "kind": "content",
+      "name": "29",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_click",
+        "browser_type",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_frame_attach",
+        "browser_evaluate"
+      ],
+      "reason": "Vendor background route IsHtmlElemValid forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:30",
+      "kind": "content",
+      "name": "30",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:31",
+      "kind": "content",
+      "name": "31",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:32",
+      "kind": "content",
+      "name": "32",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:33",
+      "kind": "content",
+      "name": "33",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "content:34",
+      "kind": "content",
+      "name": "34",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_tab_activate",
+        "browser_history",
+        "browser_focus",
+        "browser_window"
+      ],
+      "reason": "Vendor background route NavigationCommand forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "F1.3"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "content:35",
+      "kind": "content",
+      "name": "35",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:36",
+      "kind": "content",
+      "name": "36",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "content:37",
+      "kind": "content",
+      "name": "37",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "content:38",
+      "kind": "content",
+      "name": "38",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:39",
+      "kind": "content",
+      "name": "39",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4",
+        "F5.6"
+      ],
+      "phaseNumbers": [
+        4,
+        5
+      ]
+    },
+    {
+      "key": "content:40",
+      "kind": "content",
+      "name": "40",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:41",
+      "kind": "content",
+      "name": "41",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:42",
+      "kind": "content",
+      "name": "42",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:43",
+      "kind": "content",
+      "name": "43",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:44",
+      "kind": "content",
+      "name": "44",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "content:45",
+      "kind": "content",
+      "name": "45",
+      "disposition": "indirect-vendor-content",
+      "consumers": [
+        "browser_type"
+      ],
+      "reason": "Vendor background route WriteTextHtmlElem forwards internally; not called as raw content ID.",
+      "taskIds": [
+        "G0.3",
+        "F3.1",
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        0,
+        3,
+        4
+      ]
+    },
+    {
+      "key": "content:46",
+      "kind": "content",
+      "name": "46",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "content:47",
+      "kind": "content",
+      "name": "47",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "content:48",
+      "kind": "content",
+      "name": "48",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F5.6"
+      ],
+      "phaseNumbers": [
+        5
+      ]
+    },
+    {
+      "key": "content:49",
+      "kind": "content",
+      "name": "49",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public raw content dispatcher. DOM composites do not imply this native content command was invoked.",
+      "taskIds": [
+        "F0.4"
+      ],
+      "phaseNumbers": [
+        0
+      ]
+    },
+    {
+      "key": "generic:map:5",
+      "kind": "generic",
+      "name": "5",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:6",
+      "kind": "generic",
+      "name": "6",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.3",
+        "F3.1"
+      ],
+      "phaseNumbers": [
+        0,
+        3
+      ]
+    },
+    {
+      "key": "generic:map:10",
+      "kind": "generic",
+      "name": "10",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:15",
+      "kind": "generic",
+      "name": "15",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:40",
+      "kind": "generic",
+      "name": "40",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "generic:map:4",
+      "kind": "generic",
+      "name": "4",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "generic:map:34",
+      "kind": "generic",
+      "name": "34",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:24",
+      "kind": "generic",
+      "name": "24",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:12",
+      "kind": "generic",
+      "name": "12",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "generic:map:23",
+      "kind": "generic",
+      "name": "23",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:60",
+      "kind": "generic",
+      "name": "60",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:25",
+      "kind": "generic",
+      "name": "25",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "generic:map:20",
+      "kind": "generic",
+      "name": "20",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "generic:map:36",
+      "kind": "generic",
+      "name": "36",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:13",
+      "kind": "generic",
+      "name": "13",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "generic:map:11",
+      "kind": "generic",
+      "name": "11",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F3.2"
+      ],
+      "phaseNumbers": [
+        3
+      ]
+    },
+    {
+      "key": "generic:map:7",
+      "kind": "generic",
+      "name": "7",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.3",
+        "F3.1",
+        "F4.1"
+      ],
+      "phaseNumbers": [
+        0,
+        3,
+        4
+      ]
+    },
+    {
+      "key": "generic:map:18",
+      "kind": "generic",
+      "name": "18",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:16",
+      "kind": "generic",
+      "name": "16",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.2"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:21",
+      "kind": "generic",
+      "name": "21",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "generic:map:22",
+      "kind": "generic",
+      "name": "22",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F2.2",
+        "F3.3"
+      ],
+      "phaseNumbers": [
+        2,
+        3
+      ]
+    },
+    {
+      "key": "generic:map:17",
+      "kind": "generic",
+      "name": "17",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:46",
+      "kind": "generic",
+      "name": "46",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.4",
+        "F5.6"
+      ],
+      "phaseNumbers": [
+        4,
+        5
+      ]
+    },
+    {
+      "key": "generic:map:19",
+      "kind": "generic",
+      "name": "19",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:2",
+      "kind": "generic",
+      "name": "2",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:47",
+      "kind": "generic",
+      "name": "47",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.4",
+        "F5.5"
+      ],
+      "phaseNumbers": [
+        4,
+        5
+      ]
+    },
+    {
+      "key": "generic:map:63",
+      "kind": "generic",
+      "name": "63",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:64",
+      "kind": "generic",
+      "name": "64",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:65",
+      "kind": "generic",
+      "name": "65",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:66",
+      "kind": "generic",
+      "name": "66",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.4"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:55",
+      "kind": "generic",
+      "name": "55",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:54",
+      "kind": "generic",
+      "name": "54",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.4",
+        "F2.2",
+        "F2.3"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:41",
+      "kind": "generic",
+      "name": "41",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "generic:map:42",
+      "kind": "generic",
+      "name": "42",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F1.1",
+        "F1.2"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    },
+    {
+      "key": "generic:map:14",
+      "kind": "generic",
+      "name": "14",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:52",
+      "kind": "generic",
+      "name": "52",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "G0.2",
+        "F2.1"
+      ],
+      "phaseNumbers": [
+        0,
+        2
+      ]
+    },
+    {
+      "key": "generic:map:44",
+      "kind": "generic",
+      "name": "44",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:43",
+      "kind": "generic",
+      "name": "43",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:map:45",
+      "kind": "generic",
+      "name": "45",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F4.2"
+      ],
+      "phaseNumbers": [
+        4
+      ]
+    },
+    {
+      "key": "generic:special:6",
+      "kind": "generic",
+      "name": "6",
+      "disposition": "wired",
+      "consumers": [
+        "browser_click"
+      ],
+      "reason": "Only GenericRequest special messageId 6 non-debugger click.",
+      "taskIds": [
+        "G0.3",
+        "F3.1"
+      ],
+      "phaseNumbers": [
+        0,
+        3
+      ]
+    },
+    {
+      "key": "generic:special:75",
+      "kind": "generic",
+      "name": "75",
+      "disposition": "not-wired",
+      "consumers": [],
+      "reason": "No public arbitrary generic route. Mapped/special IDs are not interchangeable; historical private G0 is separate.",
+      "taskIds": [
+        "F1.1"
+      ],
+      "phaseNumbers": [
+        1
+      ]
+    }
+  ],
+  "limitations": [
+    "Every catalog row has a disposition, not every endpoint is dispatched.",
+    "The 423 original acceptance scenarios remain planned until individually evidenced.",
+    "Test source, live smoke, deployed host and general site/framework support are separate evidence levels."
+  ]
+}

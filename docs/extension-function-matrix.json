@@ -7,16 +7,16 @@
   "status": "planning-matrix-not-runtime-capabilities",
   "sourceHashes": {
     "docs/uipath-function-catalog.json": "97ebd843564792702590210064121392f8a0bc19f130457fc863737ea593c753",
-    "docs/pinned-driver-audit.json": "2266f8bc6f972c18b4575ae213987fbacf1877e79dc442de3a97e73c58265e24",
+    "docs/pinned-driver-audit.json": "a7bc0fc158e082edd15d802fd506f3d62d2ba6a7f7f360bc785759ccb46b6730",
     "docs/browser-feature-spec.json": "2a7b9d3c095a6bb584b1b45441ec669d0b947b8f286f15019e2a8a875a05a305",
     "docs/G0-LIVE-VERIFICATION.json": "79e9d0adad2de1fb7b3516e51e1ac27407118e2d0b57b00bb4aceb78c9b91d68",
     "docs/G0-4-LIVE-VERIFICATION.json": "86475b84e8d7236aff881f0e84ce7abc4593f9e6a1c160cdbec21b1798655b5d",
-    "src/bridge.mjs": "86e5fcf4fb91ab0d634527fab9121c66036e1558e39d0b1e32337090289c98b1",
+    "src/bridge.mjs": "ca7829ae7c13f9764a9fb4b1026c8c35c814d41af09bc6655b48d5005c0117f4",
     "src/g0-probe.mjs": "67a07ee3174c6ae5b913cbbfbbc335f60c49ca7841e30575e5d483309b7d18a7",
     "scripts/run-g04.mjs": "feb825e68aeb8fe3427ea6f5e0f57eb45bf7b75e6414ae732ee16de37ead2907",
     "scripts/g04-fixture.mjs": "54d072c11112a50c5eb5e703c20997d682dbf07c45996071dd64f09a919c0f51",
     "scripts/fixtures/g04-app.jsx": "2d797468f4665eed63f5f16701e4af910e5430f58fb73115f3f882f6e68c8b8e",
-    "package-lock.json": "c44eea366b8755bb57add8e17ade0997b3b8d87a246c2a95aaf30bc6bfc62868"
+    "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
   },
   "counts": {
     "named": 88,
@@ -394,7 +394,7 @@
         1
       ],
       "implementationStatus": "partial",
-      "implementedScope": "Private G0.4 orphan cleanup after proven native PID/start-time change; exact owned fixture URL/title/tab guards. Public general DOM APIs/options remain gated.",
+      "implementedScope": "Private owned fixture cleanup acknowledged; no general tab-close API verification. Public general DOM APIs/options remain gated.",
       "pinnedRoute": {
         "entryPresent": true,
         "status": "source-path-unverified",
@@ -427,12 +427,6 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Private owned fixture cleanup acknowledged; no general tab-close API verification."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Private G0.4 orphan cleanup after proven native PID/start-time change; exact owned fixture URL/title/tab guards. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
       "tests": [
@@ -923,7 +917,7 @@
         2
       ],
       "implementationStatus": "partial",
-      "implementedScope": "Private G0.4 fixed main/same-origin/cross-port iframe paths; not-found translation and refind after clone/navigation/frame reload. Public general DOM APIs/options remain gated.",
+      "implementedScope": "Private main-frame fixture: missing=0, input=1, duplicates=2, button=1; owned tab|0|local ID normalization. Public general DOM APIs/options remain gated.",
       "pinnedRoute": {
         "entryPresent": true,
         "status": "source-path-unverified",
@@ -955,12 +949,6 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Private main-frame fixture: missing=0, input=1, duplicates=2, button=1; owned tab|0|local ID normalization."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Private G0.4 fixed main/same-origin/cross-port iframe paths; not-found translation and refind after clone/navigation/frame reload. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
       "tests": [
@@ -1097,7 +1085,7 @@
         1
       ],
       "implementationStatus": "partial",
-      "implementedScope": "Private G0.4 messageId 5 fixed input value readback in main/child frames and React controls. Public general DOM APIs/options remain gated.",
+      "implementedScope": "Private fixture messageId 5 value read and special messageId 6 single click, flags=0 only. Public general DOM APIs/options remain gated.",
       "pinnedRoute": {
         "entryPresent": true,
         "status": "source-path-unverified",
@@ -1126,12 +1114,6 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Private fixture messageId 5 value read and special messageId 6 single click, flags=0 only."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Private G0.4 messageId 5 fixed input value readback in main/child frames and React controls. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
       "tests": [
@@ -1712,7 +1694,7 @@
         2
       ],
       "implementationStatus": "partial",
-      "implementedScope": "Private G0.4 id and nonce document/node marker attributes in main/child frames, plus parent URL/title guards. Public general DOM APIs/options remain gated.",
+      "implementedScope": "Legacy tab metadata plus private fixture id read only. Public general DOM APIs/options remain gated.",
       "pinnedRoute": {
         "entryPresent": true,
         "status": "source-path-unverified",
@@ -1747,12 +1729,6 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Private fixture input/button id read; other DOM attributes not verified."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Private G0.4 id and nonce document/node marker attributes in main/child frames, plus parent URL/title guards. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
       "tests": [
@@ -2251,7 +2227,7 @@
         2
       ],
       "implementationStatus": "partial",
-      "implementedScope": "Alternative only: GenericRequest 5 fixed fixture value readback; named direct entry absent. Public general DOM APIs/options remain gated.",
+      "implementedScope": "Alternative route only: GenericRequest 5 value read; named direct entry remains absent. Public general DOM APIs/options remain gated.",
       "pinnedRoute": {
         "entryPresent": false,
         "status": "absent-direct-entry",
@@ -2282,12 +2258,6 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Alternative route only: GenericRequest 5 value read; named direct entry remains absent."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Alternative only: GenericRequest 5 fixed fixture value readback; named direct entry absent. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
       "tests": [
@@ -3328,7 +3298,7 @@
         2
       ],
       "implementationStatus": "partial",
-      "implementedScope": "Private G0.4 removed/cloned/old frame refs rejected; generation/node guards supplement native validity; sibling/main refs remain valid. Public general DOM APIs/options remain gated.",
+      "implementedScope": "Private fixture valid refs before read/write only; stale/navigation/iframe behavior not verified. Public general DOM APIs/options remain gated.",
       "pinnedRoute": {
         "entryPresent": true,
         "status": "source-path-unverified",
@@ -3363,12 +3333,6 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Private fixture valid refs before read/write only; stale/navigation/iframe behavior not verified."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Private G0.4 removed/cloned/old frame refs rejected; generation/node guards supplement native validity; sibling/main refs remain valid. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
       "tests": [
@@ -5198,7 +5162,7 @@
         4
       ],
       "implementationStatus": "partial",
-      "implementedScope": "Private G0.4 options 0/4, fixed Unicode, same/cross-origin iframe and React 19.3.1 DOM/model after rerender; rejecting control detected, no retry. Public general DOM APIs/options remain gated.",
+      "implementedScope": "Private native input: Unicode replace/append via one token, options 0/4, independent input counter/value readback. Public general DOM APIs/options remain gated.",
       "pinnedRoute": {
         "entryPresent": true,
         "status": "source-path-unverified",
@@ -5233,12 +5197,6 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Private native input: Unicode replace/append via one token, options 0/4, independent input counter/value readback."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Private G0.4 options 0/4, fixed Unicode, same/cross-origin iframe and React 19.3.1 DOM/model after rerender; rejecting control detected, no retry. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
       "tests": [
@@ -7831,15 +7789,9 @@
           "source": "docs/G0-LIVE-VERIFICATION.json",
           "liveVerified": true,
           "scope": "Private fixture GenericRequest 5 value read only."
-        },
-        {
-          "level": "live-fixture-verified",
-          "source": "docs/G0-4-LIVE-VERIFICATION.json",
-          "liveVerified": true,
-          "scope": "Private G0.4 fixed input value readback in main/child frames and React controls. Multi-RPC identity checks are not atomic; other sites/frameworks and public DOM APIs remain unverified."
         }
       ],
-      "implementedScope": "Private G0.4 fixed input value readback in main/child frames and React controls. Public general DOM APIs/options remain gated."
+      "implementedScope": "Private fixture GenericRequest 5 value read only. Public general DOM APIs/options remain gated."
     },
     {
       "key": "generic:map:6",

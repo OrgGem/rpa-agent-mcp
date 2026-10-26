@@ -37,6 +37,15 @@ Read [the usage guide](README.md) before execution.
   It waits for a real native PID/start-time change after a manual background-page
   refresh. Receipts separate suite pass, resource cleanup, in-process probe disable
   and the still-required launcher-disable verification.
+- [run-browser-live.mjs](run-browser-live.mjs) creates an independent stdio MCP
+  client. Default preflight sends no page actions; --live serves owned two-origin
+  React fixtures, exercises all 42 new tool names, validates result schemas and
+  records exact step/cleanup outcomes in ignored work/BROWSER-LIVE-VERIFICATION.json.
+  It does not retry a failed action, register a host, reload Chrome or promote its
+  raw receipt to documentation automatically.
+- [build-runtime-coverage.mjs](build-runtime-coverage.mjs) records each roadmap
+  tool's exact adapter/routes and all 188 protocol row dispositions. The planning
+  matrix remains the broad scenario baseline; test source does not mean test pass.
 
 ## Invariants
 

@@ -2,9 +2,12 @@
 
 ## System Overview
 
-This prototype exposes four legacy MCP tools through a local bridge to the separately
-installed UiPath Chrome extension, plus read-only `browser_capabilities` metadata.
-Feature catalogs describe future work.
+The runtime exposes four legacy MCP tools, read-only `browser_capabilities` and
+42 strict browser adapters through a local bridge to the separately installed
+UiPath Chrome extension. Ten roadmap tools need missing backends and are omitted.
+The [runtime coverage](docs/RUNTIME-FUNCTION-COVERAGE.vi.md) distinguishes wired
+native routes, isolated DOM composites and unavailable endpoints. Broad feature
+catalogs remain the scenario baseline, not proof every option passed live.
 Use [the development workflow](docs/EGM-WORKFLOW.md) for design and review.
 
 ## Interface
@@ -20,20 +23,20 @@ Use [the development workflow](docs/EGM-WORKFLOW.md) for design and review.
 
 ## Invariants
 
-Node 22+ is required. Setup requires Node on PATH in every mode. Installation
+Node 22.22.2+ in v22 or 24.15+ is required. Setup requires Node on PATH in every mode. Installation
 requires the exact UiPath extension ID/version in Chrome's Default profile.
 It refuses conflicting native-host registrations and creates its registration
 under HKCU Registry32. Uninstall removes only matching owned HKCU registrations.
 
 The UiPath Activity list, source handlers, mock probes, and live receipts are
-different kinds of evidence. Four legacy tools and capability discovery are shipped.
-Public browser input, reference lifetime and DOM discovery remain planned work.
+different kinds of evidence. Public input/ref/discovery adapters have source and
+focused offline evidence; public runtime live acceptance remains pending.
 The opt-in private G0 adapter passed a pinned main-frame live smoke with
 independent value/event reports. It does not advertise general DOM capability;
 G0.4 subsequently passed 11 scoped stale/frame/controlled/reconnect live cases
 with React 19.3.1. The connected host has returned to normal mode with probe
-disabled in-process and in its launcher. General DOM APIs and public gate
-advertisement remain planned; multi-RPC fixture guards are not atomic.
+disabled in-process and in its launcher. A new native load is needed to activate
+the public runtime. Multi-RPC identity guards are not atomic.
 
 ## Side Effects
 

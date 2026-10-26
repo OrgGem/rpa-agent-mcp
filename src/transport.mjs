@@ -10,12 +10,13 @@ export function nativeFrame(message) {
 
 export class NativeDecoder {
   buffer = Buffer.alloc(0);
+  constructor(maxBytes=MAX_BYTES){this.maxBytes=maxBytes;}
   push(chunk) {
     this.buffer = Buffer.concat([this.buffer, chunk]);
     const messages = [];
     while (this.buffer.length >= 4) {
       const length = this.buffer.readUInt32LE(0);
-      if (!length || length > MAX_BYTES) throw new Error('Invalid native frame length');
+      if (!length || length > this.maxBytes) throw new Error('Invalid native frame length');
       if (this.buffer.length < 4 + length) break;
       messages.push(JSON.parse(this.buffer.subarray(4, 4 + length).toString('utf8')));
       this.buffer = this.buffer.subarray(4 + length);
