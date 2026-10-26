@@ -6,7 +6,7 @@ import {parse} from 'acorn';
 export const BROWSER_CONTRACT=JSON.parse(readFileSync(new URL('../docs/browser-tool-contracts.json',import.meta.url),'utf8'));
 const ajv=new Ajv({strict:true,strictRequired:false,allErrors:true,allowUnionTypes:true});
 export const BROWSER_TOOLS=BROWSER_CONTRACT.tools.filter(t=>!t.unsupportedReason).map(t=>({
-  name:t.name,description:t.result,inputSchema:t.inputSchema,outputSchema:t.outputSchema,annotations:t.annotations
+  name:t.name,description:t.description??t.result,inputSchema:t.inputSchema,outputSchema:t.outputSchema,annotations:t.annotations
 }));
 export const UNAVAILABLE_TOOLS=Object.fromEntries(BROWSER_CONTRACT.tools.filter(t=>t.unsupportedReason).map(t=>[t.name,t.unsupportedReason]));
 const validators=new Map(BROWSER_TOOLS.map(t=>[t.name,ajv.compile(t.inputSchema)]));

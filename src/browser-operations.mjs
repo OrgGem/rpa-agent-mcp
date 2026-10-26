@@ -128,13 +128,13 @@ export function createBrowserHandlers(r){
     },
     async browser_type(op,a){
       const {entry,tab,frame}=await r.element(op,a.elementRef),method=a.method??'dom';r.assertWrite(op,tab);let data;
+      const prepared=await r.page(op,tab,frame,'prepareType',{targetToken:entry.token,mode:a.mode??'replace',text:a.text});
       if(method==='uipath'){
-        const prepared=await r.page(op,tab,frame,'prepareType',{targetToken:entry.token,mode:a.mode??'replace',text:a.text});
         const base=await r.nativeElement(op,entry,tab,frame);
         await r.native('WriteTextHtmlElem',{...base,inputOptions:a.mode==='append'?4:0,tokens:[{text:a.text}]},op,{write:true});
-        const checked=await r.page(op,tab,frame,'verifyType',{targetToken:entry.token,ticket:prepared.data.ticket});data=checked.data;
-      }else data=(await r.page(op,tab,frame,'type',{targetToken:entry.token,text:a.text,mode:a.mode??'replace'},true)).data;
+      }else await r.page(op,tab,frame,'type',{targetToken:entry.token,text:a.text,mode:a.mode??'replace'},true);
       await r.postElement(op,entry,tab,frame);
+      data=(await r.page(op,tab,frame,'verifyType',{targetToken:entry.token,ticket:prepared.data.ticket})).data;
       if(a.verify!==false)postcondition(data.valueMatch,'Control did not retain the requested text');
       const out={...data,elementRef:entry.ref,method};return a.verify===false?ack(out,method==='uipath'?'uipath':'isolated-dom',method):verified(out,method==='uipath'?'uipath':'isolated-dom',method);
     },
@@ -148,25 +148,27 @@ export function createBrowserHandlers(r){
         const changed=x.observation.entry.state.checked!==a.checked;
         if(changed){const base=await r.nativeElement(op,entry,tab,frame);await r.native('CheckHtmlElem',{...base,doCheck:a.checked?1:0,windowLeft:0,windowTop:0},op,{write:true});}
         const after=await r.postElement(op,entry,tab,frame);data={checked:after.state.checked,changed};
-      }else data=(await r.page(op,tab,frame,'checked',{targetToken:entry.token,checked:a.checked},true)).data;
+      }else{data=(await r.page(op,tab,frame,'checked',{targetToken:entry.token,checked:a.checked},true)).data;data.checked=(await r.postElement(op,entry,tab,frame)).state.checked;}
       postcondition(data.checked===a.checked,'Checked state did not match');return verified({...data,method},method==='uipath'?'uipath':'isolated-dom',method);
     },
     async browser_select_options(op,a){
-      const {entry,tab,frame}=await r.element(op,a.elementRef),method=a.method??'dom';r.assertWrite(op,tab);let data;
+      const {entry,tab,frame}=await r.element(op,a.elementRef),method=a.method??'dom';r.assertWrite(op,tab);
+      const info=(await r.page(op,tab,frame,'controlInfo',{targetToken:entry.token})).data;
+      if(info.tag!=='SELECT'||info.truncated)throw new BrowserError('UNSUPPORTED_CAPABILITY','Only bounded native HTML selects supported');
       if(method==='uipath'){
-        const info=(await r.page(op,tab,frame,'controlInfo',{targetToken:entry.token})).data;
-        if(info.tag!=='SELECT'||info.truncated)throw new BrowserError('UNSUPPORTED_CAPABILITY','Only bounded native HTML selects supported');
         if(info.disabled||!info.visible)throw new BrowserError('TARGET_NOT_INTERACTABLE');
         const wanted=a.values??a.labels;if(!info.multiple&&wanted.length!==1)throw new BrowserError('UNSUPPORTED_CAPABILITY','Native single select requires exactly one option');
         const options=wanted.map(v=>{const matches=info.options.filter(o=>(a.values?o.value:o.label)===v);if(matches.length!==1)throw new BrowserError(matches.length?'AMBIGUOUS_TARGET':'NOT_FOUND');if(matches[0].disabled)throw new BrowserError('TARGET_NOT_INTERACTABLE');return matches[0];});
         for(const o of options)if(info.options.filter(x=>x.label===o.label).length!==1)throw new BrowserError('AMBIGUOUS_TARGET','Native select label is duplicated');
         const base=await r.nativeElement(op,entry,tab,frame);
         await r.native('HtmlSetSelectedItems',{...base,reset:1,selectIfDisabled:0,selectedItems:options.map(o=>o.label),selectState:0,nativeSelectionOnly:1},op,{write:true});
-        const after=(await r.page(op,tab,frame,'controlInfo',{targetToken:entry.token})).data;
-        data={selectedValues:after.selectedValues,selectedLabels:after.selectedLabels,changed:JSON.stringify(info.selectedValues)!==JSON.stringify(after.selectedValues)};
-        postcondition(JSON.stringify([...after.selectedValues].sort())===JSON.stringify(options.map(o=>o.value).sort()),'Selection did not match');
-      }else{data=(await r.page(op,tab,frame,'select',{targetToken:entry.token,values:a.values,labels:a.labels},true)).data;postcondition(data.valueMatch,'Selection did not match');delete data.valueMatch;}
-      await r.postElement(op,entry,tab,frame);return verified({...data,method},method==='uipath'?'uipath':'isolated-dom',method);
+      }else await r.page(op,tab,frame,'select',{targetToken:entry.token,values:a.values,labels:a.labels},true);
+      await r.postElement(op,entry,tab,frame);
+      const retained=(await r.page(op,tab,frame,'controlInfo',{targetToken:entry.token})).data;
+      const actual=a.values?retained.selectedValues:retained.selectedLabels,wanted=a.values??a.labels;
+      postcondition(!retained.truncated&&JSON.stringify([...actual].sort())===JSON.stringify([...wanted].sort()),'Selection did not retain the requested state');
+      const data={selectedValues:retained.selectedValues,selectedLabels:retained.selectedLabels,changed:JSON.stringify(info.selectedValues)!==JSON.stringify(retained.selectedValues)};
+      return verified({...data,method},method==='uipath'?'uipath':'isolated-dom',method);
     },
     async browser_scroll(op,a){
       let x=a.elementRef?await r.element(op,a.elementRef):await r.scope(op,a);r.assertWrite(op,x.tab);

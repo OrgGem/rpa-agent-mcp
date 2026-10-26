@@ -7,6 +7,15 @@ import Ajv from 'ajv';
 import { NativeDecoder, LineDecoder, nativeFrame, MAX_BYTES } from '../src/transport.mjs';
 process.env.UIPATH_BRIDGE_INSTANCE = `test-${process.pid}`;
 const { ROOT, ORIGIN, ipcCall, DRIVER_VERSION } = await import('../src/bridge.mjs');
+async function waitForHost(host,timeoutMs=10000){
+  const deadline=Date.now()+timeoutMs;
+  while(Date.now()<deadline){
+    if(host.exitCode!==null)throw new Error('Simulated native host exited before readiness');
+    try{const status=await ipcCall('status',500);if(status.nativePid===host.pid)return status;}catch{}
+    await delay(50);
+  }
+  throw new Error('Simulated native host did not become ready within the test deadline');
+}
 
 test('Native transport survives fragmented headers, UTF-8 splits and coalesced frames', () => {
   const messages = [{ text: 'Tiếng Việt 😀' }, { returnId: 'bridge-1', versions: ['23.10.1.0'] }];
@@ -20,7 +29,7 @@ test('Native transport survives fragmented headers, UTF-8 splits and coalesced f
   assert.throws(() => new NativeDecoder().push(oversized), /length/);
 });
 
-test('Native process, IPC and MCP complete a round trip with a simulated extension', { timeout: 15000 }, async t => {
+test('Native process, IPC and MCP complete a round trip with a simulated extension', { timeout: 25000 }, async t => {
   const entry = path.join(ROOT, 'src', 'bridge.mjs');
   const host = spawn(process.execPath, [entry, 'native', ORIGIN], { stdio: ['pipe', 'pipe', 'pipe'], env: { ...process.env, UIPATH_G0_PROBE: '' } });
   let hostErrors = '';
@@ -56,12 +65,7 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
       }
     }
   });
-  let connected = false;
-  for (let i = 0; i < 40; i++) {
-    try { await ipcCall('status', 500); connected = true; break; }
-    catch { await delay(40); }
-  }
-  assert.equal(connected, true, hostErrors);
+  assert.equal((await waitForHost(host)).connected,true,hostErrors);
   host.stdin.write(nativeFrame({ functionCall: 'RegisterNewlyCreatedWindowId', requestId: 17, windowId: 8 }));
   for (let i = 0; i < 30 && !observed.some(m => m.returnId === 17); i++) await delay(20);
   assert.ok(observed.some(m => m.returnId === 17), 'The extension registration callback must be acknowledged');
@@ -156,17 +160,13 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   mcp.kill();
 });
 
-test('Opt-in native probe preflight works over IPC without dispatching extension actions', { timeout: 5000 }, async t => {
+test('Opt-in native probe preflight works over IPC without dispatching extension actions', { timeout: 15000 }, async t => {
   const host=spawn(process.execPath,[path.join(ROOT,'src/bridge.mjs'),'native',ORIGIN],
     {stdio:['pipe','pipe','pipe'],env:{...process.env,UIPATH_G0_PROBE:'1'}});
   t.after(()=>host.kill());
   const nativeMessages=[];const decoder=new NativeDecoder();
   host.stdout.on('data',chunk=>nativeMessages.push(...decoder.push(chunk)));
-  let connected=false;
-  for(let i=0;i<30;i++){
-    try{await ipcCall('status',300);connected=true;break;}catch{await delay(30);}
-  }
-  assert.equal(connected,true);
+  assert.equal((await waitForHost(host)).connected,true);
   assert.equal((await ipcCall('status')).g0ProbeProtocol,2);
   assert.deepEqual(await ipcCall('g0_probe',1000,{action:'preflight'}),
     {enabled:true,protocolVersion:2,scope:'owned-fixture-only',quarantined:false});

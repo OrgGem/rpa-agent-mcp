@@ -49,7 +49,7 @@ imply native protocol, actual Chrome realms/layout or live option acceptance.
 
 ## Open acceptance boundary
 
-51 offline tests pass; their count is distinct from423 planned scenarios. jsdom
+55 offline tests pass; their count is distinct from423 planned scenarios. jsdom
 uses the same simulated realm/layout for fixed and user scripts and cannot prove
 Chrome ISOLATED/MAIN separation. The public live runner validates47 discovered
 tools,42 new tool names and explicit fixture witnesses; it has not run browser
@@ -65,3 +65,9 @@ for form/custom table selectors before the bounded processing loop. Output and
 processing are bounded, not all browser selector-engine work. Offline tests do
 not establish real listener/highlight cleanup, all large-DOM limits or every
 keyboard/selection edge case in Chrome. These remain acceptance limits.
+
+### Retained input và CI sau commit71525e7
+
+Bổ sung bốn test dùng React thực trong jsdom, queued sanitizer/restoration và convergence. Text/check/select/date giờ xác minh retained state ở RPC sau dispatch; không chỉ dùng synchronous match. Source review focused không còn P1/P2 trong các nhánh đã đọc; đây chưa phải live Chrome. Mô tả42 tool MCP đã ghi rõ mục đích, giới hạn và recovery thay cho mô tả generic.
+
+CI commit71525e7: Node24 đã đạt cả tests/matrix/license/source archive; Node22 lỗi test startup chờ host30 lần*30ms. Đã đổi sang readiness deadline10s và xác nhận PID của đúng child. Full local55/55 đạt; CI của bản sửa còn chờ run.

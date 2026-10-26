@@ -87,7 +87,7 @@ export function createCompositeHandlers(r,handlers){
       if(data.expanded!==(a.action==='expand'))throw new BrowserError('POSTCONDITION_FAILED','ARIA expanded state did not match',{dispatchState:'acknowledged',recovery:'observe-do-not-retry'});
       return action({action:a.action,expanded:data.expanded});
     },
-    async browser_calendar_select(op,a){const {entry,tab,frame}=await r.element(op,a.elementRef);r.assertWrite(op,tab);const data=(await r.page(op,tab,frame,'calendar',{targetToken:entry.token,date:a.date},true)).data;if(!data.valueMatch)throw new BrowserError('POSTCONDITION_FAILED','Date input did not retain the requested date',{dispatchState:'acknowledged'});return action(data);},
+    async browser_calendar_select(op,a){const {entry,tab,frame}=await r.element(op,a.elementRef);r.assertWrite(op,tab);const data=(await r.page(op,tab,frame,'calendar',{targetToken:entry.token,date:a.date},true)).data;const retained=await r.postElement(op,entry,tab,frame);data.valueMatch=retained.value===a.date;if(!data.valueMatch)throw new BrowserError('POSTCONDITION_FAILED','Date input did not retain the requested date',{dispatchState:'acknowledged'});data.date=retained.value;return action(data);},
     async browser_close_popup(op,a){
       const target=await r.find(op,{...a,locator:a.closeLocator},{single:true});const result=await handlers.browser_click(op,{elementRef:target.elementRef,method:'dom',button:'left',clickCount:1});
       return {...result,data:{elementRef:target.elementRef,acknowledged:true}};

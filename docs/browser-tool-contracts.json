@@ -603,7 +603,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Attach to the current extension connection and an optional discovered tab, or release an owned context. Never silently selects the active tab. Refs are scoped to this MCP client."
     },
     {
       "name": "browser_tabs",
@@ -1174,7 +1175,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Discover HTTP(S) page tabs with opaque refs. Without contextRef returns discovery refs for attach; with contextRef returns refs owned by that context. Complete enumeration is required to prove absence."
     },
     {
       "name": "browser_tab_open",
@@ -1724,7 +1726,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Open one HTTP(S) URL in a new tab. Returns a pending ref when metadata is not ready. Use tab_get to observe it; never repeat an uncertain open."
     },
     {
       "name": "browser_tab_get",
@@ -2320,7 +2323,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Observe one owned tab. resolve explicitly abandons the originating context requestKey with an unknown outcome, expires all old refs for the native tab and returns a fresh ref; it does not prove the earlier action failed."
     },
     {
       "name": "browser_tab_activate",
@@ -2830,7 +2834,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Activate the owned tab/window and verify the active tab ID. May change desktop focus."
     },
     {
       "name": "browser_tab_close",
@@ -3342,7 +3347,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Close one owned tab once, then independently verify absence with complete tab enumeration. Never kills the browser process or retries an uncertain close."
     },
     {
       "name": "browser_navigate",
@@ -3885,7 +3891,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Navigate the owned tab once. Complete mode waits for a document or same-document URL transition and returns a fresh tabRef. None mode requires rediscovery."
     },
     {
       "name": "browser_history",
@@ -4431,7 +4438,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Request back, forward, reload or stop once. Complete mode waits for an observed transition; stop is exempt. Old refs expire. Does not invoke the hardcoded vendor home URL."
     },
     {
       "name": "browser_find_element",
@@ -5054,7 +5062,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Find exactly one element using CSS, XPath, text or exact attributes within the requested tab/frame/root. Returns opaque elementRef. Zero, multiple and unproven truncated matches are explicit errors."
     },
     {
       "name": "browser_find_elements",
@@ -5837,7 +5846,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Find a bounded collection in one explicit tab/frame/root. Reports exact or observed count and truncation. Does not cross iframe or shadow boundaries."
     },
     {
       "name": "browser_snapshot",
@@ -6531,7 +6541,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Read a bounded flat semantic DOM snapshot with actionable refs, parent indices, state and CSS viewport rectangles. Not a screenshot or an OS accessibility tree."
     },
     {
       "name": "browser_get_element",
@@ -7198,7 +7209,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Read only requested text, value, attributes, state and rectangle fields for a live elementRef. Password values are redacted; stale/replaced nodes are never healed."
     },
     {
       "name": "browser_wait_for",
@@ -7843,7 +7855,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Poll an explicit DOM/document condition within one absolute deadline. Distinguishes absent, detached, visibility, enabled state and expected value/text/URL. Does not repeat state-changing actions."
     },
     {
       "name": "browser_click",
@@ -8421,7 +8434,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Click a live element once. Default dom is synthetic with center hit testing. Optional uipath supports only a single left click and non-atomic native identity guards. ACK alone is not business success; optional verification is exact URL."
     },
     {
       "name": "browser_type",
@@ -8976,7 +8990,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Replace or append text, then separately read back retained value and identity. Default dom uses the native DOM value setter plus input/change; optional uipath uses one text token, options0/4. Password comparison stays in the isolated page. Never automatically retries."
     },
     {
       "name": "browser_set_text",
@@ -9518,7 +9533,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Replace text using the DOM method and separately verify retained value. This is synthetic DOM input, not a trusted OS key sequence."
     },
     {
       "name": "browser_set_checked",
@@ -10043,7 +10059,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Set a checkbox/radio desired state and read it back after dispatch. DOM default; optional native UiPath path. Unsupported radio uncheck is rejected rather than toggled blindly."
     },
     {
       "name": "browser_select_options",
@@ -10616,7 +10633,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Set desired option values or labels on a native HTML select and read back the retained selection. Explicitly rejects ambiguity/disabled options; does not automate arbitrary dropdown widgets."
     },
     {
       "name": "browser_scroll",
@@ -11163,7 +11181,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Scroll the explicit page/element by/to coordinates or bring an element into view. Returns CSS scroll position. Element refs must match the supplied tab/frame."
     },
     {
       "name": "browser_focus",
@@ -11717,7 +11736,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Focus either an explicit tab or an element and observe focus. This changes UI focus; it is not key input."
     },
     {
       "name": "browser_screenshot",
@@ -12284,7 +12304,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Capture only the active owned tab viewport, guarding tab/window/document before and after. Returns an artifactRef, not base64 text. Does not auto-activate, use fullpage debugger capture or guarantee external focus race freedom."
     },
     {
       "name": "browser_set_attribute",
@@ -12804,7 +12825,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Set an allowlisted DOM attribute and read it back. Rejects event-handler, UiPath/internal and security metadata attributes. Does not imply property/change-event or business semantics."
     },
     {
       "name": "browser_hover",
@@ -13323,7 +13345,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Dispatch synthetic pointer/mouse hover events to a visible reachable element. Reports trusted:false; it does not create a real cursor/CSS hover state."
     },
     {
       "name": "browser_drag_and_drop",
@@ -13858,7 +13881,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Dispatch bounded synthetic HTML5 drag/drop events between two live elements in the same frame. Reports trusted:false and event evidence, not an assumed app outcome."
     },
     {
       "name": "browser_frames",
@@ -14408,7 +14432,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "List immediate iframe/frame elements in the explicit frame. Child frames require separate attach before discovery; no implicit cross-frame search."
     },
     {
       "name": "browser_frame_attach",
@@ -14926,7 +14951,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Attach to one explicit iframe element through the pinned native selector path. Returns a child frameRef bound to its document plus parent iframe identity; old frame refs expire on reload."
     },
     {
       "name": "browser_text_selection",
@@ -15490,7 +15516,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Read or set a bounded selection range on supported text inputs/textarea. Password selection text is redacted. Not arbitrary document or rich-text selection."
     },
     {
       "name": "browser_highlight",
@@ -16022,7 +16049,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Start or stop an owned temporary DOM outline with bounded TTL. Cleanup restores only this context highlight and does not overwrite another context highlight."
     },
     {
       "name": "browser_evaluate",
@@ -16603,7 +16631,8 @@
         "resultJsonBytes": 65536,
         "jsonDepth": 16,
         "overflow": "RESULT_TOO_LARGE after script dispatch: no retry; unknown block remains until explicit abandon."
-      }
+      },
+      "description": "Run one validated function expression in the page MAIN world, optionally with an element and bounded JSON input. Awaits Promise via tickets. Result<=64KiB/depth16. Throw, identity loss or oversized result after dispatch may have mutated; observe and explicitly resolve, never replay."
     },
     {
       "name": "browser_extract_table",
@@ -17312,7 +17341,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Read bounded HTML table/custom row columns, optionally with explicit root/next pagination locators and page/row limits. Returns partial rows on failure. No SAP or vendor opaque extraction-schema parity."
     },
     {
       "name": "browser_table_cell",
@@ -17837,7 +17867,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Get a live cell elementRef by row/column index from an explicit HTML table. Not a virtual/SAP grid adapter."
     },
     {
       "name": "browser_tree",
@@ -18467,7 +18498,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Read or expand/collapse explicit ARIA tree nodes, with an optional strict label path. Only supported DOM/ARIA semantics; no claim of universal tree widget or SAP support."
     },
     {
       "name": "browser_calendar_select",
@@ -18981,7 +19013,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Set and separately verify a native HTML input[type=date] value. Rejects application restoration; no arbitrary calendar widget automation."
     },
     {
       "name": "browser_form_read",
@@ -19567,7 +19600,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Read bounded input/textarea/select controls and live refs inside an explicit form/root. Password values stay redacted. Reports truncation."
     },
     {
       "name": "browser_form_fill",
@@ -20196,7 +20230,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Fill explicit fields sequentially using verified text/check/select primitives. Returns completed steps and partial failure; never auto-submits, rolls back or repeats earlier writes."
     },
     {
       "name": "browser_close_popup",
@@ -20758,7 +20793,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Find exactly one explicitly supplied close-control locator and click it once. ACK does not imply an arbitrary popup disappeared; no generic dialog backend."
     },
     {
       "name": "browser_network_wait",
@@ -21373,7 +21409,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Arm before triggering requests, wait for continuous quiet among requests started since arm, or cancel. Owns one native monitor/tab, bounded TTL/finally cleanup. Does not know pre-existing requests or app readiness."
     },
     {
       "name": "browser_events",
@@ -22135,7 +22172,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Subscribe/poll/unsubscribe an owned bounded DOM event queue in one explicit frame/target. TTL and droppedCount are explicit; password/printable keys are redacted. Not native OS recording or a key sender."
     },
     {
       "name": "browser_wait_new_tab",
@@ -22841,7 +22879,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Arm a complete baseline plus exact URL, then wait/cancel. Correlation is baseline-and-URL only, not opener identity. Multiple matching tabs are ambiguous; no guessing."
     },
     {
       "name": "browser_cookies",
@@ -23533,7 +23572,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "List/set/delete only document.cookie visible in the current origin/path. No HttpOnly access, profile export/restore or unrelated-origin cookie reads. Mutations require matching cookie path boundaries."
     },
     {
       "name": "browser_window",
@@ -24067,7 +24107,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Read owning window/active state or activate/maximize the explicit tab window. Maximize reports only native acknowledgement; no restore/minimize/process/launch backend."
     },
     {
       "name": "browser_image_artifact",
@@ -24659,7 +24700,8 @@
             }
           }
         ]
-      }
+      },
+      "description": "Inspect/read/save an owned temporary image. Read adds a separate MCP image block only if<=384KiB. Save accepts a safe basename under managed work storage, never an arbitrary path or overwrite. Exports expire with context/TTL."
     },
     {
       "name": "browser_press_keys",

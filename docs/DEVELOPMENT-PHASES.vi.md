@@ -277,8 +277,8 @@ parallel tab queues, owner release/events/cookies, iframe reload, partial form,
 artifact quota/no-overwrite, delayed-start expiry, release drain, client discovery
 cleanup, dispatch evidence và output contracts. Các test chạy bằng jsdom/native
 mock; không coi layout/realm mock là Chrome evidence. Suite legacy vẫn được giữ.
-Full suite hiện **51/51 offline đạt**; matrix validator đạt 188 rows/53 tools và
-423 scenario planned. Không suy 423 scenario đã chạy từ 51 regression tests.
+Full suite hiện **55/55 offline đạt**; matrix validator đạt 188 rows/53 tools và
+423 scenario planned. Không suy 423 scenario đã chạy từ 55 regression tests.
 Xem [receipt runtime/offline](BROWSER-RUNTIME-VERIFICATION.json),
 [review ledger](designs/browser-runtime-full-review.md) và
 [public live preflight chưa chạy](BROWSER-LIVE-VERIFICATION.json).
@@ -293,3 +293,9 @@ matrix vẫn planned; receipt G0 cũ là lịch sử sau khi source/lockfile tha
 ### F5.3 source packaging chuẩn bị
 
 Đã dựng source ZIP local bằng allowlist, không có vendor/generated host/dependencies; có SHA256. Windows CI Node22/24 đã viết, action SHA ghim, chưa xác nhận run trên GitHub. License inventory từ lockfile gồm71 packages (6 production), check đạt; đây là metadata review, không phải kết luận pháp lý. Signed installer/public release và upgrade/browser live vẫn pending. Xem [release runbook](RELEASE.vi.md).
+
+### Retained input và CI sau commit71525e7
+
+Bổ sung bốn test dùng React thực trong jsdom, queued sanitizer/restoration và convergence. Text/check/select/date giờ xác minh retained state ở RPC sau dispatch; không chỉ dùng synchronous match. Source review focused không còn P1/P2 trong các nhánh đã đọc; đây chưa phải live Chrome. Mô tả42 tool MCP đã ghi rõ mục đích, giới hạn và recovery thay cho mô tả generic.
+
+CI commit71525e7: Node24 đã đạt cả tests/matrix/license/source archive; Node22 lỗi test startup chờ host30 lần*30ms. Đã đổi sang readiness deadline10s và xác nhận PID của đúng child. Full local55/55 đạt; CI của bản sửa còn chờ run.
