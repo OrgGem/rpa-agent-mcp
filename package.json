@@ -30,7 +30,10 @@
     "react-dom": "19.3.1"
   },
   "dependencies": {
+    "@techstark/opencv-js": "5.0.0-release.1",
     "acorn": "8.15.0",
-    "ajv": "8.20.0"
+    "ajv": "8.20.0",
+    "axe-core": "4.14.0",
+    "pngjs": "7.0.0"
   }
 }

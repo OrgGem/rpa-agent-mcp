@@ -7,14 +7,16 @@ import {fileURLToPath} from 'node:url';
 import {LineDecoder} from '../src/transport.mjs';
 import {DRIVER_VERSION,ipcCall} from '../src/bridge.mjs';
 import {startBrowserFixture} from './browser-runtime-fixture.mjs';
-import {BROWSER_TOOLS,UNAVAILABLE_TOOLS,validateToolOutput} from '../src/browser-tools.mjs';
+import {BROWSER_TOOLS,CORE_BROWSER_TOOLS,ADVANCED_BROWSER_TOOL_NAMES,UNAVAILABLE_TOOLS,validateToolOutput} from '../src/browser-tools.mjs';
 const root=fileURLToPath(new URL('..',import.meta.url)),live=process.argv.includes('--live'),captureOnly=process.argv.includes('--capture-only'),captureFormat=process.argv.includes('--jpeg')?'jpeg':'png';
 let baseUrl;
 for(let i=2;i<process.argv.length;i++){
   if(process.argv[i]==='--base-url'){baseUrl=process.argv[++i];const u=new URL(baseUrl);if(!['http:','https:'].includes(u.protocol)||u.username||u.password)throw Error('BASE_URL_MUST_BE_HTTP');baseUrl=u.href;}
   else if(!['--live','--capture-only','--jpeg'].includes(process.argv[i]))throw Error('Usage: node scripts/run-browser-live.mjs [--live] [--capture-only] [--jpeg] [--base-url HTTP_URL]');
 }
-const receipt={schemaVersion:1,checkedAt:new Date().toISOString(),driverVersion:DRIVER_VERSION,mode:live?'live':'preflight',passed:false,steps:[],toolsExercised:[],unsupported:UNAVAILABLE_TOOLS,cleanup:{tabsClosed:null,serversStopped:false,contextReleased:null,clientExited:false},limitations:['Loopback owned fixture only. Desktop helper, debugger keyboard, OCR, visual and semantic backends are unavailable.','Smoke coverage is distinct from the 423 planned negative/boundary scenarios.']};
+const receipt={schemaVersion:2,checkedAt:new Date().toISOString(),driverVersion:DRIVER_VERSION,mode:live?'live':'preflight',passed:false,steps:[],toolsExercised:[],unsupported:UNAVAILABLE_TOOLS,
+  advancedReadiness:Object.fromEntries(ADVANCED_BROWSER_TOOL_NAMES.map(name=>[name,{implementationStatus:'implemented-source',live:'not-run',available:null,backend:null,reason:'Readiness not yet sampled.'}])),
+  cleanup:{tabsClosed:null,serversStopped:false,contextReleased:null,clientExited:false},limitations:['This runner exercises only the 42 core browser tools against the owned UiPath fixture. Advanced tools are recorded as readiness observations and are not live-tested here.','Smoke coverage is distinct from the 423 planned negative/boundary scenarios.']};
 receipt.suite=captureOnly?'capture-only':'full';receipt.captureFormat=captureFormat;
 const child=spawn(process.execPath,['src/bridge.mjs','mcp'],{cwd:root,stdio:['pipe','pipe','pipe'],windowsHide:true}),pending=new Map(),decoder=new LineDecoder();let id=0,fixture,contextRef,tabRef,extraTab,clientEnded=false;
 child.stderr.on('data',()=>{});child.stdout.on('data',chunk=>{for(const x of decoder.push(chunk)){const r=pending.get(x.id);if(r){pending.delete(x.id);clearTimeout(r.timer);r.resolve(x);}}});
@@ -42,12 +44,15 @@ async function capture(){
 }
 try{
   await send('initialize',{protocolVersion:'2025-06-18',capabilities:{},clientInfo:{name:'owned-browser-live-fixture',version:'1'}});child.stdin.write(JSON.stringify({jsonrpc:'2.0',method:'notifications/initialized'})+'\n');
-  const list=(await send('tools/list')).result.tools;check(list.length===47,'TOOLS_COUNT');
+  const list=(await send('tools/list')).result.tools;check(list.length===57,'TOOLS_COUNT');
   for(const name of Object.keys(UNAVAILABLE_TOOLS))check(!list.some(t=>t.name===name),'UNSUPPORTED_EXPOSED');
   const cap=await call('browser_capabilities');check(cap.data.schemaVersion===2&&typeof cap.data.connectionRef==='string','NEW_HOST_NOT_LOADED');
+  for(const name of ADVANCED_BROWSER_TOOL_NAMES){const item=cap.data.tools?.find(value=>value.name===name);receipt.advancedReadiness[name]={
+    implementationStatus:'implemented-source',live:'not-run',available:item?.available===true,backend:item?.backend??null,reason:item?.unsupportedReason??null,
+    ...(item?.modes?{modes:item.modes}:{})};}
   const status=(await call('uipath_bridge_status')).data;
   check(status.browserRuntime?.runtimeVersion==='0.3.0','HOST_RUNTIME_VERSION_MISMATCH');
-  for(const file of ['src/bridge.mjs','src/transport.mjs','src/capabilities.mjs','src/browser-runtime.mjs','src/browser-operations.mjs','src/browser-page.mjs','src/browser-observers.mjs','src/browser-composites.mjs','src/browser-artifacts.mjs','src/browser-tools.mjs','docs/browser-tool-contracts.json','package-lock.json']){
+  for(const file of ['src/bridge.mjs','src/transport.mjs','src/capabilities.mjs','src/browser-runtime.mjs','src/browser-operations.mjs','src/browser-page.mjs','src/browser-observers.mjs','src/browser-composites.mjs','src/browser-artifacts.mjs','src/browser-tools.mjs','src/browser-advanced.mjs','src/browser-accessibility.mjs','src/browser-semantic.mjs','src/browser-visual.mjs','src/browser-visual-worker.mjs','src/browser-launch.mjs','src/windows-browser-helper.mjs','src/companion-protocol.mjs','src/companion-pairing.mjs','src/companion-client.mjs','companion/manifest.json','companion/service-worker.mjs','companion/backend.mjs','companion/protocol.mjs','companion/storage.mjs','scripts/Windows-BrowserHelper.ps1','scripts/Windows-BrowserLaunch.ps1','docs/browser-tool-contracts.json','package-lock.json']){
     const hash=createHash('sha256').update(await readFile(path.join(root,file))).digest('hex');check(status.browserRuntime.sourceHashes?.[file]===hash,'HOST_SOURCE_NOT_RELOADED:'+file);
   }
   receipt.loadedHostSourceHashes=status.browserRuntime.sourceHashes;
@@ -130,7 +135,7 @@ try{
     await call('browser_tab_close',a());tabRef=null;receipt.cleanup.tabsClosed=true;
     }
     const released=await call('browser_attach',{action:'release',contextRef});receipt.cleanup.contextReleased=released.data.cleanupConfirmed;check(released.data.cleanupConfirmed,'OWNER_CLEANUP_UNCONFIRMED');contextRef=null;
-    if(!captureOnly)check(BROWSER_TOOLS.every(t=>receipt.toolsExercised.includes(t.name)),'MISSING_TOOL_SMOKE');receipt.passed=true;
+    if(!captureOnly)check(CORE_BROWSER_TOOLS.every(t=>receipt.toolsExercised.includes(t.name)),'MISSING_CORE_TOOL_SMOKE');receipt.passed=true;
   }
 }catch(e){receipt.error=e.message.slice(0,300);process.exitCode=1;console.log(JSON.stringify({passed:false,error:receipt.error}));}
 finally{
@@ -139,6 +144,6 @@ finally{
   child.stdin.end();await new Promise(resolve=>{const timer=setTimeout(()=>{child.kill();resolve();},12000);child.once('exit',()=>{clearTimeout(timer);clientEnded=true;resolve();});});receipt.cleanup.clientExited=clientEnded;
   if(fixture)await fixture.close();receipt.cleanup.serversStopped=true;
   if(fixture&&(!receipt.cleanup.tabsClosed||receipt.cleanup.contextReleased!==true||!clientEnded)){receipt.passed=false;process.exitCode=1;}
-  receipt.sourceHashes={};for(const f of ['src/bridge.mjs','src/transport.mjs','src/capabilities.mjs','src/browser-runtime.mjs','src/browser-operations.mjs','src/browser-page.mjs','src/browser-observers.mjs','src/browser-composites.mjs','src/browser-artifacts.mjs','src/browser-tools.mjs','docs/browser-tool-contracts.json','scripts/run-browser-live.mjs','scripts/browser-runtime-fixture.mjs','scripts/fixtures/browser-runtime.jsx','package-lock.json'])receipt.sourceHashes[f]=createHash('sha256').update(await readFile(path.join(root,f))).digest('hex');
+  receipt.sourceHashes={};for(const f of ['src/bridge.mjs','src/transport.mjs','src/capabilities.mjs','src/browser-runtime.mjs','src/browser-operations.mjs','src/browser-page.mjs','src/browser-observers.mjs','src/browser-composites.mjs','src/browser-artifacts.mjs','src/browser-tools.mjs','src/browser-advanced.mjs','src/browser-accessibility.mjs','src/browser-semantic.mjs','src/browser-visual.mjs','src/browser-visual-worker.mjs','src/browser-launch.mjs','src/windows-browser-helper.mjs','src/companion-protocol.mjs','src/companion-pairing.mjs','src/companion-client.mjs','companion/manifest.json','companion/service-worker.mjs','companion/backend.mjs','companion/protocol.mjs','companion/storage.mjs','docs/browser-tool-contracts.json','scripts/run-browser-live.mjs','scripts/browser-runtime-fixture.mjs','scripts/fixtures/browser-runtime.jsx','scripts/Windows-BrowserHelper.ps1','scripts/Windows-BrowserLaunch.ps1','package-lock.json'])receipt.sourceHashes[f]=createHash('sha256').update(await readFile(path.join(root,f))).digest('hex');
   await mkdir(path.join(root,'work'),{recursive:true});await writeFile(path.join(root,'work/BROWSER-LIVE-VERIFICATION.json'),JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({passed:receipt.passed,steps:receipt.steps.length,tools:receipt.toolsExercised.length,cleanup:receipt.cleanup}));
 }

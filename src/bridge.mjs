@@ -3,17 +3,27 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
-import { NativeDecoder, LineDecoder, nativeFrame } from './transport.mjs';
+import { NativeDecoder, LineDecoder, nativeFrame, MAX_BYTES } from './transport.mjs';
 import { buildCapabilities, CAPABILITY_OUTPUT_SCHEMA } from './capabilities.mjs';
 import { createG0Probe, G0_PROTOCOL_VERSION } from './g0-probe.mjs';
 import {createBrowserRuntime} from './browser-runtime.mjs';
 import {BROWSER_TOOLS,validateToolInput,publicFailure,BrowserError} from './browser-tools.mjs';
+import {createCompanionClient} from './companion-client.mjs';
+import {createWindowsBrowserHelper} from './windows-browser-helper.mjs';
+import {createBrowserVisualMatcher} from './browser-visual.mjs';
+import {createBrowserSemanticClient} from './browser-semantic.mjs';
+import {createAccessibilityAuditTickets} from './browser-accessibility.mjs';
+import {createBrowserLaunchManager} from './browser-launch.mjs';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const EXTENSION_ID = 'jfcmnbofjlffnejneillkgbniiidiigd';
 export const ORIGIN = `chrome-extension://${EXTENSION_ID}/`;
 export const DRIVER_VERSION = '23.4.55.39317';
 const succeeded = value => value === true || value === 1;
+function configuredUploadRoots(){
+  const raw=process.env.UIPATH_UPLOAD_ROOTS;if(!raw)return [];
+  try{const value=JSON.parse(raw);return Array.isArray(value)?value.filter(x=>typeof x==='string'):[];}catch{return [];}
+}
 const identity = createHash('sha256').update(ROOT + os.userInfo().username + (process.env.UIPATH_BRIDGE_INSTANCE ?? '')).digest('hex').slice(0, 20);
 export const ENDPOINT = process.platform === 'win32'
   ? `\\\\.\\pipe\\uipath-mcp-${identity}`
@@ -122,7 +132,21 @@ export async function startNative() {
   };
   const g0Enabled = process.env.UIPATH_G0_PROBE === '1';
   const g0Probe = createG0Probe({ enabled: g0Enabled, request: requestUiPath, activate: ensureDriver });
-  const browserRuntime=createBrowserRuntime({request:requestUiPath,activate:ensureDriver,root:ROOT,driverVersion:DRIVER_VERSION});
+  const companion=createCompanionClient({root:ROOT});
+  try{await companion.start();}catch{/* Capability discovery reports unavailable; no extension/profile is provisioned here. */}
+  let browserRuntime;
+  const audits=createAccessibilityAuditTickets({
+    runIsolated:input=>browserRuntime.advanced.runIsolatedAudit(input),
+    executorReady:async()=>{
+      const ready=companion.readiness(),profiles=Array.isArray(ready.browser_capabilities)?ready.browser_capabilities:[];
+      const supported=profiles.some(profile=>profile?.axAudit===true);
+      return supported?{available:true}:{available:false,reason:ready.available?'AX_AUDIT_NOT_AVAILABLE':'COMPANION_UNAVAILABLE'};
+    }
+  });
+  browserRuntime=createBrowserRuntime({request:requestUiPath,activate:ensureDriver,root:ROOT,driverVersion:DRIVER_VERSION,
+    backends:{companion,windowsHelper:createWindowsBrowserHelper(),visualMatcher:createBrowserVisualMatcher(),
+      semanticClient:createBrowserSemanticClient({model:process.env.UIPATH_SEMANTIC_MODEL}),auditTickets:audits,
+      launchManager:createBrowserLaunchManager(),uploadRoots:configuredUploadRoots()}});
   const status = () => ({
     connected: true, startedAt, nativePid: process.pid, extensionId: EXTENSION_ID,
     receivedMessages, registeredWindowCount: windows.size,
@@ -149,6 +173,7 @@ export async function startNative() {
             : call.method === 'active_tab' ? ensureDriver().then(() => requestUiPath('GetActiveTabId', { windowId: -1 }))
             : call.method === 'find_tabs' && typeof call.params?.url === 'string' ? ensureDriver().then(() => requestUiPath('FindBrowserTabs', { attrMap: { url: call.params.url }, maxElems: 10 }))
             : call.method === 'g0_probe' ? g0Probe.call(call.params)
+            : call.method === 'browser_capabilities' ? browserRuntime.capabilities().then(browserRuntimeSnapshot=>({...status(),browserRuntime:browserRuntimeSnapshot}))
             : call.method === 'browser_tool' ? browserRuntime.call(call.params?.clientRef,call.params?.name,call.params?.args)
             : call.method === 'browser_artifact_image' ? browserRuntime.image(call.params?.clientRef,call.params?.args)
             : call.method === 'browser_client_release' ? browserRuntime.releaseClient(call.params?.clientRef).then(()=>({released:true}))
@@ -171,7 +196,7 @@ export async function startNative() {
   const stop = () => {
     if (closed) return;
     closed = true;
-    browserRuntime.dispose().catch(()=>{});
+    browserRuntime.dispose().catch(()=>{});companion.dispose().catch(()=>{});
     for (const item of pending.values()) {
       clearTimeout(item.timer);
       item.reject(new Error('Chrome closed the native connection'));
@@ -244,6 +269,7 @@ tools.push({ name: 'browser_capabilities', description: 'Read actual adapter ava
   inputSchema: { type: 'object', properties: {}, additionalProperties: false }, outputSchema: CAPABILITY_OUTPUT_SCHEMA,
   annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } });
 tools.push(...BROWSER_TOOLS);
+if(Buffer.byteLength(JSON.stringify({tools}),'utf8')>MAX_BYTES)throw new Error('MCP tools/list exceeds the configured one-megabyte transport bound');
 
 export function startMcp() {
   const decoder = new LineDecoder();
@@ -298,7 +324,7 @@ export function startMcp() {
       }
       if (tool.name === 'browser_capabilities') {
         let status = null;
-        try { status = await ipcCall('status'); } catch { /* Disconnection is an observation, not a discovery failure. */ }
+        try { status = await ipcCall('browser_capabilities',8000); } catch { /* Disconnection is an observation, not a discovery failure. */ }
         const snapshot = buildCapabilities(status, DRIVER_VERSION);
         return result({ content: [{ type: 'text', text: JSON.stringify(snapshot) }], structuredContent: snapshot, isError: false });
       } else if (tool.name === 'uipath_bridge_status') {

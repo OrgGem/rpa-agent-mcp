@@ -14,9 +14,12 @@ Keep review findings and unresolved decisions beside the design. Do not report
 a review as passed until the reviewers actually complete. Small fixes may use
 a focused existing contract and targeted tests rather than a new design.
 
-The source runtime has four legacy MCP tools, `browser_capabilities`, and 42
-strict browser adapters; ten unavailable-backend roadmap tools are omitted.
-See docs/browser-tool-contracts.json and docs/runtime-function-coverage.json.
+The static MCP catalog has four legacy tools, `browser_capabilities`, and 52
+strict browser adapters: the established 42-tool core plus ten advanced backend
+adapters. Advanced source implementation does not establish backend readiness or
+live browser support; companion installation, local configuration and live
+acceptance remain separate. See docs/browser-tool-contracts.json,
+docs/runtime-function-coverage.json and docs/ADVANCED-BACKEND-STATUS.vi.md.
 The feature catalog describes proposed
 capabilities, not an implemented API. Never equate a UiPath Activity, a source
 function name, a mock probe, or a historical receipt with live browser support.

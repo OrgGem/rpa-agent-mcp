@@ -1,6 +1,6 @@
 # Hợp đồng MCP cho agent thao tác browser
 
-Bản baseline thiết kế ngày 2026-10-26, dùng cùng [feature catalog](BROWSER-AUTOMATION-FEATURES.vi.md), [mapping activity](BROWSER-ACTIVITY-MAPPING.vi.md) và [audit route extension](EXTENSION-CAPABILITY-VERIFICATION.vi.md). Các ví dụ bên dưới giữ vocabulary đề xuất. API runtime chính xác hiện là [browser-tool-contracts.json](browser-tool-contracts.json) và [guide agent](BROWSER-RUNTIME-GUIDE.vi.md): 42 adapter mới + capabilities +4 legacy, 10 backend unsupported. Không gửi option baseline chưa có trong schema runtime. G0.4 có receipt live lịch sử; public runtime mới cần acceptance riêng.
+Bản baseline thiết kế ngày 2026-10-26, dùng cùng [feature catalog](BROWSER-AUTOMATION-FEATURES.vi.md), [mapping activity](BROWSER-ACTIVITY-MAPPING.vi.md) và [audit route extension](EXTENSION-CAPABILITY-VERIFICATION.vi.md). Các ví dụ bên dưới giữ vocabulary đề xuất. API runtime chính xác hiện là [browser-tool-contracts.json](browser-tool-contracts.json) và [guide agent](BROWSER-RUNTIME-GUIDE.vi.md): catalog gồm 52 adapter browser, capabilities và 4 legacy. Mười adapter advanced có source backend nhưng cần readiness/configuration riêng; xem [bảng trạng thái](ADVANCED-BACKEND-STATUS.vi.md). Không gửi option baseline chưa có trong schema runtime. Receipt live cũ chỉ áp dụng cho hashes và scope được ghi trong receipt.
 
 ## Context và vòng đời ref
 

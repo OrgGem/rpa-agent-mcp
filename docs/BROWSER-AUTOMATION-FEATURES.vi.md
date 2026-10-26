@@ -1,6 +1,6 @@
 # Đặc tả tính năng browser automation cho agent
 
-Bản thiết kế ngày 2026-10-26. Mục tiêu là giữ nguyên extension UiPath đang cài, dùng native host và MCP riêng để agent thao tác trình duyệt qua các primitive có kết quả kiểm chứng được. Tên `browser_*` dưới đây là API đề xuất; chưa được đăng ký trong MCP server.
+Bản thiết kế baseline ngày 2026-10-26. Mục tiêu là giữ nguyên extension UiPath đang cài, dùng native host và MCP riêng để agent thao tác trình duyệt qua các primitive có kết quả kiểm chứng được. Catalog này là roadmap 47 nhóm/53 tên đề xuất, không phải tình trạng source hiện tại. Catalog MCP hiện tại, schema và readiness được ghi trong [contracts](browser-tool-contracts.json), [runtime guide](BROWSER-RUNTIME-GUIDE.vi.md) và [trạng thái advanced backend](ADVANCED-BACKEND-STATUS.vi.md).
 
 Khuyến nghị xây lớp primitive nhỏ trước: context, tab, quan sát trang, tìm phần tử, đọc trạng thái, click, type, check, select, scroll và wait. Các activity như For Each hoặc Check App State trở thành luồng ghép từ primitive. File picker, dialog, download, vision và semantic được khai báo thành capability riêng.
 
@@ -9,8 +9,8 @@ Khuyến nghị xây lớp primitive nhỏ trước: context, tab, quan sát tra
 - Baseline đối chiếu có **168 tên activity phân biệt**: hợp của [index](https://docs.uipath.com/activities/other/latest/ui-automation/activities-index), [Modern](https://docs.uipath.com/activities/other/latest/ui-automation/ui-automation-modern-activities), [Classic](https://docs.uipath.com/activities/other/latest/ui-automation/ui-automation-classic-activities), [Semantic](https://docs.uipath.com/activities/other/latest/ui-automation/ui-automation-semantic-activities), cộng hai helper Workflow được chọn là Wait for Download và Retry Scope. Đây là coverage của baseline nêu trên, không phải toàn bộ mọi package UiPath.
 - **47 nhóm tính năng**, **53 tên tool đề xuất** chia theo P0/P1/P2. Mỗi activity có hàng đối chiếu trong [bảng mapping](BROWSER-ACTIVITY-MAPPING.vi.md). Tên khác nhau giữa Modern/Classic được giữ lại để tra cứu.
 - Extension đang khảo sát là **23.10.1**, driver bridge ghim **23.4.55.39317**. Tài liệu vendor `latest` mô tả các activity mới hơn; một activity có trong docs không có nghĩa extension cũ hiểu được.
-- Server hiện chỉ có `uipath_bridge_status`, `uipath_driver_versions`, `uipath_open_url`, `uipath_tab_info`. Bốn tool đã được kiểm tra lại trên fixture HTTP local ngày 2026-10-26, đọc đúng URL/title/complete trong [receipt mới](EXTENSION-LIVE-VERIFICATION.json). Click, type, DOM và các tool đề xuất chưa được xác minh live.
-- Backend candidate trong tài liệu là hướng triển khai từ [catalog giao thức](UIPATH-EXTENSION-GUIDE.vi.md), chưa phải schema request hoàn chỉnh hoặc API công khai do UiPath cam kết.
+- Tại thời điểm baseline này, server chỉ có bốn tool legacy. Source sau đó đã thêm capabilities, 42 tool core và mười tool advanced; các receipt cũ chỉ áp dụng cho hashes/scope được ghi trong receipt. Không xem chúng là live acceptance của source mới.
+- Backend candidate bên dưới ghi lại hướng thiết kế từ [catalog giao thức](UIPATH-EXTENSION-GUIDE.vi.md), không phải API được UiPath cam kết. Dùng schema runtime hiện tại và per-tool backend status để tích hợp.
 
 ## Nguyên tắc public MCP
 

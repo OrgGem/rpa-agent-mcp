@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {harness} from './browser-harness.mjs';
-import {validateToolInput,fingerprint,BROWSER_TOOLS} from '../src/browser-tools.mjs';
+import {validateToolInput,fingerprint,BROWSER_TOOLS,CORE_BROWSER_TOOLS} from '../src/browser-tools.mjs';
 import {NativeDecoder,nativeFrame,MAX_BYTES} from '../src/transport.mjs';
 import {createArtifactStore} from '../src/browser-artifacts.mjs';
 import path from 'node:path';
@@ -78,7 +78,7 @@ test('transport raises only native inbound screenshot bound; malformed arguments
   const body=Buffer.from(JSON.stringify({value:'a'.repeat(MAX_BYTES+1)})),header=Buffer.alloc(4);header.writeUInt32LE(body.length);const packet=Buffer.concat([header,body]);
   assert.throws(()=>new NativeDecoder().push(packet));assert.equal(new NativeDecoder(8*MAX_BYTES).push(packet).length,1);assert.throws(()=>nativeFrame({value:'a'.repeat(MAX_BYTES+1)}));
   for(const script of ['doEvil()','function*(){}','()=>1);evil();//'])assert.throws(()=>validateToolInput('browser_evaluate',{contextRef:'ctx_'+randomUUID(),tabRef:'tab_'+randomUUID(),script}));
-  assert.equal(BROWSER_TOOLS.length,42);
+  assert.equal(CORE_BROWSER_TOOLS.length,42);assert.equal(BROWSER_TOOLS.length,52);
 });
 test('child frame reload expires child refs while main stays valid; reattach advances generation',async t=>{
   const h=await harness(t),main=await h.find('text'),iframe=await h.find('frame'),frame=(await h.must('browser_frame_attach',{contextRef:h.args.contextRef,elementRef:iframe})).data;

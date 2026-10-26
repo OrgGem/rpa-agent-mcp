@@ -327,6 +327,20 @@ export function pageOperation(element,input){
         mutated=true;document.cookie=`${q.name}=${q.action==='delete'?'':q.value}; Path=${path}; SameSite=${q.sameSite??'Lax'}${q.secure?'; Secure':''}${q.action==='delete'?'; Max-Age=0':q.maxAge!==undefined?`; Max-Age=${q.maxAge}`:''}`;
         const matches=list().filter(c=>c.name===q.name);data={action:q.action,name:q.name,origin:location.origin,httpOnlyAccessible:false,...(q.action==='delete'?{deleted:matches.length===0}:{valueMatch:matches.length===1&&matches[0].value===q.value})};break;
       }
+      case 'companionPairing':{
+        if(typeof q.companionId!=='string'||!/^[a-p]{32}$/.test(q.companionId)||
+          typeof q.nonce!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(q.nonce))die('INVALID_ARGUMENT','Pairing challenge is invalid');
+        const runtime=globalThis.chrome?.runtime;
+        if(!runtime||typeof runtime.sendMessage!=='function')die('COMPANION_PAIRING_UNAVAILABLE','Isolated extension messaging is unavailable');
+        try{runtime.sendMessage(q.companionId,{nonce:q.nonce,documentToken:s.token},()=>{
+          // The callback is deliberately ignored. It is not identity proof;
+          // only the authenticated companion attestation can bind the target.
+          void runtime.lastError;
+        });}catch{die('COMPANION_PAIRING_UNAVAILABLE','Pairing message could not be sent');}
+        // This only confirms that the local send API accepted the call. The
+        // authenticated native attestation is the sole source of a binding.
+        data={sent:true};break;
+      }
       case 'events':{
         if(q.action==='subscribe'){
           if(s.watches.size>=64)die('LIMIT_EXCEEDED');

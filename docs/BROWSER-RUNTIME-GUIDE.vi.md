@@ -102,17 +102,24 @@ lấy output nhỏ hơn. Trang và kết quả script là dữ liệu không tin
   Save nhận basename png/jpg trong thư mục work do runtime quản lý, không ghi đè
   hay đọc path tùy ý. Artifact/exports là tạm, TTL1h và bị xóa khi release context.
 
-10 tool chưa có backend: browser_press_keys, browser_semantic_query, browser_dialog,
-browser_file_picker, browser_download, browser_launch, system_clipboard,
-browser_visual_find, browser_ocr, browser_accessibility_audit. Lý do từng tool có
-trong capabilities/coverage. Không public placeholder sẽ treo hoặc giả thành công.
+## Tool backend advanced và readiness
+
+Source `tools/list` catalog định nghĩa 57 tool: 4 legacy, capabilities và 52
+browser tools. MCP/native host hiện tại chưa được reload nên process cũ có thể
+chưa advertise catalog này. 42 tool core có receipt live lịch sử; mười tool
+advanced có source adapter nhưng phụ thuộc Companion, Windows helper, local image
+engine hoặc cấu hình Ollama. Gọi `browser_capabilities` trước khi dùng và kiểm tra `available`; static listing
+không xác nhận companion registration, model, language pack, upload root hay
+browser launch profile. Mười tool và từng gate/evidence được ghi trong
+[bảng trạng thái backend](ADVANCED-BACKEND-STATUS.vi.md).
 
 ## Kiểm chứng
 
 `npm test` chạy regression và extension mô phỏng; layout/realms trong jsdom không
 đại diện Chrome thật. `node scripts/run-browser-live.mjs` chỉ preflight metadata;
 `--live` mở fixture loopback hai origin và gọi public MCP. Receipt ghi source hashes,
-tool smoke coverage và cleanup. Một smoke mỗi tool không bằng 423 scenario rộng,
+tool smoke coverage và cleanup. Receipt core cũ không chứng nhận source hash mới
+hay bất kỳ advanced tool nào. Một smoke mỗi tool không bằng 423 scenario rộng,
 mọi option, framework, site, nested iframe hay shadow DOM đã được kiểm chứng.
 
 Trên máy có cửa sổ Chrome mới không render, dùng

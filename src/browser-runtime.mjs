@@ -1,36 +1,41 @@
 import path from 'node:path';
 import {readFileSync} from 'node:fs';
-import {createHash} from 'node:crypto';
+import {createHash, randomBytes} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
 import {BrowserError,BROWSER_TOOLS,UNAVAILABLE_TOOLS,validateToolInput,validateToolOutput,opaque,fingerprint,assertJsonBound,publicFailure} from './browser-tools.mjs';
 import {PAGE_FUNCTION} from './browser-page.mjs';
 import {createArtifactStore} from './browser-artifacts.mjs';
 import {createBrowserHandlers,findPacket,parseFind,decodeId} from './browser-operations.mjs';
+import {createBrowserAdvancedHandlers} from './browser-advanced.mjs';
 
 const good=v=>v===1||v===true;
 const uuid=/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const numberId=value=>Number.isSafeInteger(Number(value))&&Number(value)>=0&&/^\d+$/.test(String(value))?Number(value):null;
 // Snapshot when this module loads, so editing disk files cannot masquerade as a
 // newly loaded native process in a live receipt. These are relative code paths.
-const sourceFiles=['src/bridge.mjs','src/transport.mjs','src/capabilities.mjs','src/browser-runtime.mjs','src/browser-operations.mjs','src/browser-page.mjs','src/browser-observers.mjs','src/browser-composites.mjs','src/browser-artifacts.mjs','src/browser-tools.mjs','docs/browser-tool-contracts.json','package-lock.json'];
+const sourceFiles=['src/bridge.mjs','src/transport.mjs','src/capabilities.mjs','src/browser-runtime.mjs','src/browser-operations.mjs','src/browser-page.mjs','src/browser-observers.mjs','src/browser-composites.mjs','src/browser-artifacts.mjs','src/browser-tools.mjs','src/browser-advanced.mjs','src/browser-accessibility.mjs','src/browser-semantic.mjs','src/browser-visual.mjs','src/browser-visual-worker.mjs','src/browser-launch.mjs','src/windows-browser-helper.mjs','src/companion-protocol.mjs','src/companion-pairing.mjs','src/companion-client.mjs','companion/manifest.json','companion/service-worker.mjs','companion/backend.mjs','companion/protocol.mjs','companion/storage.mjs','scripts/Windows-BrowserHelper.ps1','scripts/Windows-BrowserLaunch.ps1','docs/browser-tool-contracts.json','package-lock.json'];
 const loadedSourceHashes=Object.freeze(Object.fromEntries(sourceFiles.map(f=>[f,createHash('sha256').update(readFileSync(new URL('../'+f,import.meta.url))).digest('hex')])));
 export class BrowserRuntime{
-  constructor({request,activate,root,driverVersion,now=Date.now}){
+  constructor({request,activate,root,driverVersion,now=Date.now,backends={}}){
     this.request=request;this.activate=activate;this.root=root;this.driverVersion=driverVersion;this.now=now;
     this.connectionRef=opaque('con');this.namespace=opaque('rpa');this.clients=new Map();this.releasedClients=new Set();this.contexts=new Map();
     this.tabs=new Map();this.frames=new Map();this.elements=new Map();this.watches=new Map();this.network=new Map();this.temporaryBlocks=new Map();
     this.unknownTabs=new Map();this.knownTabs=new Map();this.allocations=new Map();this.generations=new Map();this.tabQueues=new Map();this.windowQueue=Promise.resolve();this.pending=0;this.identityInitialized=false;this.cleanupUnconfirmed=0;
-    this.artifacts=createArtifactStore(path.join(root,'work','browser-artifacts'),{now});this.handlers=createBrowserHandlers(this);
+    this.hostEpoch=randomBytes(6).readUIntBE(0,6);this.auditOwners=new Map();this.localComputeActive=0;this.localComputeQueue=[];this.localJobs=new Map();
+    this.readinessSnapshot=null;this.readinessCheckedAt=0;this.readinessPromise=null;
+    this.artifacts=createArtifactStore(path.join(root,'work','browser-artifacts'),{now});
+    this.advanced=createBrowserAdvancedHandlers(this,backends);
+    this.handlers={...createBrowserHandlers(this),...this.advanced.handlers};
     this.sweeper=setInterval(()=>this.sweep().catch(()=>{}),15000);this.sweeper.unref();
   }
   descriptor(){return {protocolVersion:1,runtimeVersion:'0.3.0',sourceHashes:{...loadedSourceHashes},connectionRef:this.connectionRef,identityInitialized:this.identityInitialized,
-    tools:Object.keys(this.handlers),unavailable:UNAVAILABLE_TOOLS,temporarilyUnavailable:Object.fromEntries(this.temporaryBlocks),limits:{contextsPerClient:16,elementRefsPerContext:2048,maxTimeoutMs:30000,maxResultBytes:245760,
+    tools:Object.keys(this.handlers),unavailable:UNAVAILABLE_TOOLS,temporarilyUnavailable:Object.fromEntries(this.temporaryBlocks),backends:this.readinessSnapshot?.backends??{},toolReadiness:this.readinessSnapshot?.tools??{},limits:{contextsPerClient:16,elementRefsPerContext:2048,maxTimeoutMs:30000,maxResultBytes:245760,
       tabLifetime:'unexpected-document-change-expires-tab-ref',inputDefault:'dom',nativeInputAtomic:false,profileIdentity:'extension-connection-only'},cleanupUnconfirmed:this.cleanupUnconfirmed};}
   client(id){
     if(typeof id!=='string'||!uuid.test(id))throw new BrowserError('INVALID_ARGUMENT','Invalid internal client identity');
     if(this.releasedClients.has(id))throw new BrowserError('STALE_CONTEXT','Client identity was released');
     if(!this.clients.has(id)&&this.releasedClients.size>=8192)throw new BrowserError('LIMIT_EXCEEDED','Connection client history is full; reconnect the native host');
-    let c=this.clients.get(id);if(c?.releasing)throw new BrowserError('STALE_CONTEXT','Client is closing');if(!c){if(this.clients.size>=64)throw new BrowserError('LIMIT_EXCEEDED','Client limit exceeded');c={id,contexts:new Set(),keys:new Map(),jobs:new Map()};this.clients.set(id,c);}c.usedAt=this.now();return c;
+    let c=this.clients.get(id);if(c?.releasing)throw new BrowserError('STALE_CONTEXT','Client is closing');if(!c){if(this.clients.size>=64)throw new BrowserError('LIMIT_EXCEEDED','Client limit exceeded');c={id,contexts:new Set(),keys:new Map(),jobs:new Map(),controllers:new Map()};this.clients.set(id,c);}c.usedAt=this.now();return c;
   }
   context(client,ref){
     const c=this.contexts.get(ref);
@@ -44,8 +49,8 @@ export class BrowserRuntime{
     return r;
   }
   budget(op){
-    if(op.client.releasing||this.clients.get(op.client.id)!==op.client)throw new BrowserError('STALE_CONTEXT','Client was released');
-    if(op.ctx&&!op.ctx.alive)throw new BrowserError('STALE_CONTEXT','Context was released');
+    if((op.client.releasing&&!op.control)||this.clients.get(op.client.id)!==op.client)throw new BrowserError('STALE_CONTEXT','Client was released');
+    if(op.ctx&&!op.ctx.alive&&!op.control)throw new BrowserError('STALE_CONTEXT','Context was released');
     const remaining=op.deadline-this.now();if(remaining<=0)throw new BrowserError('TIMEOUT','Operation deadline expired',{dispatchState:op.dispatchState,retryableRead:op.dispatchState==='notSent'});
     return remaining;
   }
@@ -55,6 +60,7 @@ export class BrowserRuntime{
     finally{clearTimeout(timer);}this.budget(op);
   }
   async native(name,params,op,{write=false,allowFailure=false}={}){
+    if(write)await this.advanced.beforeWrite(op,name,params);
     const timeout=Math.min(7000,this.budget(op));if(write)op.dispatchState='sent';
     let result;
     try{result=await this.request(name,params,timeout);}catch(error){
@@ -85,6 +91,9 @@ export class BrowserRuntime{
   async doc(op,tab,frame=null){
     const result=await this.page(op,tab,frame,'document'),key=`${tab.nativeId}|${frame?.nativeId??0}`,old=this.generations.get(key);
     const generation=old?old.generation+Number(old.token!==result.documentToken):0;this.generations.set(key,{token:result.documentToken,generation});
+    if(old&&old.token!==result.documentToken&&op.ctx){
+      this.advanced.documentGone({ownerRef:op.client.id,contextRef:op.ctx.ref,tabRef:tab.ref,documentGeneration:old.generation});
+    }
     return {...result,generation};
   }
   retireTab(tab){
@@ -291,29 +300,77 @@ export class BrowserRuntime{
     for(const [id,t] of this.tabs)if(t.retired&&!this.unknownTabs.has(t.nativeId))this.tabs.delete(id);
     for(const [id,c] of this.contexts)if(!c.alive)this.contexts.delete(id);
     for(const [id,c] of this.clients)if(c.contexts.size===0&&this.now()-c.usedAt>1800000)await this.releaseClient(id);
-    await this.artifacts.sweep();
+    await this.artifacts.sweep();await this.advanced.sweep();
+  }
+  async refreshReadiness({force=false,deadline=this.now()+2000}={}){
+    if(!force&&this.readinessSnapshot&&this.now()-this.readinessCheckedAt<15000)return this.readinessSnapshot;
+    if(this.readinessPromise)return this.readinessPromise;
+    this.readinessPromise=(async()=>{
+      const snapshot=await this.advanced.probe({deadline});
+      this.readinessSnapshot=snapshot;this.readinessCheckedAt=this.now();return snapshot;
+    })().catch(()=>{
+      const tools=Object.fromEntries(Object.keys(this.advanced.handlers).map(name=>[name,{available:false,reason:'BACKEND_UNAVAILABLE'}]));
+      const snapshot={backends:{},tools,checkedAt:this.now()};this.readinessSnapshot=snapshot;this.readinessCheckedAt=this.now();return snapshot;
+    }).finally(()=>{this.readinessPromise=null;});
+    return this.readinessPromise;
+  }
+  async capabilities(){await this.refreshReadiness({force:true,deadline:this.now()+5000});return this.descriptor();}
+  async withLocalCompute(op,task){
+    if(typeof task!=='function')throw new BrowserError('INVALID_ARGUMENT','Local compute task is invalid');
+    this.budget(op);
+    if(this.localComputeActive>=2){
+      if(this.localComputeQueue.length>=128)throw new BrowserError('LIMIT_EXCEEDED','Local analysis queue is full');
+      await new Promise((resolve,reject)=>{
+        const waiter={op,resolve,reject,done:false,timer:null,onAbort:null};
+        const finish=(error)=>{if(waiter.done)return;waiter.done=true;clearTimeout(waiter.timer);op.signal?.removeEventListener('abort',waiter.onAbort);
+          const index=this.localComputeQueue.indexOf(waiter);if(index>=0)this.localComputeQueue.splice(index,1);error?reject(error):resolve();};
+        waiter.finish=finish;
+        waiter.timer=setTimeout(()=>finish(new BrowserError('TIMEOUT','Local analysis expired while queued',{retryableRead:true})),Math.max(0,op.deadline-this.now()));
+        waiter.onAbort=()=>finish(new BrowserError('CANCELLED','Local analysis was cancelled while queued',{retryableRead:true}));
+        op.signal?.addEventListener('abort',waiter.onAbort,{once:true});
+        this.localComputeQueue.push(waiter);this.drainLocalCompute();
+      });
+      this.budget(op);
+    }else this.localComputeActive++;
+    this.localJobs.set(op.requestId,{controller:op.controller,clientRef:op.client.id,contextRef:op.ctx?.ref??null});
+    try{return await task();}
+    finally{this.localJobs.delete(op.requestId);this.localComputeActive=Math.max(0,this.localComputeActive-1);this.drainLocalCompute();}
+  }
+  drainLocalCompute(){
+    while(this.localComputeActive<2&&this.localComputeQueue.length){
+      const waiter=this.localComputeQueue.shift();if(waiter.done)continue;
+      if(waiter.op.signal?.aborted||waiter.op.deadline<=this.now()){
+        waiter.finish(new BrowserError(waiter.op.signal?.aborted?'CANCELLED':'TIMEOUT','Local analysis expired while queued',{retryableRead:true}));continue;
+      }
+      this.localComputeActive++;waiter.finish(null);
+    }
   }
   async releaseContext(ctx,excludeRequestId=null){
     if(ctx.releasePromise)return ctx.releasePromise;
     ctx.alive=false;
     ctx.releasePromise=(async()=>{
+    const modalCleanup=await this.advanced.cleanupContext({ownerRef:ctx.clientRef,contextRef:ctx.ref,deadline:this.now()+3000});
+    for(const [id,controller] of ctx.controllers??[])if(id!==excludeRequestId)controller.abort();
     await Promise.allSettled([...(ctx.jobs??new Map())].filter(([id])=>id!==excludeRequestId).map(([,job])=>job));
-    const targets=[...ctx.touchedFrames].map(id=>ctx.cleanupFrames?.get(id)??{frame:this.frames.get(id)}),results=await Promise.allSettled(targets.map(x=>this.cleanupPage(x.frame,ctx.ref,'release',{},x.tab)));
+    const blockedTabs=new Set(modalCleanup.blockedTabRefs??[]);
+    const targets=[...ctx.touchedFrames].map(id=>ctx.cleanupFrames?.get(id)??{frame:this.frames.get(id)}).filter(x=>!x.tab||!blockedTabs.has(x.tab.ref)),results=await Promise.allSettled(targets.map(x=>this.cleanupPage(x.frame,ctx.ref,'release',{},x.tab)));
     const pageFailures=results.filter(x=>x.status==='rejected'||x.value!==true).length;this.cleanupUnconfirmed+=pageFailures;
     let networkFailures=0;
     for(const w of this.watches.values())if(w.contextRef===ctx.ref){clearTimeout(w.timer);w.ended=true;w.endedAt=this.now();if(w.kind==='network'&&!await this.stopNetwork(w)){this.cleanupUnconfirmed++;networkFailures++;}}
     for(const t of this.tabs.values())if(t.contextRef===ctx.ref)this.retireTab(t);
-    await this.artifacts.release(ctx.clientRef,ctx.ref);this.clients.get(ctx.clientRef)?.contexts.delete(ctx.ref);return {cleanupConfirmed:pageFailures===0&&networkFailures===0};
+    await this.artifacts.release(ctx.clientRef,ctx.ref);this.clients.get(ctx.clientRef)?.contexts.delete(ctx.ref);return {cleanupConfirmed:modalCleanup.cleanupConfirmed&&pageFailures===0&&networkFailures===0,blockedTabRefs:[...blockedTabs]};
     })();return ctx.releasePromise;
   }
   async releaseClient(clientRef){
     const c=this.clients.get(clientRef);if(!c)return;
     if(c.releasePromise)return c.releasePromise;c.releasing=true;this.releasedClients.add(clientRef);
-    c.releasePromise=(async()=>{await Promise.allSettled(c.jobs.values());for(const id of c.contexts){const ctx=this.contexts.get(id);if(ctx)await this.releaseContext(ctx);}
+    c.releasePromise=(async()=>{for(const id of [...c.contexts]){const ctx=this.contexts.get(id);if(ctx)await this.releaseContext(ctx);}
+      for(const controller of c.controllers?.values()??[])controller.abort();
+      await Promise.allSettled(c.jobs.values());await this.advanced.cleanupClient({ownerRef:clientRef,deadline:this.now()+3000});
       for(const tab of this.tabs.values())if(tab.clientRef===clientRef)this.retireTab(tab);this.clients.delete(clientRef);
     })();return c.releasePromise;
   }
-  async dispose(){clearInterval(this.sweeper);for(const c of [...this.clients.keys()])await this.releaseClient(c);}
+  async dispose(){clearInterval(this.sweeper);for(const c of [...this.clients.keys()])await this.releaseClient(c);for(const waiter of [...this.localComputeQueue])waiter.finish(new BrowserError('CANCELLED','Runtime is disposing'));await this.advanced.cleanupClient?.({ownerRef:'runtime-dispose',deadline:this.now()+1000});}
   async image(clientRef,args){const c=this.client(clientRef),ctx=this.context(c,args.contextRef);return this.artifacts.image(c.id,ctx.ref,args.artifactRef);}
   preflight(op,args){
     let target;
@@ -330,12 +387,22 @@ export class BrowserRuntime{
   isRead(name,a){return BROWSER_TOOLS.find(t=>t.name===name)?.annotations.readOnlyHint||
     name==='browser_tab_get'&&!a.resolve||name==='browser_tree'&&a.action==='read'||name==='browser_events'&&a.action==='poll'||
     name==='browser_cookies'&&a.action==='list'||name==='browser_window'&&a.action==='get'||name==='browser_text_selection'&&a.action==='get'||
-    name==='browser_image_artifact'&&a.action!=='save'||name==='browser_extract_table'&&!a.pagination||['browser_network_wait','browser_wait_new_tab'].includes(name)&&a.action==='wait';}
+    name==='browser_image_artifact'&&a.action!=='save'||name==='browser_extract_table'&&!a.pagination||['browser_network_wait','browser_wait_new_tab'].includes(name)&&a.action==='wait'||
+    name==='system_clipboard'&&a.action==='read'||name==='browser_download'&&a.action==='get'||name==='browser_launch'&&a.action==='status'||
+    name==='browser_accessibility_audit'&&a.action==='poll'||name==='browser_dialog'&&a.action==='wait'||name==='browser_file_picker'&&a.action==='wait';}
   async call(clientRef,name,args){
     const started=this.now(),requestId=opaque('req');let op;
     try{
-      validateToolInput(name,args);const client=this.client(clientRef),ctx=args.contextRef?this.context(client,args.contextRef):null;
-      op={client,ctx,name,args,requestId,started,deadline:started+(args.timeoutMs??10000),dispatchState:'notSent',key:args.requestKey??requestId};
+      validateToolInput(name,args);const client=this.client(clientRef),control=this.advanced.controlLane(name,args)||name==='browser_attach'&&args.action==='release',local=this.advanced.localOnly(name);
+      const contextRef=args.contextRef??this.advanced.contextFor(client.id,name,args)??null;let ctx=null;
+      if(contextRef){
+        const existing=this.contexts.get(contextRef);
+        if(control){if(!existing||existing.clientRef!==client.id||this.now()-existing.usedAt>1800000)throw new BrowserError('STALE_CONTEXT','Context is expired or belongs to another client');ctx=existing;}
+        else ctx=this.context(client,contextRef);
+      }
+      const controller=new AbortController();
+      op={client,ctx,name,args,requestId,started,deadline:started+(args.timeoutMs??10000),dispatchState:'notSent',key:args.requestKey??requestId,
+        control,local,localCompute:this.advanced.localCompute(name,args),controller,signal:controller.signal};
       const records=ctx?.keys??client.keys,releasing=name==='browser_attach'&&args.action==='release';
       // A wait is queue-read-only, but failed monitor cleanup can need explicit
       // unknown-outcome recovery. Reserve its key before starting the wait.
@@ -358,12 +425,17 @@ export class BrowserRuntime{
       if(this.pending>=128)throw new BrowserError('LIMIT_EXCEEDED','Browser operation queue is full');this.pending++;op.queueAccounted=true;
       // Cancellation is a control path: mark it before a queued waiter can keep polling.
       if(['browser_network_wait','browser_wait_new_tab','browser_events'].includes(name)&&['cancel','unsubscribe'].includes(args.action)&&args.watchRef){const w=this.watch(op,args.watchRef);w.cancelRequested=true;}
-      const finish=()=>{if(op.queueAccounted){this.pending--;op.queueAccounted=false;}ctx?.jobs?.delete(requestId);client.jobs.delete(requestId);};
+      const finish=()=>{if(op.queueAccounted){this.pending--;op.queueAccounted=false;}ctx?.jobs?.delete(requestId);ctx?.controllers?.delete(requestId);client.jobs.delete(requestId);client.controllers.delete(requestId);};
       const run=async()=>{
         try{
           this.budget(op);this.preflight(op,args);
           if(this.temporaryBlocks.has(name))throw new BrowserError('UNSUPPORTED_CAPABILITY','Backend is unavailable on this native connection; diagnose it before reconnecting',{details:{reason:this.temporaryBlocks.get(name)}});
-          await this.activation(op);
+          if(Object.hasOwn(this.advanced.handlers,name)){
+            const snapshot=await this.refreshReadiness({deadline:op.deadline});this.budget(op);
+            const readiness=this.advanced.readinessFor(name,args);
+            if(readiness.available!==true)throw new BrowserError('BACKEND_UNAVAILABLE','The required backend or mode is not ready',{details:{backend:readiness.backend??null,reason:readiness.reason??'BACKEND_UNAVAILABLE'}});
+          }
+          if(!op.control&&!op.local)await this.activation(op);
           const handler=this.handlers[name];if(!handler)throw new BrowserError('UNSUPPORTED_CAPABILITY','No browser adapter is installed');
           const outcome=await handler(op,args);
           if(!(name==='browser_attach'&&args.action==='release'))this.budget(op);
@@ -374,20 +446,21 @@ export class BrowserRuntime{
           if(op.reservation){op.reservation.status='complete';op.reservation.resolve(result);}return result;
         }catch(e){return this.failure(op,e);}finally{finish();}
       };
-      const nativeId=this.preflight(op,args),tabTail=nativeId===undefined?Promise.resolve():this.tabQueues.get(nativeId)??Promise.resolve();
-      const windowScoped=!releasing&&(!this.isRead(name,args)||name==='browser_screenshot');
+      const bypassQueues=control||local;
+      const nativeId=bypassQueues?undefined:this.preflight(op,args),tabTail=nativeId===undefined?Promise.resolve():this.tabQueues.get(nativeId)??Promise.resolve();
+      const windowScoped=!bypassQueues&&!releasing&&(!this.isRead(name,args)||name==='browser_screenshot');
       let queueTimer,expiredResult;
       const start=()=>{clearTimeout(queueTimer);return expiredResult??run();};
       // Return a queued timeout promptly, but keep the original predecessor
       // barrier as the queue tail. Later operations must not overtake it.
-      const job=Promise.all([tabTail,...(windowScoped?[this.windowQueue]:[])]).then(start,start),tail=job.catch(()=>{});
+      const job=(bypassQueues?Promise.resolve().then(start):Promise.all([tabTail,...(windowScoped?[this.windowQueue]:[])]).then(start,start)),tail=job.catch(()=>{});
       const queuedDeadline=new Promise(resolve=>{queueTimer=setTimeout(()=>{
         expiredResult=this.failure(op,new BrowserError('TIMEOUT','Operation deadline expired in queue',{retryableRead:true}));
         finish();resolve(expiredResult);
       },Math.max(0,op.deadline-this.now()));});
       if(nativeId!==undefined){this.tabQueues.set(nativeId,tail);tail.finally(()=>{if(this.tabQueues.get(nativeId)===tail)this.tabQueues.delete(nativeId);});}
-      if(ctx&&!releasing){ctx.jobs??=new Map();ctx.jobs.set(requestId,job);}
-      client.jobs.set(requestId,job);
+      if(ctx&&!releasing){ctx.jobs??=new Map();ctx.controllers??=new Map();ctx.jobs.set(requestId,job);ctx.controllers.set(requestId,controller);}
+      client.jobs.set(requestId,job);client.controllers.set(requestId,controller);
       if(windowScoped)this.windowQueue=tail;return Promise.race([job,queuedDeadline]);
     }catch(error){if(op?.queueAccounted){this.pending--;op.queueAccounted=false;}return op?this.failure(op,error):publicFailure(error,{requestId,elapsedMs:this.now()-started});}
   }

@@ -9,11 +9,18 @@ export const BROWSER_TOOLS=BROWSER_CONTRACT.tools.filter(t=>!t.unsupportedReason
   name:t.name,description:t.description??t.result,inputSchema:t.inputSchema,outputSchema:t.outputSchema,annotations:t.annotations
 }));
 export const UNAVAILABLE_TOOLS=Object.fromEntries(BROWSER_CONTRACT.tools.filter(t=>t.unsupportedReason).map(t=>[t.name,t.unsupportedReason]));
+export const ADVANCED_BROWSER_TOOL_NAMES=Object.freeze([
+  'browser_press_keys','browser_semantic_query','browser_dialog','browser_file_picker','browser_download',
+  'browser_launch','system_clipboard','browser_visual_find','browser_ocr','browser_accessibility_audit'
+]);
+const advancedNames=new Set(ADVANCED_BROWSER_TOOL_NAMES);
+export const CORE_BROWSER_TOOLS=BROWSER_TOOLS.filter(t=>!advancedNames.has(t.name));
+export const ADVANCED_BROWSER_TOOLS=BROWSER_TOOLS.filter(t=>advancedNames.has(t.name));
 const validators=new Map(BROWSER_TOOLS.map(t=>[t.name,ajv.compile(t.inputSchema)]));
 const outputValidators=new Map(BROWSER_TOOLS.map(t=>[t.name,ajv.compile(t.outputSchema)]));
 const recoveryFor=code=>code==='INVALID_ARGUMENT'?'fix-arguments':code.includes('STALE')||code==='REF_SCOPE_MISMATCH'?'rediscover':
   code==='ACTION_OUTCOME_UNKNOWN'||code==='WRITE_BLOCKED'?'observe-do-not-retry':code==='BRIDGE_DISCONNECTED'?'reconnect':
-  code==='UNSUPPORTED_CAPABILITY'?'configure-backend':code.includes('LIMIT')||code==='RESULT_TOO_LARGE'?'reduce-scope':'none';
+  code==='UNSUPPORTED_CAPABILITY'||code==='BACKEND_UNAVAILABLE'?'configure-backend':code.includes('LIMIT')||code==='RESULT_TOO_LARGE'?'reduce-scope':'none';
 export class BrowserError extends Error{
   constructor(code,message=code,{dispatchState='notSent',retryableRead=false,recovery=recoveryFor(code),details={},data=null}={}){
     super(message.slice(0,512));this.code=code;this.dispatchState=dispatchState;this.retryableRead=retryableRead;this.recovery=recovery;this.details=details;this.data=data;

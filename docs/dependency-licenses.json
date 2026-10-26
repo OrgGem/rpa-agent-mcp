@@ -220,6 +220,12 @@
       "developmentOnly": true
     },
     {
+      "path": "node_modules/@techstark/opencv-js",
+      "version": "5.0.0-release.1",
+      "license": "Apache-2.0",
+      "developmentOnly": false
+    },
+    {
       "path": "node_modules/acorn",
       "version": "8.15.0",
       "license": "MIT",
@@ -229,6 +235,12 @@
       "path": "node_modules/ajv",
       "version": "8.20.0",
       "license": "MIT",
+      "developmentOnly": false
+    },
+    {
+      "path": "node_modules/axe-core",
+      "version": "4.14.0",
+      "license": "MPL-2.0",
       "developmentOnly": false
     },
     {
@@ -320,6 +332,12 @@
       "version": "8.0.1",
       "license": "MIT",
       "developmentOnly": true
+    },
+    {
+      "path": "node_modules/pngjs",
+      "version": "7.0.0",
+      "license": "MIT",
+      "developmentOnly": false
     },
     {
       "path": "node_modules/punycode",

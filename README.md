@@ -1,6 +1,6 @@
 # RPA Agent MCP
 
-Local CLI/MCP bridge cho extension UiPath trên Chrome: **47 MCP tools** gồm bốn API legacy, `browser_capabilities` và 42 adapter browser. Xem [coverage runtime](docs/RUNTIME-FUNCTION-COVERAGE.vi.md) và [schema input/output](docs/browser-tool-contracts.json). 10 tool cần backend riêng được ghi unsupported và không xuất hiện trong `tools/list`.
+Local CLI/MCP bridge cho extension UiPath trên Chrome: source static catalog định nghĩa **57 tool** gồm bốn API legacy, `browser_capabilities` và 52 adapter browser. Trong 52 adapter, 42 tool core có receipt live lịch sử; mười tool advanced nay có source backend riêng và readiness gates. MCP/native host đang chạy chưa được reload, nên đây mô tả source/test catalog, không xác nhận tool list trong process hiện tại. Xem [coverage runtime](docs/RUNTIME-FUNCTION-COVERAGE.vi.md), [schema input/output](docs/browser-tool-contracts.json) và [trạng thái backend advanced](docs/ADVANCED-BACKEND-STATUS.vi.md). Source/unit test không đồng nghĩa Companion đã cài hoặc tool đã chạy live.
 
 ```powershell
 git clone https://github.com/OrgGem/rpa-agent-mcp.git
@@ -13,7 +13,7 @@ Yêu cầu runtime: Windows, Node.js 22.22.2+ (v22) hoặc 24.15+ và extension 
 
 Bản thử nghiệm đã được kiểm chứng với extension **UiPath Browser Automation 23.10.1**. Native host riêng cung cấp kết nối cho CLI và MCP; không cần chương trình `ChromeNativeMessaging.exe` của UiPath cho các thao tác đã triển khai.
 
-Public runtime đã đạt **7/7 nhóm live và42/42 tên tool browser mới** trên fixture hai origin/React, cùng64/64 offline tests. Screenshot PNG qua MCP đạt trong cửa sổ hiển thị; tab ẩn bị từ chối trước capture. Xem [kết quả và giới hạn](docs/BROWSER-LIVE-VERIFICATION.json) và [tiến độ phase](docs/DEVELOPMENT-PHASES.vi.md).
+Receipt public trước đợt advanced backend đạt **7/7 nhóm và42/42 tool core** trên fixture hai origin/React theo source hashes ghi trong receipt. Receipt đó không kiểm chứng mười tool advanced hoặc source hashes hiện tại, nên không được coi là live acceptance của toàn bộ 52 adapter. Xem [kết quả và giới hạn](docs/BROWSER-LIVE-VERIFICATION.json) và [tiến độ phase](docs/DEVELOPMENT-PHASES.vi.md).
 
 ## Phạm vi hiện tại
 
@@ -25,6 +25,7 @@ Public runtime đã đạt **7/7 nhóm live và42/42 tên tool browser mới** t
 - `active`, `find URL_PATTERN`: các lệnh chẩn đoán chỉ đọc.
 - `mcp`: MCP STDIO với session/tab/navigation, DOM read/snapshot/find/wait, input, iframe, evaluate, form/table/tree/date, watchers, cookies và ảnh.
 - `browser_capabilities({})`: snapshot không dispatch browser action. Host mới trả schema v2 với connectionRef, tool availability, giới hạn và unsupported reasons. Availability không chứng nhận mọi option đã live; receipt G0 lịch sử tách khỏi acceptance public tool mới.
+- Mười tool advanced dùng Windows helper, OpenCV, Ollama hoặc Companion tùy backend. `tools/list` là catalog tĩnh; restart MCP/native host để process mới nạp source rồi gọi `browser_capabilities` để xem readiness. Companion phải được build, load và đăng ký riêng; upload roots, model Ollama và profile launch cần cấu hình riêng. Chi tiết có trong [bảng backend](docs/ADVANCED-BACKEND-STATUS.vi.md).
 - [Hướng dẫn agent](docs/BROWSER-RUNTIME-GUIDE.vi.md): attach, refs, requestKey, xử lý lỗi, input method, artifact và cleanup.
 
 Không phân phối lại mã extension của UiPath. Giao thức được khảo sát từ bản đã cài; chưa có cam kết tương thích các phiên bản khác. Xem `verification.json` để biết kết quả kiểm chứng thực tế, tách khỏi kiểm thử với extension mô phỏng.

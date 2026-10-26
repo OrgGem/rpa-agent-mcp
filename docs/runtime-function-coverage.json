@@ -3,17 +3,19 @@
   "driverVersion": "23.4.55.39317",
   "extensionVersion": "23.10.1",
   "counts": {
-    "publicMcpTools": 47,
+    "publicMcpTools": 57,
     "roadmapTools": 53,
-    "implementedBrowserTools": 43,
-    "unsupportedTools": 10,
+    "implementedBrowserTools": 53,
+    "unsupportedTools": 0,
     "protocolRows": 188
   },
   "liveSummary": {
-    "eligibleForScopedEvidence": true,
-    "fullSuitePassed": true,
-    "successfulNewToolNames": 42,
-    "totalNewToolNames": 42
+    "eligibleForScopedEvidence": false,
+    "fullSuitePassed": false,
+    "successfulCoreToolNames": 0,
+    "totalCoreToolNames": 42,
+    "advancedLiveVerified": 0,
+    "totalAdvancedTools": 10
   },
   "capabilityTool": {
     "name": "browser_capabilities",
@@ -22,22 +24,41 @@
     "phase": "F0.2"
   },
   "sourceHashes": {
-    "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
+    "src/bridge.mjs": "cfcb53b181a454550d33974ea4ad3d8a27abbb2e01b0976c7cbb8002f1048cf9",
     "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
-    "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
-    "src/browser-runtime.mjs": "edc0690cf2ed9cc3a39ed64bdcb652408962b6e6fd43c85808134b3856c9bef5",
-    "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
-    "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
-    "src/browser-observers.mjs": "bdd9157f017eb133a4c88157e699b032ee9f65853497cf52938cf62af7774124",
+    "src/capabilities.mjs": "2012b9193fe8b0a4f3cd6e874f28cbce87157d34b0c1a8277b61b4af2f66cde5",
+    "src/browser-runtime.mjs": "0bf09d8dcc36c16bccaaf71940703b3c28607387be72948ae5434a4070c8e32b",
+    "src/browser-operations.mjs": "85442c57ec410e4456834a81b306692cb9d5d274cfbf404f5f2f3382efa43a2e",
+    "src/browser-page.mjs": "6ff366a16dd16fdb10bfc2ed005b4511b229b869e733b48f5d004dbd91a4dc60",
+    "src/browser-observers.mjs": "3284107db37823f4f0ca00fa4b8aa9ea0e47b6741fb81299202a5e9efa71a145",
     "src/browser-composites.mjs": "7f2c62b21fd0a94cce58fc0c8718ad7e84e249bc1b70174264b862bac4d3998a",
-    "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
-    "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
-    "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
-    "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828",
-    "scripts/run-browser-live.mjs": "8aa05bbe02e4da278d7aad269dee059a71a9d90bf8306d07d55ef933a52e6abe",
+    "src/browser-artifacts.mjs": "33ff097f9f9b730b9759e74da4abc7ca6aef54d35beae6f162daa5cd62c1a038",
+    "src/browser-tools.mjs": "4c94fec3783d52af570369f384a71a5852df9bdb3bf8ceabb452e207059c0f19",
+    "src/browser-advanced.mjs": "9ee8acdcb9b4a2c4796ee57e6bc8d2782c2c559078b4e27e93625ba887c0b3b9",
+    "src/browser-accessibility.mjs": "0c69c78ee57dd6016edf79e6c9b5fd02995ed22457369043cfa433487e3ee34b",
+    "src/browser-launch.mjs": "ea642bb86df64809bb6e332a43e6b15f7206876667e1df571af60a84e9223778",
+    "src/browser-semantic.mjs": "87ee796860c7f9650cf2db0c5339863a872d2f99b608b5baefc48a51e9ff6f2a",
+    "src/browser-visual.mjs": "81fc2361629ea7de47e8f8ab1e596942de0fbf7180112020e2d0a30d46bf6420",
+    "src/browser-visual-worker.mjs": "33b22fe33f72bacb8045d28af270783d7d88d8a241c77ec69b94fcf9999ea1af",
+    "src/windows-browser-helper.mjs": "6f2f7a0254e57de67ab83622bbea3d169952c61cff06b75ace684c72a86fdecb",
+    "src/companion-client.mjs": "f98a7acbe335b361eecbfa82e3da791cdbd3d4692ecf4054c48e8d3cce3c9d19",
+    "src/companion-endpoint.mjs": "35f442f1e75faca6d9dbc095b62c315b10e1f066945ee668f8420fba6c2c9643",
+    "src/companion-host.mjs": "14d685ed1fc2c1115f4e317dbe99d52664b8c2dae23184eb3eab76132687d15b",
+    "src/companion-pairing.mjs": "d69b7f0f7cd012d3023a6027fc5aba5ca899a736320782f3d2c8794317e9f571",
+    "src/companion-protocol.mjs": "d0b754dd3735ff0b70ce972df61e7d5004a322910f4e2313c31302c8a5c9f4a6",
+    "companion/manifest.json": "80ffe2275792fd02092cbf3650acd7bd4e939a15dfddec6f68064efd5fa0f482",
+    "companion/service-worker.mjs": "5ae562c788c9a4a3eda24bfd0216c2baf2866fa82bb43f8644bf23ec5cdfcd53",
+    "companion/backend.mjs": "2fb7a5b8b8740b2490355dfee9b2f841d66153e3cc7934f53b509be226f6beaf",
+    "companion/protocol.mjs": "752a851341ac69afc443b6513d5d4bd3bb8ccb67ca0af21c8abeb6b67feaf628",
+    "companion/storage.mjs": "3fbc8f7eaf6bf1f873963dbdec627910f11a5f5f9e206e1917cab4ec9c9822ac",
+    "docs/browser-tool-contracts.json": "77e66d0ed175bb91e740f2fa28e47647b5c1a31f2f113362ea7af399db50de94",
+    "package-lock.json": "829eb6ad617ba95f9151c032b9ad9202793f0e1a73798d39bd78148b33db9d78",
+    "scripts/run-browser-live.mjs": "17b9cf9265641932e55adac716b66c842de259cc08da637ccd0aa68c978e3c3d",
     "scripts/browser-runtime-fixture.mjs": "0b897a9ad7af5e0618963c639311a118d7ce44285a074586b198694f2613451a",
     "scripts/fixtures/browser-runtime.jsx": "ea82523d6d1870081f25eb19ef30a8f26ddc78b37c490debc50b25a65ff885e0",
-    "scripts/build-runtime-coverage.mjs": "59dbdc68c5ca5b3cce16db04acc33da5297d61bf2875bbf9628c0102f79bc890",
+    "scripts/Windows-BrowserHelper.ps1": "a603d9685bb816da3150ddcb27f23072261f9774e185e867914dfe6c6f95c284",
+    "scripts/Windows-BrowserLaunch.ps1": "c022973e2b9edbb04ef2223da07c0fd57f709535485a0588128743ade7dd3287",
+    "scripts/build-runtime-coverage.mjs": "48d842c93d448aa941bfec82c54eb472f7a2a41540c34e3006093920b4bc418d",
     "docs/BROWSER-LIVE-VERIFICATION.json": "2b4b767f5270539348cec36fb4f939d35ae8ae54fae043ee8d3d5eea4d360ea9"
   },
   "tools": [
@@ -61,10 +82,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "contextRef and selected tab metadata",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -91,10 +111,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "tabs[] with opaque tabRef/url/title/active/windowRef; complete/truncated",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -120,10 +139,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "new tabRef retained even if metadata/load verification times out",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -146,10 +164,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "tab metadata/generation and unknown-action state; explicit abandon never retries or marks outcome verified",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -174,10 +191,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "active state after activation",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -205,10 +221,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "close acknowledgement plus independently enumerated absence",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -234,10 +249,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "acknowledgement, new tabRef after owned navigation, load observation",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -263,10 +277,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "Bounded operation data",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -290,10 +303,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "opaque refs, exact observed matchCount, truncated; strict single reports NOT_FOUND/AMBIGUOUS_TARGET",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -317,10 +329,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "opaque refs, exact observed matchCount, truncated; strict single reports NOT_FOUND/AMBIGUOUS_TARGET",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -343,10 +354,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "bounded flat nodes with refs/parentIndex/tag/label/value/state/rect and truncation",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -369,10 +379,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "requested fields, unsupportedFields and redaction flags",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -395,10 +404,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "Bounded operation data",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -424,10 +432,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "method, acknowledged/verified outcome, documentChanged; no business-success inference",
       "limitations": "Default dom is synthetic; optional uipath uses separate best-effort native identity checks."
@@ -453,10 +460,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "method, valueMatch/verified outcome and redacted readback",
       "limitations": "Default dom is synthetic; optional uipath uses separate best-effort native identity checks."
@@ -479,10 +485,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "Bounded operation data",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -508,10 +513,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "Bounded operation data",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -537,10 +541,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "native HTML select only; exactly one of values/labels",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -563,10 +566,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "Bounded operation data",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -591,10 +593,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "exactly one tabRef or elementRef; tab focus activates owning window",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -619,10 +620,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "active-tab guarded bounded image artifact; no automatic activation Hidden documents reject with TARGET_NOT_VISIBLE; expired render readiness with CAPTURE_NOT_READY. Target capture errors do not disable other tabs.",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -645,10 +645,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "Bounded operation data",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -671,10 +670,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "synthetic DOM pointer/mouse events; not OS pointer movement",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -697,10 +695,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "synthetic HTML5 drag events, no OS drag; unsupported if browser/control rejects DataTransfer",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -723,10 +720,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "main frame plus immediate child iframe element refs; no implicit recursive traversal",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -751,10 +747,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "explicit iframe ref -> owned child frameRef/document generation",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -777,10 +772,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "DOM input/textarea selection UTF-16 offsets; SAP native selection route separate",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -803,10 +797,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "temporary owned outline restored at stop/TTL",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -831,10 +824,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "JSON result; page MAIN world only, explicit side effects; Promise support by bounded bridge job polling",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -859,10 +851,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "bounded rows/columns and per-page partial outcomes; pagination explicit only",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -885,10 +876,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "HTML table cell ref (zero-based DOM row/cell indices)",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -911,10 +901,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "HTML ARIA tree only; no generic SAP activity parity",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -937,10 +926,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "native input[type=date] only; custom/SAP calendars unavailable",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -963,10 +951,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "bounded HTML controls, refs and values; password fields redacted",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -989,10 +976,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "sequential desired-state steps, partial failures, no submit or rollback",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1017,10 +1003,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "explicit DOM close control only; not browser/OS/JS dialogs",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1046,10 +1031,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "Arm before trigger, wait for continuous quiet among requests observed since arm, cancel/TTL/finally stop; no claim about pre-existing requests.",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1072,10 +1056,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "bounded event queue, nextCursor/droppedCount, no arbitrary event serialization",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1102,10 +1085,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "baseline + exact URL new-tab correlation; no opener guarantee",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1128,10 +1110,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "current document origin visible cookies only; no HttpOnly/profile-wide restore",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1157,10 +1138,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "native owning-window metadata/activate/maximize only",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1181,10 +1161,9 @@
         "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "fixture-smoke-verified",
+        "status": "pending",
         "runner": "scripts/run-browser-live.mjs",
-        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
-        "scope": "Only successful options/calls in the owned fixture runner; does not verify every native route, schema branch or site."
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json"
       },
       "semantics": "owner-scoped image metadata/bounded read/export within artifact output root; never arbitrary path",
       "limitations": "Only the enums/options in the strict input schema are implemented."
@@ -1192,142 +1171,212 @@
     {
       "name": "browser_press_keys",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "NO_SAFE_TARGETED_KEY_BACKEND: pinned normal WriteText ignores key tokens; debugger route lacks verified target/default-action semantics.",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "companion-debugger",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/companion-backend.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_semantic_query",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "SEMANTIC_PROVIDER_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "chrome-accessibility-tree+ollama",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/browser-semantic.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_dialog",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "INDEPENDENT_ASYNC_DIALOG_BACKEND_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "companion-debugger",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/companion-backend.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_file_picker",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "NATIVE_FILE_PICKER_BACKEND_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "companion-debugger+configured-upload-roots",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/companion-backend.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_download",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "CORRELATED_DOWNLOAD_BACKEND_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "companion-downloads",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/companion-backend.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_launch",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "OWNED_PROFILE_LAUNCH_BACKEND_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "configured-isolated-profile",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/browser-launch.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "system_clipboard",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "OPTIONAL_NATIVE_CLIPBOARD_BACKEND_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "windows-helper",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/windows-browser-helper.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_visual_find",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "VISION_PROVIDER_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "local-opencv",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/browser-visual.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_ocr",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "OCR_PROVIDER_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "windows-winrt-ocr",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/windows-browser-helper.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     },
     {
       "name": "browser_accessibility_audit",
       "phase": "deferred",
-      "status": "unsupported",
-      "unsupportedReason": "ACCESSIBILITY_AUDIT_ENGINE_REQUIRED",
-      "adapter": null,
+      "status": "implemented-source",
+      "adapter": "src/browser-advanced.mjs",
       "routes": [],
+      "contract": "docs/browser-tool-contracts.json",
+      "backend": "pinned-axe+companion",
       "offline": {
-        "status": "not-applicable"
+        "status": "test-source",
+        "source": "test/browser-accessibility.test.mjs",
+        "limitations": "Focused regression coverage; not all planned scenarios or browser semantics."
       },
       "live": {
-        "status": "not-applicable"
-      }
+        "status": "not-run",
+        "runner": "scripts/run-browser-live.mjs",
+        "receipt": "docs/BROWSER-LIVE-VERIFICATION.json",
+        "reason": "Advanced backend live fixture has not been run."
+      },
+      "limitations": "Implementation source and offline adapter tests do not prove that the optional backend is configured or available."
     }
   ],
   "rows": [

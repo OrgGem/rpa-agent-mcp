@@ -32,7 +32,9 @@ export function createObserverHandlers(r){return {
     if(after.data.visibility!=='visible')throw new BrowserError('TARGET_NOT_VISIBLE','Document became hidden during capture');
     if(typeof result.data!=='string'||result.data.length>8*1024*1024-4096||! /^[A-Za-z0-9+/]*={0,2}$/.test(result.data))throw new BrowserError('RESULT_TOO_LARGE','Malformed or oversized screenshot payload');
     const bytes=Buffer.from(result.data,'base64');
-    const data=await r.artifacts.put(op.client.id,op.ctx.ref,bytes,format==='png'?'image/png':'image/jpeg');
+    const data=await r.artifacts.put(op.client.id,op.ctx.ref,bytes,format==='png'?'image/png':'image/jpeg',format==='png'?{
+      sourceTool:'browser_screenshot',tabRef:tab.ref,documentGeneration:after.generation,viewportGeneration:after.viewportGeneration
+    }:undefined);
     return {data,evidence:{kind:'window-guarded-capture',backend:'uipath',dispatchState:'notSent',outcome:'verified',verified:true,
       limitations:['Connection operations are serialized; external user focus races remain possible.','Viewport only; no full-page/debugger capture.']}};
   },

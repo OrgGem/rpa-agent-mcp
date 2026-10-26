@@ -3,7 +3,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 const root=fileURLToPath(new URL('..',import.meta.url));
 const lock=JSON.parse(await readFile(path.join(root,'package-lock.json'),'utf8'));
-const allowed=new Set(['MIT','MIT-0','ISC','BSD-2-Clause','BSD-3-Clause','Apache-2.0','BlueOak-1.0.0','CC0-1.0']);
+const allowed=new Set(['MIT','MIT-0','ISC','BSD-2-Clause','BSD-3-Clause','Apache-2.0','BlueOak-1.0.0','CC0-1.0','MPL-2.0']);
 const packages=Object.entries(lock.packages).filter(([p])=>p).map(([p,v])=>({path:p,version:v.version,license:v.license??null,developmentOnly:v.dev===true})).sort((a,b)=>a.path.localeCompare(b.path,'en'));
 for(const p of packages)if(!allowed.has(p.license))throw Error(`Dependency license needs review: ${p.path}`);
 const result={schemaVersion:1,runtimeVersion:lock.version,source:'package-lock.json license metadata',packages,

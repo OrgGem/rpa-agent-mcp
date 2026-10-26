@@ -6,7 +6,7 @@ import path from 'node:path';
 import {createBrowserRuntime} from '../src/browser-runtime.mjs';
 
 export const HTML=`<!doctype html><title>Runtime fixture</title><body><form id="form"><input id="text"><input id="secret" type="password" value="private"><input id="check" type="checkbox"><input id="date" type="date"><select id="select"><option value="a">Alpha</option><option value="b">Beta</option></select></form><button id="button">Click</button><div id="drop">Drop</div><table id="table"><tr><th>Name</th><th>Count</th></tr><tr><td>One</td><td>1</td></tr></table><div role="tree" id="tree"><div role="treeitem" aria-expanded="false">Branch</div></div><iframe id="frame"></iframe></body>`;
-export async function harness(t){
+export async function harness(t,{backends={}}={}){
   const root=await mkdtemp(path.join(os.tmpdir(),'rpa-runtime-')),pages=new Map(),calls=[],client=randomUUID();let next=3,active=1,hook=null;
   function page(id,url='https://fixture.test/',html=HTML,child=false){
     if(!child)pages.get(id)?.dom.window.close();const dom=new JSDOM(html,{url,runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window,nodes=new Map();let sequence=1;
@@ -52,7 +52,7 @@ export async function harness(t){
     throw Error(`Unexpected native route ${name}`);
   }
   let activations=0;
-  const runtime=createBrowserRuntime({request,activate:async()=>{activations++;},root,driverVersion:'23.4.55.39317'});
+  const runtime=createBrowserRuntime({request,activate:async()=>{activations++;},root,driverVersion:'23.4.55.39317',backends});
   t.after(async()=>{await runtime.dispose();for(const p of pages.values()){for(const f of p.frames.values())f.dom.window.close();p.dom.window.close();}await rm(root,{recursive:true,force:true});});
   const call=(name,args={})=>runtime.call(client,name,args),must=async(name,args)=>{const v=await call(name,args);if(!v.ok)throw Error(`${name}: ${JSON.stringify(v)}`);return v;};
   const found=await must('browser_tabs'),attached=await must('browser_attach',{connectionRef:runtime.connectionRef,tabRef:found.data.tabs[0].tabRef}),contextRef=attached.data.contextRef,tabRef=attached.data.tabRef;

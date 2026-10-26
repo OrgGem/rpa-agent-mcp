@@ -79,6 +79,7 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
 
   const mcp = spawn(process.execPath, [entry, 'mcp'], { stdio: ['pipe', 'pipe', 'pipe'] });
   t.after(() => mcp.kill());
+  let mcpErrors='';mcp.stderr.on('data',chunk=>{mcpErrors+=chunk;});
   const replies = new Map();
   const lines = new LineDecoder();
   mcp.stdout.on('data', chunk => {
@@ -99,10 +100,10 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   assert.equal(init.result.protocolVersion, '2025-06-18');
   mcp.stdin.write(JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }) + '\n');
   const listed = await send('tools/list');
-  assert.equal(listed.result.tools.length,47);
-  assert.equal(new Set(listed.result.tools.map(t=>t.name)).size,47);
+  assert.equal(listed.result.tools.length,57);
+  assert.equal(new Set(listed.result.tools.map(t=>t.name)).size,57);
   assert.ok(listed.result.tools.some(t=>t.name==='browser_type'));
-  assert.ok(!listed.result.tools.some(t=>t.name==='browser_ocr'));
+  assert.ok(listed.result.tools.some(t=>t.name==='browser_ocr'));
   const discoveryTool = listed.result.tools.find(tool => tool.name === 'browser_capabilities');
   const validate = new Ajv({ strict: true }).compile(discoveryTool.outputSchema);
   const beforeDiscovery = observed.length;
@@ -111,6 +112,7 @@ test('Native process, IPC and MCP complete a round trip with a simulated extensi
   assert.equal(validate(discovery.result.structuredContent), true, JSON.stringify(validate.errors));
   assert.deepEqual(JSON.parse(discovery.result.content[0].text), discovery.result.structuredContent);
   assert.equal(discovery.result.structuredContent.data.connection.driverLoaded, false);
+  assert.ok(Array.isArray(discovery.result.structuredContent.data.tools),`${JSON.stringify(discovery.result.structuredContent)} ${mcpErrors}`);
   assert.equal(discovery.result.structuredContent.data.tools.find(c => c.name === 'browser_tab_open').available, false);
   assert.equal(observed.length, beforeDiscovery, 'Capability discovery must not send extension commands');
   for (const args of [null, [], true, 'string', 1, { functionCall: 'click' }]) {

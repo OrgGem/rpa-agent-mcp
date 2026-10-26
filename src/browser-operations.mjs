@@ -13,12 +13,12 @@ function http(value){let u;try{u=new URL(value);}catch{}if(!u||!['http:','https:
 export function createBrowserHandlers(r){
   const handlers={
     async browser_attach(op,a){
-      if(a.action==='release'){op.dispatchState='sent';const cleanup=await r.releaseContext(op.ctx,op.requestId);op.dispatchState=cleanup.cleanupConfirmed?'acknowledged':'unknown';return {data:{released:true,...cleanup},evidence:{kind:'event-observation',backend:'bridge',dispatchState:op.dispatchState,outcome:cleanup.cleanupConfirmed?'verified':'partial',verified:cleanup.cleanupConfirmed}};}
+      if(a.action==='release'){op.dispatchState='sent';const cleanup=await r.releaseContext(op.ctx,op.requestId);op.dispatchState=cleanup.cleanupConfirmed?'acknowledged':'unknown';return {data:{released:true,cleanupConfirmed:cleanup.cleanupConfirmed},evidence:{kind:'event-observation',backend:'bridge',dispatchState:op.dispatchState,outcome:cleanup.cleanupConfirmed?'verified':'partial',verified:cleanup.cleanupConfirmed}};}
       if(a.connectionRef!==r.connectionRef)throw new BrowserError('STALE_CONTEXT','Connection was replaced');
       if(op.client.contexts.size>=16||[...r.contexts.values()].filter(c=>c.alive).length>=128)throw new BrowserError('LIMIT_EXCEEDED','Context limit exceeded');
       let selected;
       if(a.tabRef){selected=r.tabs.get(a.tabRef);if(!selected||selected.retired||selected.clientRef!==op.client.id||selected.contextRef!==null)throw new BrowserError('REF_SCOPE_MISMATCH','Attach requires a current discovery tab ref');}
-      const ctx={ref:opaque('ctx'),clientRef:op.client.id,alive:true,usedAt:r.now(),keys:new Map(),touchedFrames:new Set()};r.contexts.set(ctx.ref,ctx);op.client.contexts.add(ctx.ref);op.ctx=ctx;
+      const ctx={ref:opaque('ctx'),clientRef:op.client.id,alive:true,usedAt:r.now(),keys:new Map(),controllers:new Map(),touchedFrames:new Set()};r.contexts.set(ctx.ref,ctx);op.client.contexts.add(ctx.ref);op.ctx=ctx;
       try{
         let tab=null;
         if(selected){tab=await r.adopt(op,selected.nativeId);if(tab.docToken!==selected.docToken||tab.windowId!==selected.windowId)throw new BrowserError('STALE_TAB','Discovered tab changed before attach');op.tab=tab;r.mainFrame(op,tab);}

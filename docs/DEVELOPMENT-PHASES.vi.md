@@ -27,17 +27,17 @@ là độ ưu tiên tính năng trong catalog.
 | 3 DOM ghi | F3.2 | set_checked/select/scroll/focus; desired state và hậu kiểm | F3.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
 | 3 Quan sát | F3.3 | Screenshot: active-tab/window guard, transport bound và artifact; reject nếu chưa an toàn | F1.2; gate screenshot riêng | Source + offline + public fixture smoke đạt; xem scope bên dưới |
 | 3 MVP | F3.4 | Workflow form hoàn chỉnh; stale/multi-tab/timeout tests; cập nhật capability theo receipt | F3.1–F3.3 | Workflow fixture live đạt; broad negative scenarios vẫn planned |
-| 4 P1 | F4.1 | Keyboard Enter/Tab/chords và JS; phân biệt RunJS registry/InjectAndRunJs | MVP; design riêng | JS/set-text fixture live đạt; trusted keys unsupported |
+| 4 P1 | F4.1 | Keyboard Enter/Tab/chords và JS; phân biệt RunJS registry/InjectAndRunJs | MVP; design riêng | JS/set-text có receipt lịch sử; trusted keys có source + Companion mock, live pending |
 | 4 P1 | F4.2 | Form/extract/table/pagination; partial results, giới hạn output | F4.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
-| 4 P1 | F4.3 | Network/cookie/download/debug theo permission, watcher TTL và cleanup | MVP; design riêng | Network/visible cookies fixture live đạt; download/debug backend thiếu |
+| 4 P1 | F4.3 | Network/cookie/download/debug theo permission, watcher TTL và cleanup | MVP; design riêng | Network/visible cookies có receipt lịch sử; explicit download có Companion source/mock; debugger tooling vẫn thiếu; live advanced pending |
 | 4 Controls | F4.4 | Selection/highlight/hover/popup/set-attribute/tree/table-cell; mỗi control có fixture riêng | F2.2, F3.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
 | 4 Debug | F4.5 | Debugger attach/detach ownership, permission, tracing/diagnostic; không chiếm phiên người dùng | F4.1, F3.3 | Deferred: chưa có debugger ownership an toàn |
 | 4 Frames | F4.6 | Frame list/attach/ref ownership, same/cross-origin boundaries; không suy closed shadow support | G0.4, F2.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
-| 5 P2 | F5.1 | Dialog response policy/control path không deadlock; file picker/native helper | Backend và fixture riêng | Deferred |
-| 5 P2 | F5.2 | OCR/CV/semantic; visualTarget có viewport generation và input backend | Provider + point input đã thử | Deferred |
-| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | CI Node22/24 baseline; local71 tests + public/review live đạt; signed release pending |
-| 5 Native | F5.4 | Window/launch/clipboard/image artifact/native; chỉ mở backend và action đã thử | Backend riêng; F1.1 | Window/image artifact fixture live đạt; launch/clipboard/native helper thiếu |
-| 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider riêng | HTML date/composites fixture live đạt; SAP/provider/audit thiếu |
+| 5 P2 | F5.1 | Dialog response policy/control path không deadlock; file picker/native helper | Backend và fixture riêng | Dialog + `input[type=file]` có source/Companion mock; manual Companion install và live fixture pending; OS picker không hỗ trợ |
+| 5 P2 | F5.2 | OCR/CV/semantic; visualTarget có viewport generation và input backend | Provider + point input đã thử | OCR WinRT và OpenCV chạy trên ảnh tổng hợp; Ollama dùng fake HTTP test; Chrome screenshot/model live pending |
+| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | Companion build/launcher, license và source ZIP checks đạt; signed release và install/upgrade live pending |
+| 5 Native | F5.4 | Window/launch/clipboard/image artifact/native; chỉ mở backend và action đã thử | Backend riêng; F1.1 | Launch lock/process helper có temp fixture; clipboard chưa chạm; không launch Chrome hay profile thật |
+| 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider riêng | Accessibility audit ticket + semantic provider có source/mock; scan thật và Ollama model chưa chạy; SAP vẫn ngoài scope |
 | 5 Events | F5.6 | Event broker/recorder và drag; schema, TTL/backpressure, target generation | F3.1, F4.6 | DOM events/drag synthetic fixture live đạt; không trusted input |
 
 ## Quy tắc nghiệm thu
@@ -244,7 +244,11 @@ Trạng thái vận hành hiện tại chờ trang nền kết nối; lần kế
   source vẫn ở ignored work/generated files. Chỉ source, plan, design/review,
   matrix và receipt đã loại dữ liệu máy được đưa vào commit.
 
-## Runtime public F1–F5 supported subset — snapshot source trước public live
+## Runtime public F1–F5 supported subset — historical snapshot trước public live
+
+Phần dưới ghi lại baseline trước public live và trước mười backend advanced; các số
+47 tool / 10 unsupported và các receipt ở đây là lịch sử. Trạng thái source mới nhất
+được cập nhật ở cuối tài liệu.
 
 Baseline G0 đã commit/push `ac7d999`. Implementation mới theo
 [thiết kế EGM](designs/browser-runtime-full.md),
@@ -304,7 +308,7 @@ CI commit71525e7: Node24 đã đạt cả tests/matrix/license/source archive; N
 
 Commit c020364 đã qua cả hai job Node22.23.4 và24.22.1 trên GitHub Windows: npm ci, tests, matrix, license inventory và source archive. Node22 log55/55,0 skipped. Xem [receipt CI](WINDOWS-CI-VERIFICATION.json) và [run40266585783](https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40266585783). Source ZIP local đã khớp26 source hashes/108 entries. Đây là CI offline/packaging, không nghiệm thu browser live.
 
-Tại snapshot c020364, code đã lưu trên origin/main nhưng public live còn chờ host mới. Trạng thái hiện tại được cập nhật bên dưới.
+Tại snapshot c020364, code đã lưu trên origin/main nhưng public live còn chờ host mới.
 
 ## Public live và capture readiness — 2026-10-26
 
@@ -360,3 +364,31 @@ cleanupUnconfirmed=0. Native monitor cleanup thất bại và Unicode Chrome
 registration chưa có live evidence mới; giữ kết quả offline/process riêng.
 F4.5, backend thiếu, signed release và các scenario rộng chưa được kiểm chứng
 vẫn pending/deferred. Chưa kiểm tra CI remote cho snapshot retest này.
+
+## Advanced backend source status — 2026-10-26, final validation
+
+Source static catalog định nghĩa **57 tool**: 4 legacy, `browser_capabilities`
+và **52 browser tools** (42 core + 10 advanced). `tools/list` regression response
+trong source tests là 352,519 bytes dưới limit 1 MiB. MCP/native host process chưa
+được reload, nên đây không xác nhận tool list của process hiện tại. Mười tool
+advanced có source adapter và backend định kiểu. Readiness vẫn
+phụ thuộc Windows API/cấu hình, Companion load/đăng ký, upload roots được
+allowlist, Ollama model đã cấu hình hoặc profile launch cô lập. Route và evidence
+từng tool nằm trong
+[advanced backend status](ADVANCED-BACKEND-STATUS.vi.md).
+
+Runtime coverage ghi nhận **42 core + 10 advanced**, với advanced live verified
+**0/10**. Receipt live core 42/42 trước đây là lịch sử, chỉ gắn với hashes/scope
+được ghi; không chứng nhận source snapshot hiện tại hoặc advanced tools.
+
+Final validation: 43 local backend tests và 44 Companion tests đạt; hai strict
+runtime/backend integration tests đạt 2/2. Default `npm test` đạt **139 pass,
+0 fail, 1 skip (140 total)**; opt-in `RUN_WINDOWS_OCR_TEST=1` chạy riêng đạt 1/1
+với full image và crop. `npm run matrix:check` đạt 188 rows và 423 scenario vẫn
+planned. `npm run licenses:check` đạt với 74 packages / 9 production. Companion
+build, package validation, generated Unicode launcher và source ZIP inspection
+cũng đạt. Companion chưa load/register; không có advanced browser live run.
+
+Review bounded source C01–C13 và key-trigger finding đã đóng. Không có live
+receipt/hash mới cho Chrome của source này. Clipboard thật và model thật không
+được dùng; không cài extension, ghi registry hay chạy Chrome profile.

@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "UiPath Browser Companion",
+  "version": "1.0.0",
+  "description": "Private typed browser operations for the local UiPath MCP bridge.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApBflzzhNWl19zv7KWXDEJ+iCus7xprk+6cMJJ42670rfX8DJNwuc0IfK7uFHIsmBD9tOoOSuNcgKzYjZko9MF9AMJ/Igj2czqQkRcaAzgEAZbpS3GDYoUnoTF9a4MkKWjIocX9zLIHbgh+tDkNb9AXctfEhnRNOp9LmXAmNKmw1U/Pgj3C7VLxq6Di/lquvY1a2LGjBsmS5mSjMdpExG8ZSx4LI6KmlGK9MZfczrNQ1YTOYDkne3TjiIXSSeOXwlA/S2U8f1LDO1UYPTJuK4T9Rj6mKXPso8wONmpgqoz29OdTaVjz3MhhMYOFgmch7/kUspKS2V49qYCaR/Enr0fwIDAQAB",
+  "permissions": [
+    "debugger",
+    "downloads",
+    "nativeMessaging",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "service-worker.mjs",
+    "type": "module"
+  },
+  "externally_connectable": {
+    "ids": [
+      "jfcmnbofjlffnejneillkgbniiidiigd"
+    ]
+  }
+}

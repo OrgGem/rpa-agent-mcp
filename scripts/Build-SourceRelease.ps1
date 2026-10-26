@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
 $package = Get-Content -LiteralPath (Join-Path $repoRoot 'package.json') -Raw | ConvertFrom-Json
 if ($package.version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid release version' }
-$entries = @('src','scripts','docs','test','.github','AGENTS.md','EGM.md','README.md','LICENSE','Setup.ps1','package.json','package-lock.json','mcp.example.toml','.gitignore')
+$entries = @('src','scripts','docs','test','companion','.github','AGENTS.md','EGM.md','README.md','LICENSE','Setup.ps1','package.json','package-lock.json','mcp.example.toml','.gitignore')
 foreach ($entry in $entries) {
   $source = Join-Path $repoRoot $entry
   if (!(Test-Path -LiteralPath $source)) { throw "Missing source entry: $entry" }
@@ -17,7 +17,11 @@ $name = 'rpa-agent-mcp-' + $package.version + '-' + [guid]::NewGuid().ToString('
 $stage = Join-Path $releaseRoot $name
 New-Item -ItemType Directory -Path $stage | Out-Null
 foreach ($entry in $entries) { Copy-Item -LiteralPath (Join-Path $repoRoot $entry) -Destination $stage -Recurse }
-$forbidden = Get-ChildItem -LiteralPath $stage -Recurse -Force | Where-Object { $_.Name -in @('native-host.json','native-host.cmd','registration-before.json','EmbeddedDriversContainer.js','node_modules','.env') }
+$forbidden = Get-ChildItem -LiteralPath $stage -Recurse -Force | Where-Object {
+  $_.Name -in @('native-host.json','native-host.cmd','registration-before.json','com.uipath.companion_v1.json',
+    'EmbeddedDriversContainer.js','axe.min.js','node_modules','.env') -or
+  $_.Name -like '.env.*' -or $_.Extension -in @('.pem','.pfx')
+}
 if ($forbidden) { throw 'Generated host, dependency or vendor files entered source release' }
 $archive = Join-Path $releaseRoot ($name + '.zip')
 Compress-Archive -LiteralPath $stage -DestinationPath $archive -CompressionLevel Optimal
