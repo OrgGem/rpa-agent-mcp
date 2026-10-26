@@ -1,6 +1,6 @@
 import {BrowserError} from './browser-tools.mjs';
 
-const read=data=>({data,evidence:{kind:'readback',backend:'isolated-dom',dispatchState:'notSent',outcome:'observed',verified:true}});
+const read=(data,dispatchState='notSent')=>({data,evidence:{kind:'readback',backend:'isolated-dom',dispatchState,outcome:'observed',verified:true}});
 const action=data=>({data,evidence:{kind:'dom-readback',backend:'isolated-dom',dispatchState:'acknowledged',outcome:'verified',verified:true}});
 const partial=(error,data)=>new BrowserError(error.code??'BACKEND_FAILURE',error.message??'Composite operation failed',{
   dispatchState:error.dispatchState??'acknowledged',recovery:'observe-do-not-retry',details:{completed:data.completed??data.pages??0},data:{...data,partial:true}
@@ -40,25 +40,33 @@ export function createCompositeHandlers(r,handlers){
       return action({steps,completed:steps.length,partial:false});
     },
     async browser_extract_table(op,a){
-      let currentTab=a.tabRef,currentFrame=a.frameRef,lastSignature=null,pages=0,truncated=false,columns=null,rows=[];
+      let currentTab=a.tabRef,currentFrame=a.frameRef,scopeRoot=a.rootRef,lastSignature=null,pages=0,truncated=false,columns=null,rows=[];
+      const originalTab=r.tabs.get(a.tabRef);
       const maxPages=a.pagination?.maxPages??1,maxRows=a.maxRows??500;
       try{
         while(pages<maxPages&&rows.length<maxRows){
-          let tableRef=a.elementRef,scopeRoot=a.rootRef;
-          if(a.pagination){const found=await r.find(op,{contextRef:a.contextRef,tabRef:currentTab,frameRef:currentFrame,rootRef:scopeRoot,locator:a.pagination.rootLocator},{single:true});tableRef=found.elementRef;scopeRoot=undefined;}
-          let x=tableRef?await r.element(op,tableRef):await r.scope(op,{...a,tabRef:currentTab,frameRef:currentFrame});
-          let page;
+          let x,page;
           while(true){
             try{
+              if(!x){
+                let tableRef=a.elementRef;
+                if(a.pagination){const found=await r.find(op,{contextRef:a.contextRef,tabRef:currentTab,frameRef:currentFrame,rootRef:scopeRoot,locator:a.pagination.rootLocator},{single:true});tableRef=found.elementRef;}
+                x=tableRef?await r.element(op,tableRef):await r.scope(op,{...a,tabRef:currentTab,frameRef:currentFrame});
+              }
               page=(await r.page(op,x.tab,x.frame,'table',{targetToken:(x.entry??x.root)?.token,columns:a.columns,rowSelector:a.rowSelector,maxRows:maxRows-rows.length})).data;
               const signature=JSON.stringify([page.columns,page.rows]);if(signature!==lastSignature){lastSignature=signature;break;}
             }catch(e){
-              if(!a.pagination||!['STALE_ELEMENT','STALE_TAB'].includes(e.code))throw e;
-              const refreshed=await r.adopt(op,x.tab.nativeId,{forceNew:true});if(refreshed.windowId!==x.tab.windowId)throw new BrowserError('STALE_TAB','Pagination target window changed');
-              currentTab=refreshed.ref;currentFrame=undefined;
+              if(!a.pagination||pages===0||!['STALE_ELEMENT','STALE_TAB'].includes(e.code))throw e;
+              const previous=r.tabs.get(currentTab)??x?.tab,refreshed=await r.adopt(op,originalTab.nativeId);
+              if(refreshed.windowId!==originalTab.windowId)throw new BrowserError('STALE_TAB','Pagination target window changed');
+              // Navigation may start after click's final observation, including
+              // during the next find. Reacquire only from explicit locators.
+              if(refreshed.docToken!==previous?.docToken){currentFrame=undefined;scopeRoot=undefined;}
+              else if(!x)throw e;
+              currentTab=refreshed.ref;
             }
             await r.sleep(op,100);
-            if(a.pagination){const f=await r.find(op,{contextRef:a.contextRef,tabRef:currentTab,frameRef:currentFrame,locator:a.pagination.rootLocator},{single:true});tableRef=f.elementRef;x=await r.element(op,tableRef);}
+            x=null;
           }
           if(columns&&JSON.stringify(columns)!==JSON.stringify(page.columns))throw new BrowserError('TABLE_SCHEMA_CHANGED','Columns changed between pages');
           columns??=page.columns;
@@ -73,7 +81,7 @@ export function createCompositeHandlers(r,handlers){
           if(clicked.data.documentChanged){if(!clicked.data.tabRef)throw new BrowserError('STALE_TAB','Pagination navigation needs rediscovery');currentTab=clicked.data.tabRef;currentFrame=undefined;scopeRoot=undefined;}
         }
         if(a.pagination&&(pages>=maxPages||rows.length>=maxRows))truncated=true;
-        return read({columns:columns??[],rows,rowCount:rows.length,truncated,pages,partial:false});
+        return read({columns:columns??[],rows,rowCount:rows.length,truncated,pages,partial:false},op.dispatchState);
       }catch(e){throw partial(e,{columns:columns??[],rows,rowCount:rows.length,truncated:true,pages,partial:true,errors:[e.code??'BACKEND_FAILURE']});}
     },
     async browser_table_cell(op,a){

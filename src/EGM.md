@@ -68,6 +68,17 @@ local IPC. The native host talks to the installed UiPath extension.
   Per-tab queues and connection window coordination share absolute deadlines.
   Write keys reserve in flight; uncertain writes block the native tab across
   contexts. Explicit originating-context abandon expires all refs before unblocking.
+- Queued deadline expiry returns before the predecessor finishes and never runs
+  the expired operation later. Queue tails retain the predecessor barrier so
+  subsequent operations cannot overtake it. Release uses the context cleanup
+  promise without allocating an action key. At the 256-key bound, only valid
+  unknown resolution can use a further bounded reserve of 256 keys; invalid
+  recovery cannot bypass the bound. Network waits also reserve recoverable keys.
+- Confirmed network-wait cleanup preserves the observation's primary timeout;
+  cleanup acknowledgement alone does not quarantine a page. Unconfirmed cleanup
+  retains an explicit recoverable unknown outcome. Table pagination reports its
+  actual click dispatch state and reacquires explicit locators after navigation,
+  including navigation first observed during the next find; it never replays Next.
 - Default input is synthetic isolated DOM with atomic node/document guards inside
   the script. Optional native actions use non-atomic pre/post RPC guards.
   MAIN evaluate uses bounded async tickets; failed scripts may have mutated and

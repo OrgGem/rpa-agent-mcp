@@ -336,17 +336,29 @@ export class BrowserRuntime{
     try{
       validateToolInput(name,args);const client=this.client(clientRef),ctx=args.contextRef?this.context(client,args.contextRef):null;
       op={client,ctx,name,args,requestId,started,deadline:started+(args.timeoutMs??10000),dispatchState:'notSent',key:args.requestKey??requestId};
-      const tool=BROWSER_TOOLS.find(t=>t.name===name),records=ctx?.keys??client.keys;
-      const useKey=!this.isRead(name,args)||Object.hasOwn(args,'requestKey');
+      const records=ctx?.keys??client.keys,releasing=name==='browser_attach'&&args.action==='release';
+      // A wait is queue-read-only, but failed monitor cleanup can need explicit
+      // unknown-outcome recovery. Reserve its key before starting the wait.
+      // Context release has its own shared cleanup promise and must not depend
+      // on capacity in the action history, even when several callers release.
+      const useKey=!releasing&&(!this.isRead(name,args)||Object.hasOwn(args,'requestKey')||name==='browser_network_wait'&&args.action==='wait');
       if(useKey){
         const hash=fingerprint(name,args),existing=records.get(op.key);
         if(existing){if(existing.hash!==hash)throw new BrowserError('REQUEST_KEY_CONFLICT','Request key was used with different arguments');return existing.promise;}
-        if(records.size>=256)throw new BrowserError('LIMIT_EXCEEDED','Write request key cache is full');
+        if(records.size>=256){
+          const tab=this.tabs.get(args.tabRef),unknown=tab&&this.unknownTabs.get(tab.nativeId);
+          const resolving=name==='browser_tab_get'&&args.resolve&&tab?.contextRef===ctx?.ref&&tab?.clientRef===client.id
+            &&unknown?.contextRef===ctx?.ref&&unknown?.requestKey===args.resolve.requestKey&&records.get(args.resolve.requestKey)?.status==='unknown';
+          // Keep a bounded reserve for explicit recovery, including attempts
+          // that expire in queue. Neither ordinary nor invalid calls can use it.
+          if(!resolving||records.size>=512)throw new BrowserError('LIMIT_EXCEEDED','Write request key cache is full');
+        }
         let resolve;const promise=new Promise(r=>{resolve=r;});const reservation={hash,promise,resolve,status:'pending'};records.set(op.key,reservation);op.reservation=reservation;
       }
       if(this.pending>=128)throw new BrowserError('LIMIT_EXCEEDED','Browser operation queue is full');this.pending++;op.queueAccounted=true;
       // Cancellation is a control path: mark it before a queued waiter can keep polling.
       if(['browser_network_wait','browser_wait_new_tab','browser_events'].includes(name)&&['cancel','unsubscribe'].includes(args.action)&&args.watchRef){const w=this.watch(op,args.watchRef);w.cancelRequested=true;}
+      const finish=()=>{if(op.queueAccounted){this.pending--;op.queueAccounted=false;}ctx?.jobs?.delete(requestId);client.jobs.delete(requestId);};
       const run=async()=>{
         try{
           this.budget(op);this.preflight(op,args);
@@ -360,16 +372,23 @@ export class BrowserRuntime{
           const result={ok:true,requestId,context,data:outcome.data,evidence,timing:{elapsedMs:this.now()-started},error:null};assertJsonBound(result);
           if(!validateToolOutput(name,result))throw new BrowserError('CONTRACT_VIOLATION','Adapter output did not match its public schema',{dispatchState:op.dispatchState});
           if(op.reservation){op.reservation.status='complete';op.reservation.resolve(result);}return result;
-        }catch(e){return this.failure(op,e);}finally{this.pending--;op.queueAccounted=false;ctx?.jobs?.delete(requestId);client.jobs.delete(requestId);}
+        }catch(e){return this.failure(op,e);}finally{finish();}
       };
       const nativeId=this.preflight(op,args),tabTail=nativeId===undefined?Promise.resolve():this.tabQueues.get(nativeId)??Promise.resolve();
-      const releasing=name==='browser_attach'&&args.action==='release';
       const windowScoped=!releasing&&(!this.isRead(name,args)||name==='browser_screenshot');
-      const job=Promise.all([tabTail,...(windowScoped?[this.windowQueue]:[])]).then(run,run),tail=job.catch(()=>{});
+      let queueTimer,expiredResult;
+      const start=()=>{clearTimeout(queueTimer);return expiredResult??run();};
+      // Return a queued timeout promptly, but keep the original predecessor
+      // barrier as the queue tail. Later operations must not overtake it.
+      const job=Promise.all([tabTail,...(windowScoped?[this.windowQueue]:[])]).then(start,start),tail=job.catch(()=>{});
+      const queuedDeadline=new Promise(resolve=>{queueTimer=setTimeout(()=>{
+        expiredResult=this.failure(op,new BrowserError('TIMEOUT','Operation deadline expired in queue',{retryableRead:true}));
+        finish();resolve(expiredResult);
+      },Math.max(0,op.deadline-this.now()));});
       if(nativeId!==undefined){this.tabQueues.set(nativeId,tail);tail.finally(()=>{if(this.tabQueues.get(nativeId)===tail)this.tabQueues.delete(nativeId);});}
       if(ctx&&!releasing){ctx.jobs??=new Map();ctx.jobs.set(requestId,job);}
       client.jobs.set(requestId,job);
-      if(windowScoped)this.windowQueue=tail;return job;
+      if(windowScoped)this.windowQueue=tail;return Promise.race([job,queuedDeadline]);
     }catch(error){if(op?.queueAccounted){this.pending--;op.queueAccounted=false;}return op?this.failure(op,error):publicFailure(error,{requestId,elapsedMs:this.now()-started});}
   }
   failure(op,error){

@@ -3,8 +3,6 @@ $ErrorActionPreference = 'Stop'
 $hostName = 'com.uipath.chromenativemsg_v2'
 $subKey = 'Software\Google\Chrome\NativeMessagingHosts\' + $hostName
 $manifestPath = Join-Path $PSScriptRoot 'native-host.json'
-$launcherPath = Join-Path $PSScriptRoot 'native-host.cmd'
-$entryPath = Join-Path $PSScriptRoot 'src\bridge.mjs'
 
 function Get-Registrations {
     foreach ($hive in @([Microsoft.Win32.RegistryHive]::CurrentUser,[Microsoft.Win32.RegistryHive]::LocalMachine)) {
@@ -24,11 +22,7 @@ if ($Mode -eq 'Install') {
     if ($foreign.Count) { throw 'Another UiPath native host is registered. No existing registration was overwritten.' }
     $extensionPath = Join-Path $env:LOCALAPPDATA 'Google\Chrome\User Data\Default\Extensions\jfcmnbofjlffnejneillkgbniiidiigd\23.10.1_0\manifest.json'
     if (!(Test-Path -LiteralPath $extensionPath)) { throw 'The inspected UiPath 23.10.1 extension was not found. Recheck compatibility before installation.' }
-    [ordered]@{name=$hostName;description='Local UiPath browser MCP bridge prototype';path=$launcherPath;type='stdio';allowed_origins=@('chrome-extension://jfcmnbofjlffnejneillkgbniiidiigd/')} |
-        ConvertTo-Json -Depth 3 | Set-Content -LiteralPath $manifestPath -Encoding ASCII
-    $probeFlag = if ($EnableG0Probe) { '1' } else { '' }
-    ('@echo off' + "`r`n" + 'set "UIPATH_G0_PROBE=' + $probeFlag + '"' + "`r`n" + '"' + $nodePath + '" "' + $entryPath + '" native %*' + "`r`n") |
-        Set-Content -LiteralPath $launcherPath -Encoding ASCII
+    & (Join-Path $PSScriptRoot 'scripts\Write-NativeHostFiles.ps1') -Root $PSScriptRoot -NodePath $nodePath -EnableG0Probe:$EnableG0Probe
     $snapshotPath = Join-Path $PSScriptRoot 'registration-before.json'
     if (!(Test-Path -LiteralPath $snapshotPath)) {
         [ordered]@{capturedAt=(Get-Date -Format o);registrations=@($registrations)} | ConvertTo-Json -Depth 4 |

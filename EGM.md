@@ -27,6 +27,9 @@ Node 22.22.2+ in v22 or 24.15+ is required. Setup requires Node on PATH in every
 requires the exact UiPath extension ID/version in Chrome's Default profile.
 It refuses conflicting native-host registrations and creates its registration
 under HKCU Registry32. Uninstall removes only matching owned HKCU registrations.
+Setup delegates generated files to scripts/Write-NativeHostFiles.ps1; UTF-8
+manifest/launcher and an ASCII code-page preamble preserve Unicode paths without
+adding text to the native binary stream. The helper does not change registration.
 
 The UiPath Activity list, source handlers, mock probes, and live receipts are
 different kinds of evidence. Public input/ref/discovery adapters have source and

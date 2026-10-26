@@ -319,3 +319,21 @@ Public MCP trên Chrome155.0.0.0 UA, extension23.10.1/driver23.4.55.39317: **7/7
 ### Lưu remote và CI của public live slice
 
 Commit [`a13599e`](https://github.com/OrgGem/rpa-agent-mcp/commit/a13599e87379d48cc8a9987c894d375fab1eac25) đã push origin/main. [CI40274330202](https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40274330202) đạt cả Windows Node22.23.4 và24.22.1: mỗi job64 tests,64pass,0fail,0skip, matrix/license/source archive đều success. Receipt CI tách khỏi live receipt. Source ZIP local đã kiểm tra26 source hashes,111 entries,0 mismatch; không phải signed installer hay GitHub release. Host cuối phiên đang connected, runtime0.3.0/driver ready, source hashes đúng, probe tắt và cleanupUnconfirmed=0.
+
+## Sửa các finding từ review toàn repo — 2026-10-26
+
+Đã sửa cả7 finding tại baseline95e5017: network timeout/recovery (P1), release
+khi đầy cache, pagination/rootRef và dispatch evidence, deadline trong queue,
+Unicode launcher/manifest và fixture path có khoảng trắng. Phạm vi liên quan
+F1.1, F4.2, F4.3 và tooling cài host/live fixture; không thêm capability.
+Xem [bản sửa và từng kiểm chứng](REVIEW-FIXES-2026-10-26.vi.md).
+
+**71/71 offline/integration tests đạt,0skip**. Bao gồm launcher Windows thật với
+binary stdio, Unicode và ký tự đặc biệt; không sửa registry trong test. Network
+cleanup unknown vẫn cần explicit abandon; queue timeout không chạy muộn hoặc
+cho write sau vượt hàng; pagination không replay click.
+
+Source mới đã làm receipt public live cũ lệch hash. Coverage được tái tạo đúng
+trạng thái pending cho bản sửa, không giữ nhãn live pass từ source cũ. Receipt
+Chrome7/7 và CI64/64 ở trên là lịch sử; đợt sửa này chưa reload native host hoặc
+chạy Chrome live/CI remote mới.423 scenario rộng vẫn planned.

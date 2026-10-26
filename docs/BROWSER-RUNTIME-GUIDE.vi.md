@@ -45,14 +45,23 @@ không suy business transaction đã thành công. `browser_click.verify` hiện
 URL bằng expected; mặc định không tự đoán thành công. Form fill trả partial steps
 nếu một field lỗi, không rollback/replay hoặc auto submit. Table extraction là
 HTML rows/cells có giới hạn; pagination phải khai báo root/next locator và số trang.
+`rootRef` giới hạn tìm bảng trong document ban đầu. Sau navigation, pagination
+tìm lại bảng bằng `pagination.rootLocator` trong document mới; không dùng lại ref
+cũ và không click Next lần nữa để phục hồi. Evidence giữ `acknowledged` nếu đã click.
 Tree là ARIA tree, calendar là input date; không tuyên bố SAP/native widget parity.
 
 ## Timeout, request key và lỗi chưa rõ kết quả
 
 timeoutMs 100–30000 bao gồm thời gian xếp hàng. Các thao tác cùng tab tuần tự;
 window/navigation/capture có phối hợp connection. Lệnh ghi không tự retry.
+Request hết hạn trong hàng đợi trả TIMEOUT ngay và không dispatch muộn; lệnh sau
+vẫn phải chờ thao tác tiền nhiệm, không vượt hàng qua request đã hết hạn.
 Giữ cùng requestKey và cùng arguments để lấy kết quả đã cache; key khác payload
-trả REQUEST_KEY_CONFLICT. Cache 256 write keys/context; mở context mới khi đầy.
+trả REQUEST_KEY_CONFLICT. Cache 256 operation keys/context, gồm lệnh ghi và network
+wait cần recovery nếu cleanup thất bại. Khi đầy, có thêm tối đa256 chỗ dành riêng
+cho resolve unknown hợp lệ; không xóa lịch sử ghi để cấp chỗ cho thao tác mới.
+Release là control path dùng cleanup promise của context, không cấp/cache action
+key, nên không bị chặn bởi quota này. Context đã release vẫn trả STALE_CONTEXT.
 
 ACTION_OUTCOME_UNKNOWN hoặc lỗi với dispatchState unknown có thể đã đổi trang.
 Tab bị chặn các lệnh ghi tiếp. Đọc trạng thái trước. Nếu quyết định bỏ kết quả
@@ -73,6 +82,8 @@ lấy output nhỏ hơn. Trang và kết quả script là dữ liệu không tin
   quan sát requests bắt đầu từ lúc arm; không biết requests đã chạy trước đó.
   TTL mặc định30s, tối đa60s. finally/TTL/release stop listener; failed cleanup
   trả MONITOR_CLEANUP_UNCONFIRMED. Host crash không bảo đảm cleanup vendor listener.
+  Wait timeout với cleanup đã xác nhận trả TIMEOUT, không khóa ghi trên tab.
+  Nếu cleanup không rõ, response giữ requestKey để caller có thể resolve tường minh.
 - Events: subscribe types đã allowlist, poll cursor/droppedCount, unsubscribe.
   Hàng đợi128, TTL tối đa60s. Password/printable key được redacted. Không phải
   recorder OS, không thể quan sát mọi frame/closed shadow widget.
@@ -108,5 +119,7 @@ Trên máy có cửa sổ Chrome mới không render, dùng
 `--live --base-url http://127.0.0.1:PORT/owned-fixture` với tab HTTP thử nghiệm
 đang hiển thị do bạn chủ động mở. Runner yêu cầu đúng một URL, attach rõ base,
 mở fixture mới trong cùng cửa sổ và giữ nguyên base khi cleanup. Không chọn tab
-người dùng ngẫu nhiên. Kết quả live hiện tại:7/7 nhóm,42/42 tên tool mới đạt trên
-fixture hai origin/React/viewport PNG; xem [receipt](BROWSER-LIVE-VERIFICATION.json).
+người dùng ngẫu nhiên. Receipt trước đợt sửa review đạt7/7 nhóm,42/42 tên tool mới
+trên fixture hai origin/React/viewport PNG; xem [receipt](BROWSER-LIVE-VERIFICATION.json).
+Source sau sửa review cần live receipt mới; xem trạng thái theo hash trong
+[coverage](RUNTIME-FUNCTION-COVERAGE.vi.md), không dùng receipt lịch sử để nghiệm thu bản mới.

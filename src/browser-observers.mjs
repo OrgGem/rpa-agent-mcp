@@ -69,9 +69,12 @@ export function createObserverHandlers(r){return {
         await r.sleep(op,80);
       }
     }catch(e){primary=e;}
-    op.dispatchState='sent';const stopped=await r.stopNetwork(w);if(!stopped)throw new BrowserError('MONITOR_CLEANUP_UNCONFIRMED','Native monitor cleanup was not confirmed',{dispatchState:'unknown'});op.dispatchState='acknowledged';
+    // Stopping this read's monitor is cleanup, not an uncertain page action.
+    // Keep the primary observation/deadline state after confirmed cleanup.
+    const observationState=op.dispatchState;
+    op.dispatchState='sent';const stopped=await r.stopNetwork(w);if(!stopped)throw new BrowserError('MONITOR_CLEANUP_UNCONFIRMED','Native monitor cleanup was not confirmed',{dispatchState:'unknown'});op.dispatchState=observationState;
     if(primary)throw primary;
-    return observation({...base,watchRef:w.ref,quiet,quietMs:a.quietMs??500,monitorStopped:true},'uipath',op.dispatchState);
+    return observation({...base,watchRef:w.ref,quiet,quietMs:a.quietMs??500,monitorStopped:true},'uipath','acknowledged');
   },
   async browser_events(op,a){
     if(a.action==='subscribe'){

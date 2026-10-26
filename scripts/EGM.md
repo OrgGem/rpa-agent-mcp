@@ -8,6 +8,11 @@ Read [the usage guide](README.md) before execution.
 
 ## Interface
 
+- [Write-NativeHostFiles.ps1](Write-NativeHostFiles.ps1) writes only the generated
+  manifest/launcher beneath the supplied checkout; Setup owns registry changes.
+  JSON and CMD use UTF-8 without BOM. The launcher selects code page 65001 before
+  non-ASCII command lines, disables delayed expansion, escapes literal percent
+  signs in paths and keeps native stdin/stdout byte streams directly connected.
 - [paths.mjs](paths.mjs) exports `EXTENSION_ROOT`, from `UIPATH_EXTENSION_DIR`
   or the pinned Chrome Default profile path under `LOCALAPPDATA`.
 - [extract-uipath-catalog.mjs](extract-uipath-catalog.mjs) reads installed
@@ -43,6 +48,8 @@ Read [the usage guide](README.md) before execution.
   records exact step/cleanup outcomes in ignored work/BROWSER-LIVE-VERIFICATION.json.
   It does not retry a failed action, register a host, reload Chrome or promote its
   raw receipt to documentation automatically.
+  The fixture resolves its JSX entry with fileURLToPath so checkout spaces and
+  Unicode do not become percent-encoded filesystem names.
   Optional --base-url HTTP_URL requires a unique, visible discovery result and
   explicitly attaches to that base before opening the fixture in its window.
   The base tab is retained; only runner-owned tabs are closed. The runner saves

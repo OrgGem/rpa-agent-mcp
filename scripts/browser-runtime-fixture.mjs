@@ -1,8 +1,9 @@
 import http from 'node:http';
 import {randomUUID,createHash} from 'node:crypto';
 import {build} from 'esbuild';
+import {fileURLToPath} from 'node:url';
 export async function startBrowserFixture(){
-  const nonce=randomUUID(),bundle=(await build({entryPoints:[new URL('./fixtures/browser-runtime.jsx',import.meta.url).pathname.replace(/^\/([A-Za-z]:)/,'$1')],bundle:true,write:false,format:'iife',minify:true,define:{'process.env.NODE_ENV':'"production"'}})).outputFiles[0].contents;
+  const nonce=randomUUID(),bundle=(await build({entryPoints:[fileURLToPath(new URL('./fixtures/browser-runtime.jsx',import.meta.url))],bundle:true,write:false,format:'iife',minify:true,define:{'process.env.NODE_ENV':'"production"'}})).outputFiles[0].contents;
   let main,cross;const servers=[];
   const server=()=>http.createServer(async(req,res)=>{
     const u=new URL(req.url,'http://127.0.0.1');if(!u.pathname.startsWith('/'+nonce+'/')){res.writeHead(404).end();return;}
