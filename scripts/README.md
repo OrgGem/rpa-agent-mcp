@@ -1,5 +1,25 @@
 # Script khảo sát và kiểm chứng
 
+## Kiểm thử live các lỗi review
+
+```powershell
+node scripts/run-review-live.mjs --live --base-url https://example.com/
+```
+
+Mở trước một tab HTTP(S) thử nghiệm đang hiển thị, URL duy nhất, rồi truyền đúng
+URL qua `--base-url`. Đây chỉ là tab để chọn cửa sổ; runner giữ nguyên nội dung
+và dùng các trang loopback riêng để test. Cần host hiện tại đã load đủ source
+hashes và extension ghim. Runner không tự reload host/Chrome hoặc thay registry.
+
+Sáu nhóm kiểm chứng: timeout khi mạng bận rồi ghi tiếp, deadline/ordering trong
+queue, phân trang DOM/navigation với rootRef, release khi đầy256 key và explicit
+unknown recovery khi đầy cache. Readback kiểm tra ghi vượt quota không đổi DOM.
+Đóng tab có rediscovery và xác minh absence; release context, server và client
+được ghi riêng. Không replay write/close không rõ kết quả. Receipt nằm ở
+`work/REVIEW-LIVE-VERIFICATION.json`; giữ bản lỗi trước khi chạy fixture mới.
+Failed native-monitor cleanup và Unicode install path không thuộc live suite
+này. Bộ smoke42 tool vẫn chạy bằng `run-browser-live.mjs --live --base-url URL`.
+
 Chạy các lệnh từ thư mục gốc repository. Runtime bridge không cần package npm bên ngoài; Acorn và BeautifulSoup phục vụ công cụ khảo sát.
 
 ```powershell

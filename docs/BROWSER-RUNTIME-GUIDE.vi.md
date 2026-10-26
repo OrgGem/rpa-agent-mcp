@@ -119,7 +119,12 @@ Trên máy có cửa sổ Chrome mới không render, dùng
 `--live --base-url http://127.0.0.1:PORT/owned-fixture` với tab HTTP thử nghiệm
 đang hiển thị do bạn chủ động mở. Runner yêu cầu đúng một URL, attach rõ base,
 mở fixture mới trong cùng cửa sổ và giữ nguyên base khi cleanup. Không chọn tab
-người dùng ngẫu nhiên. Receipt trước đợt sửa review đạt7/7 nhóm,42/42 tên tool mới
-trên fixture hai origin/React/viewport PNG; xem [receipt](BROWSER-LIVE-VERIFICATION.json).
-Source sau sửa review cần live receipt mới; xem trạng thái theo hash trong
-[coverage](RUNTIME-FUNCTION-COVERAGE.vi.md), không dùng receipt lịch sử để nghiệm thu bản mới.
+người dùng ngẫu nhiên. Receipt sau bản sửa review `2db694b` đạt7/7 nhóm,42/42 tên
+tool mới trên fixture hai origin/React/viewport PNG; xem
+[receipt](BROWSER-LIVE-VERIFICATION.json) và trạng thái theo hash trong
+[coverage](RUNTIME-FUNCTION-COVERAGE.vi.md).
+
+`node scripts/run-review-live.mjs --live --base-url URL` bổ sung6 nhóm live cho
+network timeout, deadline/queue, pagination DOM/navigation và cache256 key
+release/unknown recovery. [Kết quả và giới hạn](REVIEW-FIXES-2026-10-26.vi.md)
+ghi riêng các nhánh chỉ có offline evidence. Không tự replay write không rõ kết quả.

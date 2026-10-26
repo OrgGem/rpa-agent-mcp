@@ -60,6 +60,16 @@ Read [the usage guide](README.md) before execution.
   Scoped public live promotion requires matching current source and host-loaded
   hashes, the exact full-suite groups/tool names and explicit cleanup. A partial
   receipt marks only successful tool calls, never all options/native routes.
+- [run-review-live.mjs](run-review-live.mjs) requires explicit `--live --base-url`
+  and a unique visible HTTP(S) base tab. It checks pinned extension and loaded
+  host hashes, then opens disposable loopback pages through a separate stdio MCP
+  client. Six regression groups cover busy network cleanup, queued deadlines,
+  DOM/navigation pagination and full key-cache release/unknown recovery.
+  Independent fixture reports witness input order and Next click counts. It
+  closes only owned tabs, verifies their absence, releases contexts and stops
+  its server/client. The base tab is retained; uncertain writes/closes are not
+  retried. It writes ignored work/REVIEW-LIVE-VERIFICATION.json and never
+  automatically promotes evidence, changes host registration or reloads Chrome.
 
 ## Invariants
 

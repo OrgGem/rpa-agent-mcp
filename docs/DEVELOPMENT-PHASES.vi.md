@@ -35,7 +35,7 @@ là độ ưu tiên tính năng trong catalog.
 | 4 Frames | F4.6 | Frame list/attach/ref ownership, same/cross-origin boundaries; không suy closed shadow support | G0.4, F2.1 | Source + offline + public fixture smoke đạt; xem scope bên dưới |
 | 5 P2 | F5.1 | Dialog response policy/control path không deadlock; file picker/native helper | Backend và fixture riêng | Deferred |
 | 5 P2 | F5.2 | OCR/CV/semantic; visualTarget có viewport generation và input backend | Provider + point input đã thử | Deferred |
-| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | CI Node22/24 baseline, local64 tests + public live đạt; signed release pending |
+| 5 Đóng gói | F5.3 | Cài/gỡ/upgrade, tài liệu, CI Windows, release và license review | Capability đích đạt nghiệm thu | CI Node22/24 baseline; local71 tests + public/review live đạt; signed release pending |
 | 5 Native | F5.4 | Window/launch/clipboard/image artifact/native; chỉ mở backend và action đã thử | Backend riêng; F1.1 | Window/image artifact fixture live đạt; launch/clipboard/native helper thiếu |
 | 5 Specialist | F5.5 | Calendar/SAP/accessibility/semantic; engine hoặc composite và acceptance riêng | F2.2, F4.2; provider riêng | HTML date/composites fixture live đạt; SAP/provider/audit thiếu |
 | 5 Events | F5.6 | Event broker/recorder và drag; schema, TTL/backpressure, target generation | F3.1, F4.6 | DOM events/drag synthetic fixture live đạt; không trusted input |
@@ -337,3 +337,26 @@ Source mới đã làm receipt public live cũ lệch hash. Coverage được t�
 trạng thái pending cho bản sửa, không giữ nhãn live pass từ source cũ. Receipt
 Chrome7/7 và CI64/64 ở trên là lịch sử; đợt sửa này chưa reload native host hoặc
 chạy Chrome live/CI remote mới.423 scenario rộng vẫn planned.
+
+## Kiểm thử live lại bản sửa review — 2026-10-26
+
+Đã reload host với backup launcher/manifest sẵn có; probe tắt và12/12 loaded
+hashes khớp runtime của commit2db694b. Browser connector mở thành công tab
+example.com để chọn cửa sổ hiển thị; không cần thao tác thủ công. Public suite
+đạt **7/7 nhóm,42/42 tool mới** trên fixture riêng. Receipt mới đã thay receipt
+lịch sử và coverage trở lại fixture-smoke-verified cho đúng source hiện tại.
+
+Runner `scripts/run-review-live.mjs` đạt **6/6 nhóm**: mạng bận timeout rồi ghi
+tiếp; read/write trong queue hết hạn đúng lúc, không chạy muộn/vượt hàng; phân
+trang DOM và navigation với rootRef, dispatch evidence đúng; release khi đầy256
+key; explicit unknown recovery khi đầy cache. Có fixture report độc lập cho
+input/Next click và readback xác nhận overflow không đổi DOM. Không đổi runtime
+trong đợt retest. Xem [kết quả/giới hạn](REVIEW-FIXES-2026-10-26.vi.md),
+[public receipt](BROWSER-LIVE-VERIFICATION.json) và
+[regression receipt](REVIEW-LIVE-VERIFICATION.json).
+
+Tabs/context/server/client cleanup đều đạt; host còn connected,
+cleanupUnconfirmed=0. Native monitor cleanup thất bại và Unicode Chrome
+registration chưa có live evidence mới; giữ kết quả offline/process riêng.
+F4.5, backend thiếu, signed release và các scenario rộng chưa được kiểm chứng
+vẫn pending/deferred. Chưa kiểm tra CI remote cho snapshot retest này.

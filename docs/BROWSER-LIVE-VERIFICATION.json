@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-26T05:23:46.675Z",
+  "checkedAt": "2026-10-26T07:04:18.039Z",
   "driverVersion": "23.4.55.39317",
   "mode": "live",
   "passed": true,
@@ -109,11 +109,11 @@
     "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
     "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
     "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
-    "src/browser-runtime.mjs": "76dad6c5ad20f14bc6a8cd643d71976e1804ae3e6df33515522d92605d6236c4",
+    "src/browser-runtime.mjs": "edc0690cf2ed9cc3a39ed64bdcb652408962b6e6fd43c85808134b3856c9bef5",
     "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
     "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
-    "src/browser-observers.mjs": "b03b3b5a4592e0b691d8266d55e32006d9f71b14e3f82e05161b78ba73be1b50",
-    "src/browser-composites.mjs": "3b5a49cc2206e5f093fca7cec2ebe5b654660006659f958c924d169d8000aa9f",
+    "src/browser-observers.mjs": "bdd9157f017eb133a4c88157e699b032ee9f65853497cf52938cf62af7774124",
+    "src/browser-composites.mjs": "7f2c62b21fd0a94cce58fc0c8718ad7e84e249bc1b70174264b862bac4d3998a",
     "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
     "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
     "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
@@ -136,29 +136,23 @@
     "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
     "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
     "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
-    "src/browser-runtime.mjs": "76dad6c5ad20f14bc6a8cd643d71976e1804ae3e6df33515522d92605d6236c4",
+    "src/browser-runtime.mjs": "edc0690cf2ed9cc3a39ed64bdcb652408962b6e6fd43c85808134b3856c9bef5",
     "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
     "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
-    "src/browser-observers.mjs": "b03b3b5a4592e0b691d8266d55e32006d9f71b14e3f82e05161b78ba73be1b50",
-    "src/browser-composites.mjs": "3b5a49cc2206e5f093fca7cec2ebe5b654660006659f958c924d169d8000aa9f",
+    "src/browser-observers.mjs": "bdd9157f017eb133a4c88157e699b032ee9f65853497cf52938cf62af7774124",
+    "src/browser-composites.mjs": "7f2c62b21fd0a94cce58fc0c8718ad7e84e249bc1b70174264b862bac4d3998a",
     "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
     "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
     "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
     "scripts/run-browser-live.mjs": "8aa05bbe02e4da278d7aad269dee059a71a9d90bf8306d07d55ef933a52e6abe",
-    "scripts/browser-runtime-fixture.mjs": "3e0c7cdd2d3b5d3d285f0c78104ca13846c137fd36d4efc8d03b5be8a961a6bd",
+    "scripts/browser-runtime-fixture.mjs": "0b897a9ad7af5e0618963c639311a118d7ce44285a074586b198694f2613451a",
     "scripts/fixtures/browser-runtime.jsx": "ea82523d6d1870081f25eb19ef30a8f26ddc78b37c490debc50b25a65ff885e0",
     "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
   },
   "status": "scoped-public-live-passed",
-  "scope": "Owned two-origin React fixture through public MCP in an explicitly selected visible base Chrome window; all42 new tool names have successful calls. Only exact options in runner.",
+  "scope": "Owned two-origin React fixture through public MCP in an explicitly selected visible Chrome window; only exact calls/options in runner.",
   "successfulNewTools": 42,
   "totalNewTools": 42,
-  "blockedFeatures": [],
-  "nativeRestart": {
-    "method": "CLI verified repository-owned node native process stopped while fixture jobs were idle; extension automatically reconnected after its 10s timer",
-    "protectedPageAccessed": false,
-    "chromeKilled": false
-  },
   "history": [
     {
       "checkedAt": "2026-10-26T04:03:35.833Z",
@@ -260,26 +254,140 @@
         "contextReleased": true,
         "clientExited": true
       }
-    }
-  ],
-  "negativeChecks": [
+    },
     {
-      "checkedAt": "2026-10-26T05:23:40.167Z",
-      "scope": "Fresh owned MCP-created window; capture-only runner. Expected rejection, separate from full suite.",
-      "expected": "TARGET_NOT_VISIBLE",
-      "observed": {
-        "tool": "browser_screenshot",
-        "code": "TARGET_NOT_VISIBLE",
-        "dispatchState": "notSent",
-        "details": {},
-        "elapsedMs": 9
+      "schemaVersion": 1,
+      "checkedAt": "2026-10-26T05:23:46.675Z",
+      "driverVersion": "23.4.55.39317",
+      "mode": "live",
+      "passed": true,
+      "steps": [
+        {
+          "name": "session-discovery-snapshot-strict-find-read",
+          "passed": true
+        },
+        {
+          "name": "dom-native-input-react-and-idempotency",
+          "passed": true
+        },
+        {
+          "name": "events-pointer-scroll-highlight-drag-popup",
+          "passed": true
+        },
+        {
+          "name": "forms-table-cell-tree-calendar-cookies",
+          "passed": true
+        },
+        {
+          "name": "explicit-same-cross-origin-iframe-and-stale-ref",
+          "passed": true
+        },
+        {
+          "name": "network-window-new-tab-navigation",
+          "passed": true
+        },
+        {
+          "name": "screenshot-image-artifact",
+          "passed": true
+        }
+      ],
+      "toolsExercised": [
+        "browser_capabilities",
+        "uipath_bridge_status",
+        "uipath_driver_versions",
+        "browser_tabs",
+        "browser_attach",
+        "browser_tab_open",
+        "browser_tab_get",
+        "browser_evaluate",
+        "browser_snapshot",
+        "browser_find_elements",
+        "browser_find_element",
+        "browser_get_element",
+        "browser_wait_for",
+        "browser_type",
+        "browser_set_text",
+        "browser_set_checked",
+        "browser_select_options",
+        "browser_text_selection",
+        "browser_set_attribute",
+        "browser_focus",
+        "browser_events",
+        "browser_scroll",
+        "browser_hover",
+        "browser_highlight",
+        "browser_click",
+        "browser_drag_and_drop",
+        "browser_close_popup",
+        "browser_form_read",
+        "browser_form_fill",
+        "browser_extract_table",
+        "browser_table_cell",
+        "browser_tree",
+        "browser_calendar_select",
+        "browser_cookies",
+        "browser_frames",
+        "browser_frame_attach",
+        "browser_network_wait",
+        "browser_tab_activate",
+        "browser_window",
+        "browser_wait_new_tab",
+        "browser_tab_close",
+        "browser_navigate",
+        "browser_history",
+        "browser_screenshot",
+        "browser_image_artifact"
+      ],
+      "unsupported": {
+        "browser_press_keys": "NO_SAFE_TARGETED_KEY_BACKEND: pinned normal WriteText ignores key tokens; debugger route lacks verified target/default-action semantics.",
+        "browser_semantic_query": "SEMANTIC_PROVIDER_REQUIRED",
+        "browser_dialog": "INDEPENDENT_ASYNC_DIALOG_BACKEND_REQUIRED",
+        "browser_file_picker": "NATIVE_FILE_PICKER_BACKEND_REQUIRED",
+        "browser_download": "CORRELATED_DOWNLOAD_BACKEND_REQUIRED",
+        "browser_launch": "OWNED_PROFILE_LAUNCH_BACKEND_REQUIRED",
+        "system_clipboard": "OPTIONAL_NATIVE_CLIPBOARD_BACKEND_REQUIRED",
+        "browser_visual_find": "VISION_PROVIDER_REQUIRED",
+        "browser_ocr": "OCR_PROVIDER_REQUIRED",
+        "browser_accessibility_audit": "ACCESSIBILITY_AUDIT_ENGINE_REQUIRED"
       },
-      "expectedRejectionVerified": true,
       "cleanup": {
         "tabsClosed": true,
         "serversStopped": true,
         "contextReleased": true,
         "clientExited": true
+      },
+      "limitations": [
+        "Loopback owned fixture only. Desktop helper, debugger keyboard, OCR, visual and semantic backends are unavailable.",
+        "Smoke coverage is distinct from the 423 planned negative/boundary scenarios."
+      ],
+      "suite": "full",
+      "captureFormat": "png",
+      "loadedHostSourceHashes": {
+        "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
+        "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
+        "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
+        "src/browser-runtime.mjs": "76dad6c5ad20f14bc6a8cd643d71976e1804ae3e6df33515522d92605d6236c4",
+        "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
+        "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
+        "src/browser-observers.mjs": "b03b3b5a4592e0b691d8266d55e32006d9f71b14e3f82e05161b78ba73be1b50",
+        "src/browser-composites.mjs": "3b5a49cc2206e5f093fca7cec2ebe5b654660006659f958c924d169d8000aa9f",
+        "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
+        "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
+        "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
+        "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
+      },
+      "extensionSourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+      "fixtureBundleSha256": "6f37c34be9021dc8fff3cdc39d200ba604031d3e6f4b67726dc91a1e06a508e4",
+      "windowScope": "explicit-visible-base-window",
+      "chromeVersion": "155.0.0.0",
+      "captureArtifact": {
+        "mimeType": "image/png",
+        "bytes": 26579,
+        "width": 2560,
+        "height": 1267,
+        "sha256": "f9dcdfb8f99e026233633fb0a90834479adf85f4348579ddbd0afbf1619cce52",
+        "mcpImageBlock": true,
+        "inspectReadSavePassed": true
       },
       "sourceHashes": {
         "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
@@ -298,20 +406,68 @@
         "scripts/fixtures/browser-runtime.jsx": "ea82523d6d1870081f25eb19ef30a8f26ddc78b37c490debc50b25a65ff885e0",
         "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
       },
-      "loadedHostSourceHashes": {
-        "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
-        "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
-        "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
-        "src/browser-runtime.mjs": "76dad6c5ad20f14bc6a8cd643d71976e1804ae3e6df33515522d92605d6236c4",
-        "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
-        "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
-        "src/browser-observers.mjs": "b03b3b5a4592e0b691d8266d55e32006d9f71b14e3f82e05161b78ba73be1b50",
-        "src/browser-composites.mjs": "3b5a49cc2206e5f093fca7cec2ebe5b654660006659f958c924d169d8000aa9f",
-        "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
-        "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
-        "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
-        "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
-      }
+      "status": "historical-before-review-fixes",
+      "scope": "Owned two-origin React fixture through public MCP in an explicitly selected visible base Chrome window; all42 new tool names have successful calls. Only exact options in runner.",
+      "successfulNewTools": 42,
+      "totalNewTools": 42,
+      "blockedFeatures": [],
+      "nativeRestart": {
+        "method": "CLI verified repository-owned node native process stopped while fixture jobs were idle; extension automatically reconnected after its 10s timer",
+        "protectedPageAccessed": false,
+        "chromeKilled": false
+      },
+      "negativeChecks": [
+        {
+          "checkedAt": "2026-10-26T05:23:40.167Z",
+          "scope": "Fresh owned MCP-created window; capture-only runner. Expected rejection, separate from full suite.",
+          "expected": "TARGET_NOT_VISIBLE",
+          "observed": {
+            "tool": "browser_screenshot",
+            "code": "TARGET_NOT_VISIBLE",
+            "dispatchState": "notSent",
+            "details": {},
+            "elapsedMs": 9
+          },
+          "expectedRejectionVerified": true,
+          "cleanup": {
+            "tabsClosed": true,
+            "serversStopped": true,
+            "contextReleased": true,
+            "clientExited": true
+          },
+          "sourceHashes": {
+            "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
+            "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
+            "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
+            "src/browser-runtime.mjs": "76dad6c5ad20f14bc6a8cd643d71976e1804ae3e6df33515522d92605d6236c4",
+            "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
+            "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
+            "src/browser-observers.mjs": "b03b3b5a4592e0b691d8266d55e32006d9f71b14e3f82e05161b78ba73be1b50",
+            "src/browser-composites.mjs": "3b5a49cc2206e5f093fca7cec2ebe5b654660006659f958c924d169d8000aa9f",
+            "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
+            "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
+            "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
+            "scripts/run-browser-live.mjs": "8aa05bbe02e4da278d7aad269dee059a71a9d90bf8306d07d55ef933a52e6abe",
+            "scripts/browser-runtime-fixture.mjs": "3e0c7cdd2d3b5d3d285f0c78104ca13846c137fd36d4efc8d03b5be8a961a6bd",
+            "scripts/fixtures/browser-runtime.jsx": "ea82523d6d1870081f25eb19ef30a8f26ddc78b37c490debc50b25a65ff885e0",
+            "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
+          },
+          "loadedHostSourceHashes": {
+            "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
+            "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
+            "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
+            "src/browser-runtime.mjs": "76dad6c5ad20f14bc6a8cd643d71976e1804ae3e6df33515522d92605d6236c4",
+            "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
+            "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
+            "src/browser-observers.mjs": "b03b3b5a4592e0b691d8266d55e32006d9f71b14e3f82e05161b78ba73be1b50",
+            "src/browser-composites.mjs": "3b5a49cc2206e5f093fca7cec2ebe5b654660006659f958c924d169d8000aa9f",
+            "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
+            "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
+            "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
+            "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
+          }
+        }
+      ]
     }
   ]
 }

@@ -25,5 +25,43 @@ Launcher test ghi file tạm và chạy Node stub; không sửa registry/native 
 
 Source hashes đã đổi nên coverage runtime không công nhận receipt public live
 cũ cho source mới. Receipt7/7 nhóm,42/42 tool và CI64/64 trước đó giữ nguyên
-làm lịch sử. Đợt sửa này chưa reload host, chưa chạy Chrome live và chưa có
-CI remote mới; không chuyển423 scenario planned thành passed.
+làm lịch sử tại thời điểm commit bản sửa. Kết quả kiểm thử live tiếp theo ở dưới;
+không chuyển423 scenario planned thành passed.
+
+## Kiểm chứng lại trên Chrome sau bản sửa
+
+Runtime của commit `2db694bb3e89ff65132a8c13fdb44c53f8349e13` đã được nạp lại;
+12/12 hash nguồn/contract đang chạy khớp checkout. Probe tắt, host connected và
+cleanupUnconfirmed=0 sau kiểm thử. Đã mở `https://example.com/` qua browser
+connector để chọn cửa sổ hiển thị; mọi thao tác ghi của suite chạy trên fixture
+loopback riêng. Không cần người dùng mở tab hoặc approve thêm.
+
+Bộ public live đạt **7/7 nhóm,42/42 browser tool mới**; tools/list47, tổng45 tên
+tool được gọi gồm capabilities và hai legacy status/version. Same/cross-origin
+iframe reload, stale refs, React retained inputs, native/DOM input, events,
+network/cookies/navigation và PNG artifact đều qua. Receipt hiện tại:
+[BROWSER-LIVE-VERIFICATION.json](BROWSER-LIVE-VERIFICATION.json).
+
+Runner hồi quy mới [run-review-live.mjs](../scripts/run-review-live.mjs) đạt
+**6/6 nhóm** với hash nguồn chạy thực; xem
+[REVIEW-LIVE-VERIFICATION.json](REVIEW-LIVE-VERIFICATION.json):
+
+| Ca live | Bằng chứng |
+|---|---|
+| Mạng còn request chờ khi wait hết500ms | TIMEOUT/notSent; type+readback tiếp thành công; arm/cancel monitor mới thành công |
+| Read/write hết hạn trong queue | Trả TIMEOUT khoảng310ms trước khi predecessor kết thúc; report độc lập không có input chạy muộn/vượt hàng; chỉ nhận after queue |
+| Phân trang thay DOM | Hai trang One/Two, partial=false, evidence acknowledged, đúng một Next click |
+| Phân trang navigation trễ100ms | RootRef ban đầu được thay bằng locator sau navigation; hai trang, đúng một Next và một page2 load |
+| Cache256 write key | Key vượt quota trả LIMIT_EXCEEDED và không đổi DOM; release cleanupConfirmed |
+| Cache255 write + một unknown | Invalid recovery vẫn bị giới hạn; explicit abandon-unknown thành công; lấy ref mới sau recovery rồi xác minh DOM; release cleanupConfirmed |
+
+Tabs của runner đã được đóng và rediscovery xác nhận không còn; tất cả context,
+server và MCP child đã cleanup. Runner không replay action không rõ kết quả.
+Trong quá trình hoàn thiện runner đã sửa cách đọc envelope legacy và ref cũ sau
+explicit recovery; các lần lỗi được giữ ở work/, đều cleanup, không sửa runtime.
+
+Giới hạn: lỗi native StopWebRequestMonitoring thất bại chỉ được kiểm tra bằng
+mock offline; không gây lỗi này vào extension live. Unicode launcher/path có
+kiểm chứng Windows process/filesystem riêng, chưa đăng ký Chrome từ checkout
+Unicode. Không xác nhận mọi website/option hay423 scenario; CI remote của đợt
+kiểm thử này chưa được kiểm tra.

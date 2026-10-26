@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-26T07:08:36.855Z",
+  "mode": "live",
+  "passed": true,
+  "steps": [
+    {
+      "name": "busy-network-timeout-cleanup-and-subsequent-write",
+      "passed": true,
+      "elapsedMs": 1967,
+      "evidence": {
+        "error": "TIMEOUT",
+        "dispatchState": "notSent",
+        "requestStillPendingAtTimeout": true,
+        "writeReadback": true,
+        "rearmAndCancel": true
+      }
+    },
+    {
+      "name": "queued-deadline-settles-without-late-write-or-overtake",
+      "passed": true,
+      "elapsedMs": 3976,
+      "evidence": {
+        "queuedReadAndWriteTimedOut": true,
+        "elapsedMs": 310,
+        "settledBeforePredecessor": true,
+        "noLateOrOvertakingInput": true,
+        "finalValue": "after queue"
+      }
+    },
+    {
+      "name": "pagination-root-ref-dom",
+      "passed": true,
+      "elapsedMs": 1572,
+      "evidence": {
+        "pages": 2,
+        "rows": [
+          "One",
+          "Two"
+        ],
+        "partial": false,
+        "dispatchState": "acknowledged",
+        "nextClicks": 1,
+        "navigationLoads": 0
+      }
+    },
+    {
+      "name": "pagination-root-ref-navigation",
+      "passed": true,
+      "elapsedMs": 1995,
+      "evidence": {
+        "pages": 2,
+        "rows": [
+          "One",
+          "Two"
+        ],
+        "partial": false,
+        "dispatchState": "acknowledged",
+        "nextClicks": 1,
+        "navigationLoads": 1
+      }
+    },
+    {
+      "name": "full-256-key-cache-release",
+      "passed": true,
+      "elapsedMs": 7203,
+      "evidence": {
+        "filledKeys": 256,
+        "overflow": "LIMIT_EXCEEDED",
+        "overflowDidNotChangePage": true,
+        "invalidRecoveryBounded": true,
+        "unknownRecovered": false,
+        "releaseConfirmed": true
+      }
+    },
+    {
+      "name": "full-256-key-cache-unknown-recovery",
+      "passed": true,
+      "elapsedMs": 5536,
+      "evidence": {
+        "filledKeys": 256,
+        "overflow": "LIMIT_EXCEEDED",
+        "overflowDidNotChangePage": true,
+        "invalidRecoveryBounded": true,
+        "unknownRecovered": true,
+        "releaseConfirmed": true
+      }
+    }
+  ],
+  "cleanup": {
+    "tabsClosed": true,
+    "contextsReleased": true,
+    "serverStopped": true,
+    "clientExited": true
+  },
+  "limitations": [
+    "Owned loopback regression fixtures only; not all planned scenarios, options or websites.",
+    "Native StopWebRequestMonitoring failure is simulated offline only; it is not induced here.",
+    "Unicode launcher paths and Unicode fixture checkout paths have separate offline/Windows process evidence; this run uses the installed checkout."
+  ],
+  "loadedHostSourceHashes": {
+    "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
+    "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
+    "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
+    "src/browser-runtime.mjs": "edc0690cf2ed9cc3a39ed64bdcb652408962b6e6fd43c85808134b3856c9bef5",
+    "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
+    "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
+    "src/browser-observers.mjs": "bdd9157f017eb133a4c88157e699b032ee9f65853497cf52938cf62af7774124",
+    "src/browser-composites.mjs": "7f2c62b21fd0a94cce58fc0c8718ad7e84e249bc1b70174264b862bac4d3998a",
+    "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
+    "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
+    "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
+    "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828"
+  },
+  "extensionSourceSha256": "4de732c63b8a6b1b22e12a9db2a4a13ae2c0700a80669fd26631f7488f4b7308",
+  "sourceHashes": {
+    "src/bridge.mjs": "24b36fc291823d7660f8b114e100d289c0ab25ae081c930dd71b0d5df474ccc0",
+    "src/transport.mjs": "7ce22638800c2dd61018376a93875aaeab8718e90d49346276924bec9c130993",
+    "src/capabilities.mjs": "c17511ce2a54aa0f6706981612822f5f48d3f9a014cd4b1dc24a1bddc3820aef",
+    "src/browser-runtime.mjs": "edc0690cf2ed9cc3a39ed64bdcb652408962b6e6fd43c85808134b3856c9bef5",
+    "src/browser-operations.mjs": "208473404697a89610d28290633279e1b703a952c689d615d7979c5c7bd1ab7b",
+    "src/browser-page.mjs": "01b3ee3135ef1d8c45f8e872d121727ecc433134dd9a6256e4c1351c3b62c166",
+    "src/browser-observers.mjs": "bdd9157f017eb133a4c88157e699b032ee9f65853497cf52938cf62af7774124",
+    "src/browser-composites.mjs": "7f2c62b21fd0a94cce58fc0c8718ad7e84e249bc1b70174264b862bac4d3998a",
+    "src/browser-artifacts.mjs": "28591246db961a7e5f33026a85ab3c42e7bd49e70caaf84e8d3d57fed79778b0",
+    "src/browser-tools.mjs": "149fcc3a0587c6c890164810aee02139681cb2d1a620be4556493ec64233f068",
+    "docs/browser-tool-contracts.json": "ef197592376737cf78fe263812dd60d5ce72c8c8ecbd6f1a4adb2ec8d8a6dd3f",
+    "package-lock.json": "ab573df0133f76886ca16bcad935b80cd624b2552360296beb9ada153575c828",
+    "scripts/run-review-live.mjs": "b0fbb7e300b037323cf8ecb0ba7c1e7ba4304fc402514f87c343edb66ddfd819"
+  }
+}
