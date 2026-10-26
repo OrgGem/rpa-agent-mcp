@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-26T05:27:35.992Z",
+  "checkedAt": "2026-10-26T05:29:34.069Z",
   "runtimeVersion": "0.3.0",
   "baselineCommit": "ac7d9995897ec5a905c933d2fa11ef5cb5249d13",
   "implementationStatus": "supported-subset-source-offline-and-scoped-public-live-passed",
@@ -78,29 +78,31 @@
     "windowsCiConfigured": true,
     "windowsCiRunVerified": true,
     "publishedRelease": false,
-    "windowsCiScope": "Prior c020364 baseline; current changes require their own CI run after push."
+    "windowsCiScope": "Current implementation commit a13599e: both Windows jobs passed64 tests, matrix, licenses and source archive."
   },
   "ci": {
     "schemaVersion": 1,
-    "checkedAt": "2026-10-26T04:00:33.002Z",
-    "testedCommit": "c020364ee814f34ce2b5be2d5dda0fe756520373",
-    "runId": 40266585783,
-    "runUrl": "https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40266585783",
+    "checkedAt": "2026-10-26T05:29:34.069Z",
+    "testedCommit": "a13599e87379d48cc8a9987c894d375fab1eac25",
+    "runId": 40274330202,
+    "runUrl": "https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40274330202",
     "passed": true,
     "jobs": [
       {
-        "jobId": 121390216557,
+        "jobId": 121413730578,
         "node": "22.23.4",
         "conclusion": "success",
-        "tests": 55,
+        "tests": 64,
         "failed": 0,
         "skipped": 0
       },
       {
-        "jobId": 121390216681,
+        "jobId": 121413730411,
         "node": "24.22.1",
         "conclusion": "success",
-        "testStep": "success"
+        "tests": 64,
+        "failed": 0,
+        "skipped": 0
       }
     ],
     "checks": [
@@ -110,6 +112,30 @@
       "npm run licenses:check",
       "npm run release:source"
     ],
-    "scope": "GitHub-hosted Windows offline validation and source archive only; no UiPath extension/native host/browser live acceptance."
+    "scope": "GitHub-hosted Windows offline validation and source archive only; public UiPath/browser live acceptance is recorded separately.",
+    "history": [
+      {
+        "testedCommit": "c020364ee814f34ce2b5be2d5dda0fe756520373",
+        "runId": 40266585783,
+        "runUrl": "https://github.com/OrgGem/rpa-agent-mcp/actions/runs/40266585783",
+        "passed": true,
+        "jobs": [
+          {
+            "jobId": 121390216557,
+            "node": "22.23.4",
+            "conclusion": "success",
+            "tests": 55,
+            "failed": 0,
+            "skipped": 0
+          },
+          {
+            "jobId": 121390216681,
+            "node": "24.22.1",
+            "conclusion": "success",
+            "testStep": "success"
+          }
+        ]
+      }
+    ]
   }
 }
